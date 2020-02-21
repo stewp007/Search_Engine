@@ -24,6 +24,9 @@ public class Driver {
 
     // TODO Fill in and modify this method as necessary.
     System.out.println(Arrays.toString(args));
+    
+    ArgumentParser parser = new ArgumentParser(args);
+    System.out.println("Argument Map: " + parser.toString());
 
     // calculate time elapsed and output
     Duration elapsed = Duration.between(start, Instant.now());
