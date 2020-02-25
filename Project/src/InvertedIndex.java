@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
-import java.util.TreeSet;
+
 
 /**
  * 
@@ -63,6 +63,12 @@ public class InvertedIndex{
 		
 	}
 	
+	public int size() {
+		return invertedIndex.size();
+	}
+	
+	
+	
 	
 	
 	@Override
@@ -70,6 +76,7 @@ public class InvertedIndex{
 		return invertedIndex.toString();
 		
 	}
+
 	
 	
 	

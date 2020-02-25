@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeSet;
+
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines are used to
@@ -156,7 +156,6 @@ public class SimpleJsonWriter {
       return null;
     }
   }
-
   /**
    * Writes the elements as a pretty JSON object with a nested array. The generic notation used
    * allows this method to be used for any type of map with any type of nested collection of integer
@@ -167,134 +166,84 @@ public class SimpleJsonWriter {
    * @param level the initial indent level
    * @throws IOException if an IO error occurs
    */
-  public static void asNestedArray(WordIndex elements,
+  public static String indexToJson(InvertedIndex index,
       Writer writer, int level) throws IOException {
     
-	  int c = 0;
-	  int size = elements.size();
 	  
 	  writer.write("{\n");
-	  
-	  for(var entry: elements.entrySet()) {
-		  Collection<Integer> inner =  entry.getValue();
-		  int numElems = inner.size();
-		  int x;
-		  if(size > 1 && c < size-1) {
-			  quote(entry.getKey(), writer, 1);
-			  writer.write(": [\n ");
-			  x = 0;
-			  for(Integer num: inner) {
-				  if(numElems > 1 && x < numElems -1) {
-					 indent(" "+num.toString()+",\n ", writer, 1); 
+	  level++;
+	  int size = index.size();
+	  int x = 0;
+	
+	  for(var entry: index.getElements()) {
+		  x++;
+		  quote(entry, writer, level);
+		  writer.write(" : {\n");
+		  level++;
+		  int y = 0;
+		  int numValues = index.getValue(entry).size();
+		  for(var value: index.getValue(entry).entrySet()) {
+			  y++;
+			  indent(writer, level);
+			  quote(value.getKey(), writer, level);
+			  writer.write(" : [\n");
+			  level++;
+			  int numInts = value.getValue().size();
+			  int z = 0;
+			  var iterator = value.getValue().iterator();
+			  while(iterator.hasNext()) {
+				  z++;
+				  if(z <= numInts-1) {
+					  indent(iterator.next()+",\n", writer, level);
 				  }else {
-					 indent(" "+num.toString()+"\n", writer, 1); 
+					 indent(iterator.next()+"\n", writer, level); 
 				  }
-				  x++;
-			  }
-			  indent("],\n",writer,1);
-			  
-		  }else {
-			  quote(entry.getKey(), writer, 1);
-			  writer.write(": [\n");
-			  x = 0;
-			  for(Integer num: inner) {
-				if(numElems > 1 && x < numElems -1) {
-					indent(" "+num.toString()+",\n", writer, 1); 
-				}else {
-					indent("  "+num.toString()+"\n", writer, 1);
-				}
-				x++;
 				  
 			  }
-			  indent("]\n",writer,1);
+			  level--;
+			  if(y <= numValues -1) {
+				  indent("],\n", writer, level);
+			  }else {
+				  indent("]\n", writer, level);
+			  }
+			  
+			  
 		  }
-		  c++;
-	  }
-	  
-	  writer.write("}");
-	  
-	  
-    /*
-     * The generic notation:
-     *
-     * Map<String, ? extends Collection<Integer>> elements
-     *
-     * ...may be confusing. You can mentally replace it with:
-     *
-     * HashMap<String, HashSet<Integer>> elements
-     */
-  }
-  /**
-   * Writes the elements as a pretty JSON object with a nested array. The generic notation used
-   * allows this method to be used for any type of map with any type of nested collection of integer
-   * objects.
-   *
-   * @param elements the elements to write
-   * @param writer the writer to use
-   * @param level the initial indent level
-   * @throws IOException if an IO error occurs
-   */
-  public static void indexToJson(InvertedIndex index,
-      Writer writer, int level) throws IOException {
-    
-	  
-	  writer.write("{\n");
-	  
-	  for(var entry: index.getElements()) {
-		  quote(entry, writer);
-		  asNestedArray(index.getValue(entry), writer, 1);
+		  level --;
+		  
+		  if(x <= size -1) {
+			  indent("},\n", writer, level);
+		  }else {
+			  indent("}\n", writer, level); 
+		  }
+		 
+		  
+		  
   
 	  }
 	  
 	  writer.write("}");
+	  return writer.toString();
 	  
 	  
-    /*
-     * The generic notation:
-     *
-     * Map<String, ? extends Collection<Integer>> elements
-     *
-     * ...may be confusing. You can mentally replace it with:
-     *
-     * HashMap<String, HashMap<String, HashSet<integer>>> elements
-     */
   }
-
+  
   /**
-   * Writes the elements as a nested pretty JSON object to file.
+   * Writes the the InvertedIndex as a pretty JSON object to file.
    *
    * @param elements the elements to write
    * @param path the file path to use
    * @throws IOException if an IO error occurs
    *
-   * @see #asNestedArray(Map, Writer, int)
+   * @see #indexToJson(InvertedIndex index, Writer writer, int level)
    */
-  public static void asNestedArray(WordIndex elements, Path path)
-      throws IOException {
+  public static void indexJsonToFile(InvertedIndex elements, Path path) throws IOException {
     // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
     try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-      asNestedArray(elements, writer, 0);
+      indexToJson(elements, writer, 0);
     }
   }
 
-  /**
-   * Returns the elements as a nested pretty JSON object.
-   *
-   * @param elements the elements to use
-   * @return a {@link String} containing the elements in pretty JSON format
-   *
-   * @see #asNestedArray(Map, Writer, int)
-   */
-  public static String asNestedArray(WordIndex elements) {
-    // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
-    try {
-      StringWriter writer = new StringWriter();
-      asNestedArray(elements, writer, 0);
-      return writer.toString();
-    } catch (IOException e) {
-      return null;
-    }
-  }
 
   /**
    * Indents using 2 spaces by the number of times specified.
@@ -374,25 +323,4 @@ public class SimpleJsonWriter {
     quote(element, writer);
   }
 
-  /**
-   * A simple main method that demonstrates this class.
-   *
-   * @param args unused
-   */
-  public static void main(String[] args) {
-    // MODIFY AS NECESSARY TO DEBUG YOUR CODE
-
-    TreeSet<Integer> elements = new TreeSet<>();
-    System.out.println("Empty:");
-    System.out.println(asArray(elements));
-
-    elements.add(65);
-    System.out.println("\nSingle:");
-    System.out.println(asArray(elements));
-
-    elements.add(66);
-    elements.add(67);
-    System.out.println("\nSimple:");
-    System.out.println(asArray(elements));
-  }
 }

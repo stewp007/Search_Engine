@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TreeSet;
+
 
 /**
  * Class responsible for running this project based on the provided command-line arguments. See the
@@ -32,7 +32,6 @@ public class Driver {
     	System.exit(1);;
     }
 
-    // TODO Fill in and modify this method as necessary.
     System.out.println(Arrays.toString(args));
     
     ArgumentParser parser = new ArgumentParser(args);
@@ -51,7 +50,13 @@ public class Driver {
 	    	
 	    }
 	    System.out.println(index);
-	    SimpleJsonWriter.indexToJson(index,new StringWriter(), 0);
+	    StringWriter writer = new StringWriter();
+	    
+	    System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
+	    
+	    if(parser.hasValue("-index")) {
+	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index"));
+	    }
 	    
 	    
 	 
@@ -59,7 +64,7 @@ public class Driver {
 	} catch (IOException e) {
 		System.out.println("Error opening files");
 	}
-  //WordIndex index = new WordIndex();
+ 
    
     	
 
@@ -69,14 +74,5 @@ public class Driver {
     System.out.printf("Elapsed: %f seconds%n", seconds);
   }
 
-  
-  
-  /*
-   * TODO: Delete this after reading...
-   *
-   * Generally, "driver" classes are responsible for setting up and calling other classes, usually
-   * from a main() method that parses command-line parameters. If the driver were only responsible
-   * for a single class, we use that class name. For example, "PizzaDriver" is what we would name a
-   * driver class that just sets up and calls the "Pizza" class.
-   */
+ 
 }

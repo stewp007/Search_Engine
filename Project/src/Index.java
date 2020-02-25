@@ -43,12 +43,15 @@ public interface Index<T> {
    * @see #add(Object, int)
    */
   public default boolean addAll(T[] elements, int start) {
-	  for(int i = 0; i < elements.length; i++) {
-		  if(!add(elements[i], start + i)) {
+	  int c = 0;
+	  for(T element: elements) {
+		  
+		  if(!add(element, start + c++)) {
 			  return false;
 		  }else {
 			  return true;
 		  }
+		  
 	  }
 	  return true;
   }
