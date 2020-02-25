@@ -1,5 +1,7 @@
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -62,6 +64,20 @@ public class WordIndex implements Index<String>{
 		return wordIndex.containsKey(element)  == true ? Collections.unmodifiableCollection(wordIndex.get(element)) : Collections.emptySet();
 	}
 
+	@Override
+	public String toString() {
+		return wordIndex.toString();
+	}
+
+	public int size() {
+		
+		return wordIndex.size();
+	}
+
+	public  Set<Entry<String, TreeSet<Integer>>> entrySet() {
+		
+		return wordIndex.entrySet();
+	}
   
 
 }

@@ -167,7 +167,7 @@ public class SimpleJsonWriter {
    * @param level the initial indent level
    * @throws IOException if an IO error occurs
    */
-  public static void asNestedArray(Map<String, ? extends Collection<Integer>> elements,
+  public static void asNestedArray(WordIndex elements,
       Writer writer, int level) throws IOException {
     
 	  int c = 0;
@@ -224,6 +224,41 @@ public class SimpleJsonWriter {
      * HashMap<String, HashSet<Integer>> elements
      */
   }
+  /**
+   * Writes the elements as a pretty JSON object with a nested array. The generic notation used
+   * allows this method to be used for any type of map with any type of nested collection of integer
+   * objects.
+   *
+   * @param elements the elements to write
+   * @param writer the writer to use
+   * @param level the initial indent level
+   * @throws IOException if an IO error occurs
+   */
+  public static void indexToJson(InvertedIndex index,
+      Writer writer, int level) throws IOException {
+    
+	  
+	  writer.write("{\n");
+	  
+	  for(var entry: index.getElements()) {
+		  quote(entry, writer);
+		  asNestedArray(index.getValue(entry), writer, 1);
+  
+	  }
+	  
+	  writer.write("}");
+	  
+	  
+    /*
+     * The generic notation:
+     *
+     * Map<String, ? extends Collection<Integer>> elements
+     *
+     * ...may be confusing. You can mentally replace it with:
+     *
+     * HashMap<String, HashMap<String, HashSet<integer>>> elements
+     */
+  }
 
   /**
    * Writes the elements as a nested pretty JSON object to file.
@@ -234,7 +269,7 @@ public class SimpleJsonWriter {
    *
    * @see #asNestedArray(Map, Writer, int)
    */
-  public static void asNestedArray(Map<String, ? extends Collection<Integer>> elements, Path path)
+  public static void asNestedArray(WordIndex elements, Path path)
       throws IOException {
     // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
     try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
@@ -250,7 +285,7 @@ public class SimpleJsonWriter {
    *
    * @see #asNestedArray(Map, Writer, int)
    */
-  public static String asNestedArray(Map<String, ? extends Collection<Integer>> elements) {
+  public static String asNestedArray(WordIndex elements) {
     // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
     try {
       StringWriter writer = new StringWriter();

@@ -108,10 +108,13 @@ public class TextFileStemmer {
    */
   public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
 	  TreeSet<String> fileSet = new TreeSet<>();
+	  
 	  try(BufferedReader reader = Files.newBufferedReader(inputFile)){
 		  String line = null;
 		  while((line = reader.readLine()) != null) {
-			  fileSet.addAll(uniqueStems(line));  
+			  
+			  fileSet.addAll(uniqueStems(line));
+			  
 		  }
 	  }catch(IOException e) {
 		  System.out.println("Error reading file");
@@ -145,22 +148,4 @@ public class TextFileStemmer {
 	  return fileArray;
   }
 
-  /**
-   * A simple main method that demonstrates this class.
-   *
-   * @param args unused
-   * @throws IOException if an I/O error occurs
-   */
-  public static void main(String[] args) throws IOException {
-    String text = "practic practical practice practiced practicer practices "
-        + "practicing practis practisants practise practised practiser "
-        + "practisers practises practising practitioner practitioners";
-
-    System.out.println(uniqueStems(text));
-    System.out.println(listStems(text));
-
-    Path inputPath = Path.of("test", "animals.text");
-    Set<String> actual = TextFileStemmer.uniqueStems(inputPath);
-    System.out.println(actual);
-  }
 }

@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -39,18 +40,20 @@ public class Driver {
     Path path = parser.getPath("-path");
     
     
+    InvertedIndex index = new InvertedIndex();
+    
     try {
 		List<Path> listPaths = TextFileFinder.list(path);
-		//System.out.println(listPaths.toString());
 		
-		TreeSet<String> stemmedWords = new TreeSet<>();
 	    for(Path filePath: listPaths) {
 	    	System.out.println("File Path: " + filePath);
-	    	stemmedWords.addAll(TextFileStemmer.uniqueStems(filePath));
+	    	index.addFromFile(path);
+	    	
 	    }
-	    System.out.println(stemmedWords);
+	    System.out.println(index);
+	    SimpleJsonWriter.indexToJson(index,new StringWriter(), 0);
 	    
-	    WordIndex index = new WordIndex();
+	    
 	 
 	    
 	} catch (IOException e) {
