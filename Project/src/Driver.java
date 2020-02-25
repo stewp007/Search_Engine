@@ -54,12 +54,14 @@ public class Driver {
 	    
 	    System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
 	    
-	    if(parser.hasValue("-index")) {
+	    if(parser.hasFlag("-index") && parser.hasValue("-index")) {            //output to provided -index file
 	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index"));
+	    }else if(parser.hasFlag("-index") && !parser.hasValue("-index")) {     //default output to index.json
+	    	SimpleJsonWriter.indexJsonToFile(index, Path.of("index.json"));
+	    }else {
+	    	//do nothing
 	    }
-	    
-	    
-	 
+	   
 	    
 	} catch (IOException e) {
 		System.out.println("Error opening files");
