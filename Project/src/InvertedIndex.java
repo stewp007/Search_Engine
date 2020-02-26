@@ -27,8 +27,8 @@ public class InvertedIndex{
 	}
 	
 	public boolean add(String word, String path, int position) {
-		if(invertedIndex.putIfAbsent(word, new WordIndex()) != null) {
-			invertedIndex.put(word, new WordIndex());
+		if(invertedIndex.putIfAbsent(word, new WordIndex()) == null) {
+			//invertedIndex.put(word, new WordIndex());
 			return invertedIndex.get(word).add(path, position) != false? true: false;
 		}else {
 			return invertedIndex.get(word).add(path, position) != false? true: false;
@@ -37,26 +37,33 @@ public class InvertedIndex{
 	}
 	
 	public boolean addFromFile(Path path) {
-		int position = 1;
+		int filePosition = 0;
+		int linePosition = 0;
 		try(BufferedReader reader = Files.newBufferedReader(path)){
 			  String line = null;
 			  while((line = reader.readLine()) != null) {
 				  
 				  TreeSet<String> uniqueStems = TextFileStemmer.uniqueStems(line);
 				  ArrayList<String> allStems = TextFileStemmer.listStems(line);
+				  //String[] allStems = line.split(" ");
 				  System.out.println("unique stems: "+ uniqueStems);
-				  System.out.println("All stems: " + allStems);
+				  System.out.println("All stems: " + allStems); 
+				 
 				  for(String uniqueWord: uniqueStems) {
+					  linePosition = 0;
 					  for(String allWord: allStems) {
-						  
+						  linePosition++;
+						  //filePosition += linePosition;
 						  if(uniqueWord.equals(allWord)) {
-							  position++;
-							  this.add(uniqueWord, path.toString(), position);
+							  this.add(uniqueWord, path.toString(), filePosition + linePosition);
 						  }
 						 
 					  }
 					  
 				  }
+				  filePosition += allStems.size();
+				  
+				  
 			  }
 		  }catch(IOException e) {
 			  System.out.println("Error adding from file");
@@ -79,10 +86,6 @@ public class InvertedIndex{
 	public int size() {
 		return invertedIndex.size();
 	}
-	
-	
-	
-	
 	
 	@Override
 	public String toString() {

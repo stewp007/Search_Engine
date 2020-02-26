@@ -178,7 +178,7 @@ public class SimpleJsonWriter {
 	  for(var entry: index.getElements()) {
 		  x++;
 		  quote(entry, writer, level);
-		  writer.write(" : {\n");
+		  writer.write(": {\n");
 		  level++;
 		  int y = 0;
 		  int numValues = index.getValue(entry).size();
@@ -186,7 +186,7 @@ public class SimpleJsonWriter {
 			  y++;
 			  indent(writer, level);
 			  quote(value.getKey(), writer, level);
-			  writer.write(" : [\n");
+			  writer.write(": [\n");
 			  level++;
 			  int numInts = value.getValue().size();
 			  int z = 0;

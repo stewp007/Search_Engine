@@ -30,7 +30,7 @@ public class Driver {
     //Check if enough arguments are provided
     if(args.length <= 1) {
     	System.out.println("Please provide necessary arguments.");
-    	System.exit(1);;
+    	System.exit(0);
     }
     
     //parse arguments into a Map
@@ -52,19 +52,20 @@ public class Driver {
 	    	index.addFromFile(path);
 	    	
 	    }
+	    
 	    /*
 	     * print the Index in pretty JSON format
-	     * 
+	     */
 	    StringWriter writer = new StringWriter();
 	    System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
-	    */
+	    
 	    
 	    //Decide where to output Index if output file is provided
 	    
 	    if(parser.hasFlag("-index") && parser.hasValue("-index")) {            //output to provided -index file
-	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index"));
+	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index").normalize());
 	    }else if(parser.hasFlag("-index") && !parser.hasValue("-index")) {     //default output to index.json
-	    	SimpleJsonWriter.indexJsonToFile(index, Path.of("index.json"));
+	    	SimpleJsonWriter.indexJsonToFile(index, Path.of("index.json").normalize());
 	    }else {
 	    	//do nothing
 	    }

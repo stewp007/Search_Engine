@@ -78,6 +78,21 @@ public class WordIndex implements Index<String>{
 		
 		return wordIndex.entrySet();
 	}
+	
+	
+	public static void main(String [] args) {
+		WordIndex index =  new WordIndex();
+		
+		
+		index.add("hello", 1);
+		index.add("hello", 2);
+		index.add("hello", 3);
+		index.add("world", 7);
+		index.add("world", 3);
+		index.add("hello", 1);
+		
+		System.out.println(index);
+	}
   
 
 }
