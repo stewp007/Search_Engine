@@ -1,5 +1,6 @@
 import java.io.IOException;
-import java.io.StringWriter;
+//import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,12 +31,24 @@ public class Driver {
     //Check if enough arguments are provided
     if(args.length <= 1) {
     	System.out.println("Please provide necessary arguments.");
-    	System.exit(0);
+    	return;
     }
     
     //parse arguments into a Map
     ArgumentParser parser = new ArgumentParser(args);
     Path path = parser.getPath("-path");
+    
+    
+    if(path == null && !parser.hasFlag("-index")) {
+    	return;
+    }else if(path == null && parser.hasFlag("-index") && !parser.hasValue("-index")){
+    	Path output = Path.of("index.json");
+    	try {
+			Files.createFile(output);
+		} catch (IOException e) {
+			return;
+		}
+    }
     
     
     //Initialize the InvertedIndex
@@ -45,7 +58,7 @@ public class Driver {
     
     //load files into the InvertedIndex and output to the necessary location
     try {
-		List<Path> listPaths = TextFileFinder.list(path.normalize());
+		List<Path> listPaths = TextFileFinder.list(path);
 		System.out.println(listPaths);
 	    for(Path filePath: listPaths) {
 	    	System.out.println("File Path: " + filePath);
@@ -56,18 +69,19 @@ public class Driver {
 	    /*
 	     * print the Index in pretty JSON format
 	     */
-	    StringWriter writer = new StringWriter();
-	    System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
+	   // StringWriter writer = new StringWriter();
+	    //System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
 	    
 	    
 	    //Decide where to output Index if output file is provided
 	    
 	    if(parser.hasFlag("-index") && parser.hasValue("-index")) {            //output to provided -index file
-	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index").normalize());
+	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index"));
 	    }else if(parser.hasFlag("-index") && !parser.hasValue("-index")) {     //default output to index.json
-	    	SimpleJsonWriter.indexJsonToFile(index, Path.of("index.json").normalize());
+	    	SimpleJsonWriter.indexJsonToFile(index, Path.of("index.json"));
 	    }else {
 	    	//do nothing
+	    	return;
 	    }
 	   
 	    
