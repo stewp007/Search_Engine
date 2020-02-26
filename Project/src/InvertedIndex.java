@@ -34,9 +34,9 @@ public class InvertedIndex{
 	/**
 	 * Adds the word, path, and position to the index
 	 * 
-	 * @param String word the word to be added
-	 * @param String path the path the word was found in
-	 * @param int position the position in the file the word was found in
+	 * @param word the word to be added
+	 * @param path the path the word was found in
+	 * @param position the position in the file the word was found in
 	 * 
 	 * @return boolean if the Index was changed
 	 */
@@ -53,7 +53,7 @@ public class InvertedIndex{
 	/**
 	 * Adds the contents of a file to the Index
 	 * 
-	 * @param Path path the path to collect into the Index
+	 * @param path the path to collect into the Index
 	 * 
 	 * @return boolean 
 	 * 
@@ -106,6 +106,7 @@ public class InvertedIndex{
 	
 	/**
 	 * returns the WordIndex associated with the InvertedIndex
+	 * @param word the word to get value from
 	 * @return WordIndex
 	 */
 	public WordIndex getValue(String word){
