@@ -22,7 +22,7 @@ public class TextFileStemmer {
   /** The default stemmer algorithm used by this class. */
   public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
   
-  /*
+  /**
 	 * helper function
 	 * @param line the line to be stemmed
 	 * @param stemmer the stemmer to do the stemming

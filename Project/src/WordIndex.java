@@ -15,12 +15,12 @@ import java.util.TreeSet;
 public class WordIndex implements Index<String>{
 	
 	
-	/*
+	/**
 	 * WordIndex data type
 	 */
 	private TreeMap<String, TreeSet<Integer>> wordIndex;
 	
-	/*
+	/**
 	 * Initializes the WordIndex object
 	 * 
 	 */
@@ -29,7 +29,7 @@ public class WordIndex implements Index<String>{
 	}
 
 	
-	/*
+	/**
 	 * adds words and their positions to the WordIndex
 	 * 
 	 * @param element the element to be added
@@ -46,7 +46,7 @@ public class WordIndex implements Index<String>{
 		 }
 	}
 	
-	/*
+	/**
 	 * return the number of positions associated with the given element
 	 * @param element the element to get positions from
 	 * @return int the number of positions
@@ -57,7 +57,7 @@ public class WordIndex implements Index<String>{
 		return wordIndex.size();
 	}
 	
-	/*
+	/**
 	 * return the size of the WordIndex
 	 * 
 	 * @return int the number of positions
@@ -68,7 +68,7 @@ public class WordIndex implements Index<String>{
 		return wordIndex.size() != 0 ? wordIndex.size(): 0;
 	}
 
-	/*
+	/**
 	 * sees if the element is in the WordIndex
 	 * @param element
 	 * @return boolean whether the element was in the WordIndex
@@ -78,7 +78,7 @@ public class WordIndex implements Index<String>{
 		return wordIndex.containsKey(element);
 	}
 	
-	/*
+	/**
 	 * sees if the element is in the WordIndex with the given position
 	 * @param element
 	 * @param position
@@ -109,7 +109,7 @@ public class WordIndex implements Index<String>{
 		return wordIndex.toString();
 	}
 	
-	/*
+	/**
 	 * returns the size of the wordIndex
 	 * @return int size
 	 */
@@ -119,7 +119,7 @@ public class WordIndex implements Index<String>{
 		return wordIndex.size();
 	}
 	
-	/*
+	/**
 	 * returns the set of keys from the WordIndex
 	 * @return Set<Entry<String, TreeSet<Integer>>>
 	 * 

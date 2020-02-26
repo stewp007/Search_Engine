@@ -9,9 +9,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 
-/**
- * 
- */
+
 
 /**
  * @author stewartpowell
@@ -20,20 +18,20 @@ import java.util.TreeSet;
  */
 public class InvertedIndex{
 	
-	/*
+	/**
 	 * the data structure to be used
 	 */
 	
 	private TreeMap<String, WordIndex> invertedIndex;
 	
-	/*
+	/**
 	 * Instantiates the InvertedIndex object
 	 */
 	public InvertedIndex() {
 		this.invertedIndex = new TreeMap<>();
 	}
 	
-	/*
+	/**
 	 * Adds the word, path, and position to the index
 	 * 
 	 * @param String word the word to be added
@@ -52,7 +50,7 @@ public class InvertedIndex{
 		
 	}
 	
-	/*
+	/**
 	 * Adds the contents of a file to the Index
 	 * 
 	 * @param Path path the path to collect into the Index
@@ -98,7 +96,7 @@ public class InvertedIndex{
 		return true;
 	}
 	
-	/*
+	/**
 	 * returns an unmodifiable collection of the keys of the Index
 	 * @return Collection<String>
 	 */
@@ -106,7 +104,7 @@ public class InvertedIndex{
 		return Collections.unmodifiableSet(invertedIndex.keySet());
 	}
 	
-	/*
+	/**
 	 * returns the WordIndex associated with the InvertedIndex
 	 * @return WordIndex
 	 */
@@ -116,7 +114,7 @@ public class InvertedIndex{
 		
 	}
 	
-	/*
+	/**
 	 * returns the size of the InvertedIndex
 	 * @return int size of the index
 	 */
