@@ -1,6 +1,4 @@
 import java.io.IOException;
-//import java.io.StringWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -44,6 +42,8 @@ public class Driver {
     InvertedIndex index = new InvertedIndex();
     
     
+    
+    //decide default index and path options
     if(path == null && !parser.hasFlag("-index")) {
     	return;
     }else if(path == null && parser.hasFlag("-index") && !parser.hasValue("-index")){
@@ -63,18 +63,12 @@ public class Driver {
     //load files into the InvertedIndex and output to the necessary location
     try {
 		List<Path> listPaths = TextFileFinder.list(path);
-		System.out.println(listPaths);
+		//System.out.println(listPaths);   used for testing
 	    for(Path filePath: listPaths) {
 	    	System.out.println("File Path: " + filePath);
-	    	index.addFromFile(path);
+	    	index.addFromFile(filePath);
 	    	
 	    }
-	    
-	    /*
-	     * print the Index in pretty JSON format
-	     */
-	   // StringWriter writer = new StringWriter();
-	    //System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
 	    
 	    
 	    //Decide where to output Index if output file is provided

@@ -62,6 +62,8 @@ public class InvertedIndex{
 	 */
 	
 	public boolean addFromFile(Path path) {
+		
+		//System.out.println("Add From file path: " + path.toString()); used for testing
 		int filePosition = 0;
 		int linePosition = 0;
 		
@@ -84,7 +86,7 @@ public class InvertedIndex{
 					linePosition = 0;
 					for(String allWord: allStems) {
 						linePosition++;
-						//filePosition += linePosition;
+						
 						if(uniqueWord.equals(allWord)) {
 							this.add(uniqueWord, path.toString(), filePosition + linePosition);
 						}

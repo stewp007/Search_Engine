@@ -79,18 +79,6 @@ public class TextFileFinder {
     return find(start).collect(Collectors.toList());
   }
   
-  
-  /**
-   * returns whether the path ends in .txt or .text
-   * @param path
-   * @return
-   */
-  
-  public static boolean fileEndsWith(Path path) {
-	  return isText.test(path);
-	  
-  }
-
   /**
    * Demonstrates usage of this class.
    *
