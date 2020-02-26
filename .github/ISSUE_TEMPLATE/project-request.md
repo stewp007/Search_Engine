@@ -18,7 +18,7 @@ The **Last Request** [should link to the issue](https://help.github.com/en/githu
 #### Project Command
 
 ```
-/home/public/cs212/project --user GITHUB_USER --org GITHUB_ORG PROJECT_VERSION
+/home/public/cs212/project --user stewp007 --org usf-cs212-2020 v1.0.2 PROJECT_VERSION
 ```
 
 #### Request Type
