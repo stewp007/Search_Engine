@@ -172,7 +172,7 @@ public class ArgumentParser {
 	  if(getString(flag) == null) {
 		  return null;
 	  }
-	  return Path.of(getString(flag));
+	  return Path.of(getString(flag)).normalize();
     
     
   }

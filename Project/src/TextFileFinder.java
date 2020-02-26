@@ -59,7 +59,7 @@ public class TextFileFinder {
    * @see Integer#MAX_VALUE
    */
   public static Stream<Path> find(Path start) throws IOException {
-    Stream<Path> fileStream = Files.find(start, Integer.MAX_VALUE, isTextWithAttribute);
+    Stream<Path> fileStream = Files.find(start, Integer.MAX_VALUE, isTextWithAttribute, FileVisitOption.FOLLOW_LINKS);
     		
     return fileStream;
     
@@ -77,6 +77,18 @@ public class TextFileFinder {
   public static List<Path> list(Path start) throws IOException {
     // THIS METHOD IS PROVIDED FOR YOU DO NOT MODIFY
     return find(start).collect(Collectors.toList());
+  }
+  
+  
+  /**
+   * returns whether the path ends in .txt or .text
+   * @param path
+   * @return
+   */
+  
+  public static boolean fileEndsWith(Path path) {
+	  return isText.test(path);
+	  
   }
 
   /**

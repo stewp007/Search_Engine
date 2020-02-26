@@ -29,7 +29,7 @@ public class Driver {
     
     
     //Check if enough arguments are provided
-    if(args.length <= 1) {
+    if(args.length < 1) {
     	System.out.println("Please provide necessary arguments.");
     	return;
     }
@@ -39,20 +39,24 @@ public class Driver {
     Path path = parser.getPath("-path");
     
     
+    
+    //Initialize the InvertedIndex
+    InvertedIndex index = new InvertedIndex();
+    
+    
     if(path == null && !parser.hasFlag("-index")) {
     	return;
     }else if(path == null && parser.hasFlag("-index") && !parser.hasValue("-index")){
     	Path output = Path.of("index.json");
     	try {
-			Files.createFile(output);
-		} catch (IOException e) {
+			SimpleJsonWriter.indexJsonToFile(index, output);
 			return;
+		} catch (IOException e) {
+			System.out.println("error writing to default file");
 		}
     }
     
     
-    //Initialize the InvertedIndex
-    InvertedIndex index = new InvertedIndex();
     
     
     
