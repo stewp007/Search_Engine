@@ -161,9 +161,11 @@ public class SimpleJsonWriter {
    * allows this method to be used for any type of map with any type of nested collection of integer
    * objects.
    *
-   * @param elements the elements to write
+   * @param InvertedIndex index the index to convert to JSON
    * @param writer the writer to use
    * @param level the initial indent level
+   * 
+   * @return String the index converted to JSON formatted string
    * @throws IOException if an IO error occurs
    */
   public static String indexToJson(InvertedIndex index,

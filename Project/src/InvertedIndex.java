@@ -16,16 +16,32 @@ import java.util.TreeSet;
 /**
  * @author stewartpowell
  *
+ *This is the InvertedIndex data structure used for USF CS212 Project 1
  */
 public class InvertedIndex{
 	
+	/*
+	 * the data structure to be used
+	 */
+	
 	private TreeMap<String, WordIndex> invertedIndex;
 	
-	
+	/*
+	 * Instantiates the InvertedIndex object
+	 */
 	public InvertedIndex() {
 		this.invertedIndex = new TreeMap<>();
 	}
 	
+	/*
+	 * Adds the word, path, and position to the index
+	 * 
+	 * @param String word the word to be added
+	 * @param String path the path the word was found in
+	 * @param int position the position in the file the word was found in
+	 * 
+	 * @return boolean if the Index was changed
+	 */
 	public boolean add(String word, String path, int position) {
 		if(invertedIndex.putIfAbsent(word, new WordIndex()) == null) {
 			//invertedIndex.put(word, new WordIndex());
@@ -35,6 +51,16 @@ public class InvertedIndex{
 		}
 		
 	}
+	
+	/*
+	 * Adds the contents of a file to the Index
+	 * 
+	 * @param Path path the path to collect into the Index
+	 * 
+	 * @return boolean 
+	 * 
+	 * @see add(String word, String path, int position)
+	 */
 	
 	public boolean addFromFile(Path path) {
 		int filePosition = 0;
@@ -72,16 +98,28 @@ public class InvertedIndex{
 		return true;
 	}
 	
-	
+	/*
+	 * returns an unmodifiable collection of the keys of the Index
+	 * @return Collection<String>
+	 */
 	public Collection<String> getElements() {
 		return Collections.unmodifiableSet(invertedIndex.keySet());
 	}
 	
+	/*
+	 * returns the WordIndex associated with the InvertedIndex
+	 * @return WordIndex
+	 */
 	public WordIndex getValue(String word){
 		
 		return invertedIndex.get(word);
 		
 	}
+	
+	/*
+	 * returns the size of the InvertedIndex
+	 * @return int size of the index
+	 */
 	
 	public int size() {
 		return invertedIndex.size();
