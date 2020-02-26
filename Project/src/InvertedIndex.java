@@ -2,9 +2,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 
 /**
@@ -35,14 +37,25 @@ public class InvertedIndex{
 	}
 	
 	public boolean addFromFile(Path path) {
-		int position = 0;
+		int position = 1;
 		try(BufferedReader reader = Files.newBufferedReader(path)){
 			  String line = null;
 			  while((line = reader.readLine()) != null) {
-				  position ++;
-				  String[] splitWords = TextParser.parse(line);
-				  for(String word: splitWords) {
-					  this.add(word, path.toString(), position);
+				  
+				  TreeSet<String> uniqueStems = TextFileStemmer.uniqueStems(line);
+				  ArrayList<String> allStems = TextFileStemmer.listStems(line);
+				  System.out.println("unique stems: "+ uniqueStems);
+				  System.out.println("All stems: " + allStems);
+				  for(String uniqueWord: uniqueStems) {
+					  for(String allWord: allStems) {
+						  
+						  if(uniqueWord.equals(allWord)) {
+							  position++;
+							  this.add(uniqueWord, path.toString(), position);
+						  }
+						 
+					  }
+					  
 				  }
 			  }
 		  }catch(IOException e) {

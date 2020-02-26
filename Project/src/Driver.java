@@ -3,7 +3,6 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,32 +26,40 @@ public class Driver {
     // store initial start time
     Instant start = Instant.now();
     
+    
+    //Check if enough arguments are provided
     if(args.length <= 1) {
     	System.out.println("Please provide necessary arguments.");
     	System.exit(1);;
     }
-
-    System.out.println(Arrays.toString(args));
     
+    //parse arguments into a Map
     ArgumentParser parser = new ArgumentParser(args);
-    System.out.println("Argument Map: " + parser.toString());
     Path path = parser.getPath("-path");
     
     
+    //Initialize the InvertedIndex
     InvertedIndex index = new InvertedIndex();
     
+    
+    
+    //load files into the InvertedIndex and output to the necessary location
     try {
-		List<Path> listPaths = TextFileFinder.list(path);
-		
+		List<Path> listPaths = TextFileFinder.list(path.normalize());
+		System.out.println(listPaths);
 	    for(Path filePath: listPaths) {
 	    	System.out.println("File Path: " + filePath);
 	    	index.addFromFile(path);
 	    	
 	    }
-	    System.out.println(index);
+	    /*
+	     * print the Index in pretty JSON format
+	     * 
 	    StringWriter writer = new StringWriter();
-	    
 	    System.out.println(SimpleJsonWriter.indexToJson(index, writer, 0));
+	    */
+	    
+	    //Decide where to output Index if output file is provided
 	    
 	    if(parser.hasFlag("-index") && parser.hasValue("-index")) {            //output to provided -index file
 	    	SimpleJsonWriter.indexJsonToFile(index, parser.getPath("-index"));

@@ -27,7 +27,7 @@ public class TextFileFinder {
    * @see Files#walk(Path, FileVisitOption...)
    */
   
-  public static final Predicate<Path> isText = (path) -> Files.isRegularFile(path) ? path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text") : false ;
+  public static final Predicate<Path> isText = (path) -> Files.isRegularFile(path) && !Files.isDirectory(path) ? path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text") : false ;
 
   /**
    * A lambda function that returns true if the path is a file that ends in a .txt or .text
@@ -59,7 +59,7 @@ public class TextFileFinder {
    * @see Integer#MAX_VALUE
    */
   public static Stream<Path> find(Path start) throws IOException {
-    Stream<Path> fileStream = Files.walk(start, Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS).filter(isText);
+    Stream<Path> fileStream = Files.find(start, Integer.MAX_VALUE, isTextWithAttribute);
     		
     return fileStream;
     

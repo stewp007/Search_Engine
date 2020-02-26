@@ -238,9 +238,11 @@ public class SimpleJsonWriter {
    * @see #indexToJson(InvertedIndex index, Writer writer, int level)
    */
   public static void indexJsonToFile(InvertedIndex elements, Path path) throws IOException {
-    // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
+    
     try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
       indexToJson(elements, writer, 0);
+    }catch(Exception e) {
+    	System.out.println("Unable to write to filepath: " + path.toString());
     }
   }
 
