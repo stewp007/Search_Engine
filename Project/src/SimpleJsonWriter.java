@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 
+// TODO Use the more efficient iterator approach and reuse methods where possible
+
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines are used to
  * separate elements and nested elements are indented.
@@ -169,7 +171,7 @@ public class SimpleJsonWriter {
    * @throws IOException if an IO error occurs
    */
   public static String indexToJson(InvertedIndex index,
-      Writer writer, int level) throws IOException {
+      Writer writer, int level) throws IOException { // TODO Want code that works for anything that uses the same nested map structure
     
 	  
 	  writer.write("{\n");

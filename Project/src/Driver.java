@@ -4,6 +4,36 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+// TODO Remove old TODO comments when done.
+
+// TODO Need to address all the warnings (4 javadoc).
+
+/*
+ * TODO Simplify a little bit
+ * 
+ * ArgumentParser parser = new ArgumentParser(args);
+ * InvertedIndex index = new InvertedIndex();
+ * 
+ * if (parser.hasFlag("-path")) {
+ *  Path path = parser.getPath("-path");
+ *  
+ *  try {
+ *      someMethodHere(path, index);
+ *  }
+ *  catch ( ) {
+ *      Unable to build the inverted index from path: + path
+ *  }
+ * }
+ * 
+ * if (...index) {
+ * 
+ * }
+ */
+
+/*
+ * TODO Exception output to the user should be both informative and user friendly such that the user
+ * can re-run the code without the same problem.
+ */
 
 /**
  * Class responsible for running this project based on the provided command-line arguments. See the
@@ -96,5 +126,11 @@ public class Driver {
     System.out.printf("Elapsed: %f seconds%n", seconds);
   }
 
+  // TODO Try to be consistent and clean up formatting (including blank lines)
+  // TODO Reduce amount of debug output to the console
  
+  /*
+   * TODO 
+   * 1) Move any kind of file or string parsing or "building" code outside of inverted index.
+   */
 }
