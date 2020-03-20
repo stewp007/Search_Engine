@@ -168,13 +168,10 @@ public class ArgumentParser {
    * @see Path#of(String, String...)
    */
   public Path getPath(String flag) {
-    
 	  if(getString(flag) == null) {
 		  return null;
 	  }
 	  return Path.of(getString(flag)).normalize();
-    
-    
   }
 
   /**
@@ -210,7 +207,6 @@ public class ArgumentParser {
   public static void main(String[] args) {
     // Modify as needed to debug code
     var map = new ArgumentParser(args);
-    
     System.out.println(map);
   }
 }

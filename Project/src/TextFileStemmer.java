@@ -123,7 +123,7 @@ public class TextFileStemmer {
 			  
 		  }
 	  }catch(IOException e) {
-		  System.out.println("Error reading file");
+		  System.out.println("Error reading from file: "+ inputFile);
 		  return null;
 	  }
 	  return fileSet;
@@ -148,7 +148,7 @@ public class TextFileStemmer {
 			  fileArray.addAll(listStems(line)); 
 		  }
 	  }catch(IOException e) {
-		  System.out.println("Error reading file");
+		  System.out.println("Error reading from file: "+ inputFile);
 		  return null;
 	  }
 	  return fileArray;

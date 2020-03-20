@@ -51,7 +51,6 @@ public class WordIndex implements Index<String>{
 	 * @param element the element to get positions from
 	 * @return int the number of positions
 	 */
-
 	@Override
 	public int numPositions(String element) {
 		return wordIndex.size();
@@ -62,7 +61,6 @@ public class WordIndex implements Index<String>{
 	 * 
 	 * @return int the number of positions
 	 */
-
 	@Override
 	public int numElements() {
 		return wordIndex.size() != 0 ? wordIndex.size(): 0;
@@ -84,7 +82,6 @@ public class WordIndex implements Index<String>{
 	 * @param position
 	 * @return boolean whether the element and position was in the WordIndex
 	 */
-
 	@Override
 	public boolean contains(String element, int position) {
 		
@@ -113,9 +110,7 @@ public class WordIndex implements Index<String>{
 	 * returns the size of the wordIndex
 	 * @return int size
 	 */
-
 	public int size() {
-		
 		return wordIndex.size();
 	}
 	
@@ -124,28 +119,8 @@ public class WordIndex implements Index<String>{
 	 * @return Set<Entry<String, TreeSet<Integer>>>
 	 * 
 	 */
-
 	public  Set<Entry<String, TreeSet<Integer>>> entrySet() {
-		
 		return wordIndex.entrySet();
 	}
-	
-	
-	/*
-	
-	public static void main(String [] args) {
-		WordIndex index =  new WordIndex();
-		
-		
-		index.add("hello", 1);
-		index.add("hello", 2);
-		index.add("hello", 3);
-		index.add("world", 7);
-		index.add("world", 3);
-		index.add("hello", 1);
-		
-		System.out.println(index);
-	}*/
-  
 
 }

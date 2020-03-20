@@ -48,12 +48,8 @@ public class SimpleJsonWriter {
 			  indent(input.next()+"\n", writer, 1);
 		  }
 		  c++;
-		  
 	  }
 	  writer.write("]");
-	  
-    
-    
   }
 
   /**
@@ -173,7 +169,6 @@ public class SimpleJsonWriter {
   public static String indexToJson(InvertedIndex index,
       Writer writer, int level) throws IOException { // TODO Want code that works for anything that uses the same nested map structure
     
-	  
 	  writer.write("{\n");
 	  level++;
 	  int size = index.size();
@@ -202,34 +197,23 @@ public class SimpleJsonWriter {
 				  }else {
 					 indent(iterator.next()+"\n", writer, level); 
 				  }
-				  
 			  }
 			  level--;
 			  if(y <= numValues -1) {
 				  indent("],\n", writer, level);
 			  }else {
 				  indent("]\n", writer, level);
-			  }
-			  
-			  
+			  } 
 		  }
 		  level --;
-		  
 		  if(x <= size -1) {
 			  indent("},\n", writer, level);
 		  }else {
 			  indent("}\n", writer, level); 
 		  }
-		 
-		  
-		  
-  
 	  }
-	  
 	  writer.write("}");
 	  return writer.toString();
-	  
-	  
   }
   
   /**
