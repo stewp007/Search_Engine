@@ -17,6 +17,9 @@ import java.util.TreeSet;
  */
 public class FileHandler{
 	
+	/**
+	 * Class Member to reference the index
+	 */
 	
 	private final InvertedIndex index;
 	
