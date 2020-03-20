@@ -1,6 +1,8 @@
 import java.util.Collection;
 import java.util.Collections;
 
+// TODO Remove from project
+
 /**
  * An index to store elements and the locations those elements were found.
  *

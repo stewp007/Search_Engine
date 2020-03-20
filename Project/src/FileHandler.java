@@ -35,7 +35,8 @@ public class FileHandler{
 	 * Searches through files starting at the given Path
 	 * @param path
 	 */
-	public void handleFiles(Path path) {
+	public void handleFiles(Path path) { // TODO throws IOException
+	  // TODO Remove the try/catch
 	   try {
 			List<Path> listPaths = TextFileFinder.list(path);
 		    for(Path filePath: listPaths) {
@@ -60,6 +61,14 @@ public class FileHandler{
 		try(BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)){
 			String line;
 			while((line = reader.readLine()) != null) {
+			  /*
+			   * TODO Start with the easy and general solution... but then
+			   * see if there is a way to optimize the efficiency.
+			   * 
+			   * Create 1 stemmer object per FILE
+			   * Call TextParser.parse here
+			   * Loop through and stem, then add immediately to the index
+			   */
 				TreeSet<String> uniqueStems = TextFileStemmer.uniqueStems(line);
 				ArrayList<String> allStems = TextFileStemmer.listStems(line); 
 				for(String uniqueWord: uniqueStems) {
@@ -73,7 +82,7 @@ public class FileHandler{
 				}
 				filePosition += allStems.size(); 
 			}
-		}catch(IOException e) {
+		}catch(IOException e) { // TODO Remove catch block
 			System.out.println("Error adding from file");
 			return false;
 		}

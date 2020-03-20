@@ -26,7 +26,7 @@ public class TextFileFinder {
    * @see Path#getFileName()
    * @see Files#walk(Path, FileVisitOption...)
    */
-  
+  // TODO Try to call  path.toString().toLowerCase() and reuse it
   public static final Predicate<Path> isText = (path) -> Files.isRegularFile(path) && !Files.isDirectory(path) ? path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text") : false ;
 
   /**
