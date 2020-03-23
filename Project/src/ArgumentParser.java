@@ -50,7 +50,7 @@ public class ArgumentParser {
     	if(isFlag(args[i])) {
     		currFlag = args[i];
     		map.put(currFlag, null);
-    	}else {
+    	}else { // TODO else if
     		if(currFlag != null) {
     			map.putIfAbsent(currFlag, args[i]);
     		}
@@ -72,7 +72,7 @@ public class ArgumentParser {
    * @see Character#isDigit(char)
    */
   public static boolean isFlag(String arg) {
-   
+   // TODO return arg == null|| !arg.startsWith("-") || arg.length() < 2 || Character.isDigit(arg.charAt(1)));
     if(arg == null|| !arg.startsWith("-") || arg.length() < 2 || Character.isDigit(arg.charAt(1))) {
     	return false;
     }
@@ -122,6 +122,7 @@ public class ArgumentParser {
    * @return {@code true} if the flag is mapped to a non-null value
    */
   public boolean hasValue(String flag) {
+    // TODO Return condition
     if(map.get(flag)!= null) {
     	return true;
     }
@@ -204,7 +205,7 @@ public class ArgumentParser {
    *
    * @param args the command-line arguments to parse
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) { // TODO Remove old main methods
     // Modify as needed to debug code
     var map = new ArgumentParser(args);
     System.out.println(map);

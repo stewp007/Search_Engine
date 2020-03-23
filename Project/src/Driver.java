@@ -3,6 +3,9 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
+// TODO Still seeing 5 warnings---use Piazza so we have the same config.
+// TODO Clean up old TODO comments (use the "Tasks" view in Eclipse)
+
 /**
  * Class responsible for running this project based on the provided command-line arguments. See the
  * README for details.
@@ -40,9 +43,16 @@ public class Driver {
     	if(path != null) {
     		handler.handleFiles(path);
     	}
-    	
+    	/*
+    	 * TODO
+    	 * else {
+    	 *     warn the user they forgot the value
+    	 * }
+    	 */
     }
+    
     if(parser.hasFlag("-index")) {
+        // TODO Path output = parser.getPath("-index", Path.of("index.json"))
     	Path output;
     	if(parser.hasValue("-index")) {
     		output = parser.getPath("-index");

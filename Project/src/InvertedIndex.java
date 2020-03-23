@@ -1,21 +1,22 @@
 import java.util.Collection;
 import java.util.Collections;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 
 
 
 /**
- * @author stewartpowell
+ * This is the InvertedIndex data structure used for USF CS212 Project 1
  *
- *This is the InvertedIndex data structure used for USF CS212 Project 1
+ * @author stewartpowell
  */
 public class InvertedIndex{
 	
 	/**
 	 * the data structure to be used
 	 */
-	
+	// private TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
 	private TreeMap<String, WordIndex> invertedIndex;
 	
 	/**
@@ -74,7 +75,13 @@ public class InvertedIndex{
 		
 	}
 
-
+/*
+ * TODO get/contains/size methods for each level of nesting
+ * 
+ * contains(String word) --> key in your inverted index
+ * contains(String word, String location) --> get the word, is the location a key in the inner map
+ * contains(String word, String location, int position)
+ */
 	
 	
 	

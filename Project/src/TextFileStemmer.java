@@ -18,6 +18,7 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @see TextParser
  */
 public class TextFileStemmer {
+  // TODO Mix of tabs and spaces --- see Piazza for how to configure Eclipse
 
   /** The default stemmer algorithm used by this class. */
   public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
@@ -28,11 +29,10 @@ public class TextFileStemmer {
 	 * @param stemmer the stemmer to do the stemming
 	 * @param container the container used to add the words to
 	 */
-
   private static void stemIntoContainer(String line, Stemmer stemmer, Collection<String> container) {
 	  String [] splitWords = TextParser.parse(line);
 	  for(String word: splitWords) {
-	    container.add(stemmer.stem(word).toString());	
+	    container.add(stemmer.stem(word).toString());
 	  }
   }
 
@@ -114,15 +114,15 @@ public class TextFileStemmer {
    */
   public static TreeSet<String> uniqueStems(Path inputFile) throws IOException {
 	  TreeSet<String> fileSet = new TreeSet<>();
-	  
+	  // TODO Create stemmer object up here
 	  try(BufferedReader reader = Files.newBufferedReader(inputFile)){
 		  String line = null;
 		  while((line = reader.readLine()) != null) {
-			  
+			  // TODO stemIntoContainer(line, stemmer, fileSet);
 			  fileSet.addAll(uniqueStems(line));
 			  
 		  }
-	  }catch(IOException e) {
+	  }catch(IOException e) { // TODO Remove catch block
 		  System.out.println("Error reading from file: "+ inputFile);
 		  return null;
 	  }
@@ -142,6 +142,7 @@ public class TextFileStemmer {
    */
   public static ArrayList<String> listStems(Path inputFile) throws IOException {
 	  ArrayList<String> fileArray = new ArrayList<>();
+	  // TODO Same as other method
 	  try(BufferedReader reader = Files.newBufferedReader(inputFile)){
 		  String line = null;
 		  while((line = reader.readLine()) != null) {
