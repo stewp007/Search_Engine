@@ -74,7 +74,7 @@ public class FileHandler{
 				filePosition += allStems.size(); 
 			}
 		}catch(IOException e) {
-			System.out.println("Error adding from file");
+			System.out.println("Error adding to index from file: "+ path);
 			return false;
 		}
 			return true;
