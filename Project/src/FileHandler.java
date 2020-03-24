@@ -33,8 +33,8 @@ public class FileHandler {
     /**
      * Searches through files starting at the given Path
      * 
-     * @param path
-     * @throws IOException
+     * @param path the path of the file to handle
+     * @throws IOException throws if there is an issue opening the file
      */
     public void handleFiles(Path path) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
@@ -50,7 +50,7 @@ public class FileHandler {
      * @param path the path to collect into the Index
      * 
      * @return boolean
-     * @throws IOException
+     * @throws IOException Throws if there is an issue opening the file
      */
     public boolean handleIndex(Path path) throws IOException {
         int filePosition = 0;
