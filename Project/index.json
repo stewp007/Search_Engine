@@ -1,37 +1,16 @@
 {
-  "bitch" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
-      3
-    ]
-  },
-  "im" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
-      4
-    ]
-  },
-  "my" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
+  "hello": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
+      1,
+      3,
       5
     ]
   },
-  "shit" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
+  "world": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
+      2,
+      4,
       6
-    ]
-  },
-  "test" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
-      7
-    ]
-  },
-  "up" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
-      9
-    ]
-  },
-  "what" : {
-        "/Users/stewartpowell/Desktop/CS212/workspaces/project-stewp007/Project/src/testInput.txt" : [
-      10
     ]
   }
 }

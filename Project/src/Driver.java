@@ -4,11 +4,10 @@ import java.time.Duration;
 import java.time.Instant;
 
 // TODO Still seeing 5 warnings---use Piazza so we have the same config.
-// TODO Clean up old TODO comments (use the "Tasks" view in Eclipse)
 
 /**
- * Class responsible for running this project based on the provided command-line arguments. See the
- * README for details.
+ * Class responsible for running this project based on the provided command-line
+ * arguments. See the README for details.
  *
  * @author CS 212 Software Development
  * @author University of San Francisco
@@ -16,59 +15,57 @@ import java.time.Instant;
  */
 public class Driver {
 
-  /**
-   * Initializes the classes necessary based on the provided command-line arguments. This includes
-   * (but is not limited to) how to build or search an inverted index.
-   *
-   * @param args flag/value pairs used to start this program
-   */
-  public static void main(String[] args) {
-    // store initial start time
-    Instant start = Instant.now();
-    
-    //Check if enough arguments are provided
-    if(args.length < 1) {
-    	System.out.println("Please provide necessary arguments.");
-    	return;
+    /**
+     * Initializes the classes necessary based on the provided command-line
+     * arguments. This includes (but is not limited to) how to build or search an
+     * inverted index.
+     *
+     * @param args flag/value pairs used to start this program
+     */
+    public static void main(String[] args) {
+        // store initial start time
+        Instant start = Instant.now();
+
+        // Check if enough arguments are provided
+        if (args.length < 1) {
+            System.out.println("Please provide necessary arguments.");
+            return;
+        }
+        // parse arguments into a Map
+        ArgumentParser parser = new ArgumentParser(args);
+        // Initialize the InvertedIndex
+        InvertedIndex index = new InvertedIndex();
+        // Initialize FileHandler
+        FileHandler handler = new FileHandler(index);
+
+        if (parser.hasFlag("-path")) {
+            Path path = parser.getPath("-path");
+            if (path != null) {
+                try {
+                    handler.handleFiles(path);
+                } catch (IOException e) {
+                    System.out.println("Error handling file: " + path);
+                }
+            } else {
+                System.out.println("Error: Forgot a value for -path");
+            }
+        }
+
+        if (parser.hasFlag("-index")) {
+            Path output = parser.getPath("-index", Path.of("index.json"));
+            if (parser.hasValue("-index")) {
+                output = parser.getPath("-index");
+            }
+            try {
+                SimpleJsonWriter.indexJsonToFile(index, output);
+                return;
+            } catch (IOException e) {
+                System.out.println("Error writing to specified file: " + output);
+            }
+        }
+        // calculate time elapsed and output
+        Duration elapsed = Duration.between(start, Instant.now());
+        double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
+        System.out.printf("Elapsed: %f seconds%n", seconds);
     }
-    //parse arguments into a Map
-    ArgumentParser parser = new ArgumentParser(args);
-    //Initialize the InvertedIndex
-    InvertedIndex index = new InvertedIndex();
-    //Initialize FileHandler
-    FileHandler handler = new FileHandler(index);
-    
-    if(parser.hasFlag("-path")) {
-    	Path path = parser.getPath("-path");
-    	if(path != null) {
-    		handler.handleFiles(path);
-    	}
-    	/*
-    	 * TODO
-    	 * else {
-    	 *     warn the user they forgot the value
-    	 * }
-    	 */
-    }
-    
-    if(parser.hasFlag("-index")) {
-        // TODO Path output = parser.getPath("-index", Path.of("index.json"))
-    	Path output;
-    	if(parser.hasValue("-index")) {
-    		output = parser.getPath("-index");
-    	}else {
-    		output = Path.of("index.json");
-    	}
-    	try {
-			SimpleJsonWriter.indexJsonToFile(index, output);
-			return;
-		} catch (IOException e) {
-			System.out.println("Error writing to specified file: "+ output);
-		}
-    }
-    // calculate time elapsed and output
-    Duration elapsed = Duration.between(start, Instant.now());
-    double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
-    System.out.printf("Elapsed: %f seconds%n", seconds);
-  }
 }
