@@ -39,6 +39,7 @@ public class FileHandler {
     public void handleFiles(Path path) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
         for (Path filePath : listPaths) {
+            System.out.println("FILEpath: " + filePath);
             handleIndex(filePath);
         }
     }

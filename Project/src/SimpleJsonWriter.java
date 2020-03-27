@@ -6,8 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 // TODO Use the more efficient iterator approach and reuse methods where possible
 
@@ -34,20 +35,19 @@ public class SimpleJsonWriter {
      */
     public static void asArray(Collection<Integer> elements, Writer writer, int level) throws IOException {
 
-        Iterator<Integer> input = elements.iterator();
-        int c = 0;
-        int size = elements.size();
-        writer.write("[\n");
-        while (input.hasNext()) {
-            if (size > 1 && c < size - 1) {
-                indent(input.next() + ",\n", writer, 1);
+        var input = elements.iterator();
 
-            } else {
-                indent(input.next() + "\n", writer, 1);
-            }
-            c++;
+        writer.write("[");
+        if (input.hasNext()) {
+            writer.write("\n");
+            indent(input.next(), writer, level + 1);
         }
-        writer.write("]");
+        while (input.hasNext()) {
+            writer.write(",\n");
+            indent(input.next(), writer, level + 1);
+        }
+        writer.write("\n");
+        indent("]", writer, level);
     }
 
     /**
@@ -153,6 +153,34 @@ public class SimpleJsonWriter {
     }
 
     /**
+     * @param entry
+     * @param writer
+     * @param level
+     * @throws IOException
+     */
+    public static void writeAsNestedEntry(Map.Entry<String, ? extends Collection<Integer>> entry, Writer writer,
+            int level) throws IOException {
+        quote(entry.getKey(), writer, level);
+        writer.write(": ");
+        asArray(entry.getValue(), writer, level);
+
+    }
+
+    /**
+     * @param entry
+     * @param writer
+     * @param level
+     * @throws IOException
+     */
+    public static void writeIndexToJson(Map.Entry<String, TreeMap<String, TreeSet<Integer>>> entry, Writer writer,
+            int level) throws IOException {
+        quote(entry.getKey(), writer, level);
+        writer.write(": ");
+        asNestedArray(entry.getValue(), writer, level);
+
+    }
+
+    /**
      * Writes the elements as a pretty JSON object with a nested array. The generic
      * notation used allows this method to be used for any type of map with any type
      * of nested collection of integer objects.
@@ -165,44 +193,20 @@ public class SimpleJsonWriter {
     public static void asNestedArray(Map<String, ? extends Collection<Integer>> elements, Writer writer, int level)
             throws IOException {
 
-        int locIterations = 0;
-        int posIterations = 0;
         // int size = elements.size();
 
-        Iterator<String> locationIter = elements.keySet().iterator();
-        int numLocations = elements.keySet().size();
-        // level++;
+        var locationIter = elements.entrySet().iterator();
+        level++;
+        if (locationIter.hasNext()) {
+            writeAsNestedEntry(locationIter.next(), writer, level);
+        }
         while (locationIter.hasNext()) {
             // Print out String stuff
-            level++;
-            String location = locationIter.next();
-            // indent(writer, level);
-            quote(location, writer, level);
-            writer.write(": [\n");
-            Iterator<Integer> positionIter = elements.get(location).iterator();
-            int numPositions = elements.get(location).size();
-            while (positionIter.hasNext()) {
-                // Print out Integer Stuff
-                level++;
-                Integer position = positionIter.next();
-                indent(position.toString(), writer, level);
-                if (posIterations < numPositions - 1) {
-                    writer.write(",\n");
-                } else {
-                    writer.write("\n");
-                }
-                level--;
-                posIterations++;
-            }
+            writer.write(",\n");
+            writeAsNestedEntry(locationIter.next(), writer, level);
 
-            if (locIterations < numLocations - 1) {
-                indent("],\n", writer, level);
-            } else {
-                indent("]\n", writer, level);
-            }
-            locIterations++;
-            level--;
         }
+        writer.write("\n");
 
         /*
          * The generic notation:
@@ -227,53 +231,41 @@ public class SimpleJsonWriter {
      * @return String the index converted to JSON formatted string
      * @throws IOException if an IO error occurs
      */
-    public static String indexToJson(InvertedIndex index, Writer writer, int level) throws IOException { // TODO Want
-                                                                                                         // code that
-                                                                                                         // works for
-                                                                                                         // anything
-                                                                                                         // that uses
-                                                                                                         // the same
-                                                                                                         // nested map
-                                                                                                         // structure
-
-        writer.write("{\n");
-
-        int numWords = index.numWords();
-        int wordIterations = 0;
-        Iterator<String> words = index.getWords().iterator();
-        while (words.hasNext()) {
-            level++;
-            String word = words.next();
-            quote(word, writer, level);
-            writer.write(": {\n");
-            asNestedArray(index.getMap(word), writer, level++);
-            level--;
-            if (wordIterations < numWords - 1) {
-                indent("},\n", writer, level);
-            } else {
-                indent("}\n", writer, level);
-            }
-            wordIterations++;
-            level--;
+    public static String indexToJson(Map<String, TreeMap<String, TreeSet<Integer>>> index, Writer writer, int level)
+            throws IOException { // TODO Want
+        // code that
+        // works for
+        // anything
+        // that uses
+        // the same
+        // nested map
+        // structure
+        writer.write("{");
+        var locationIter = index.entrySet().iterator();
+        level++;
+        if (locationIter.hasNext()) {
+            writer.write("\n");
+            writeIndexToJson(locationIter.next(), writer, level);
         }
-        writer.write("}");
+        while (locationIter.hasNext()) {
+            // Print out String stuff
+            writer.write(",\n");
+            writeIndexToJson(locationIter.next(), writer, level);
+        }
+        writer.write("\n");
+        indent("}", writer, level - 1);
+        /*
+         * writer.write("{\n");
+         * 
+         * int numWords = index.numWords(); int wordIterations = 0; Iterator<String>
+         * words = index.getWords().iterator(); while (words.hasNext()) { level++;
+         * String word = words.next(); quote(word, writer, level);
+         * writer.write(": {\n"); asNestedArray(index.getMap(word), writer, level++);
+         * level--; if (wordIterations < numWords - 1) { indent("},\n", writer, level);
+         * } else { indent("}\n", writer, level); } wordIterations++; level--; }
+         * writer.write("}");
+         */
         return writer.toString();
-    }
-
-    /**
-     * Writes the the InvertedIndex as a pretty JSON object to file.
-     *
-     * @param elements the elements to write
-     * @param path     the file path to use
-     * @throws IOException if an IO error occurs
-     *
-     * @see #indexToJson(InvertedIndex index, Writer writer, int level)
-     */
-    public static void indexJsonToFile(InvertedIndex elements, Path path) throws IOException {
-
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            indexToJson(elements, writer, 0);
-        }
     }
 
     /**
@@ -353,6 +345,22 @@ public class SimpleJsonWriter {
         // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
         indent(writer, times);
         quote(element, writer);
+    }
+
+    /**
+     * @param index
+     * @param invertedIndex
+     * @param path
+     * @throws IOException
+     */
+    public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
+            throws IOException {
+        // TODO Auto-generated method stub
+
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            indexToJson(index, writer, 0);
+        }
+
     }
 
 }

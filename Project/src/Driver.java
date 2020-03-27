@@ -42,6 +42,7 @@ public class Driver {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
+                    System.out.println("Path: " + path);
                     handler.handleFiles(path);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
@@ -56,12 +57,9 @@ public class Driver {
             if (parser.hasValue("-index")) {
                 output = parser.getPath("-index");
             }
-            try {
-                SimpleJsonWriter.indexJsonToFile(index, output);
-                return;
-            } catch (IOException e) {
-                System.out.println("Error writing to specified file: " + output);
-            }
+            index.getIndex(output);
+            // SimpleJsonWriter.indexJsonToFile(output);
+            return;
         }
         // calculate time elapsed and output
         Duration elapsed = Duration.between(start, Instant.now());

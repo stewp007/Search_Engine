@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -15,33 +17,30 @@ public class InvertedIndex {
     /**
      * the data structure to be used
      */
-    private TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
+    private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
     // private TreeMap<String, WordIndex> invertedIndex;
 
     /**
      * Instantiates the InvertedIndex object
      */
     public InvertedIndex() {
-        this.invertedIndex = new TreeMap<>();
+        this.invertedIndex = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
     }
 
     /**
      * Adds the word, path, and position to the index
      * 
      * @param word     the word to be added
-     * @param path     the path the word was found in
+     * @param path     the path being added
      * @param position the position in the file the word was found in
      * 
      * @return boolean if the Index was changed
      */
     public boolean add(String word, String path, int position) {
-        if (invertedIndex.putIfAbsent(word, new TreeMap<String, TreeSet<Integer>>()) == null) {
-            return invertedIndex.get(word).putIfAbsent(path, new TreeSet<Integer>()) == null
-                    ? invertedIndex.get(word).get(path).add(position)
-                    : false;
-        } else {
-            return invertedIndex.get(word).get(path).add(position);
-        }
+        invertedIndex.putIfAbsent(word, new TreeMap<>());
+        invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
+        return invertedIndex.get(word).get(path).add(position);
+
     }
 
     /**
@@ -138,6 +137,18 @@ public class InvertedIndex {
      */
     public int numPositions(String word, String location) {
         return this.containsLocation(word, location) ? invertedIndex.get(word).get(location).size() : 0;
+    }
+
+    /**
+     * @param path
+     */
+    public void getIndex(Path path) {
+        try {
+            SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
