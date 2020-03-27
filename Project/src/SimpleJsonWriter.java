@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-// TODO Use the more efficient iterator approach and reuse methods where possible
-
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
  * are used to separate elements and nested elements are indented.
@@ -34,9 +32,7 @@ public class SimpleJsonWriter {
      * @throws IOException if an IO error occurs
      */
     public static void asArray(Collection<Integer> elements, Writer writer, int level) throws IOException {
-
         var input = elements.iterator();
-
         writer.write("[");
         if (input.hasNext()) {
             writer.write("\n");
@@ -162,11 +158,9 @@ public class SimpleJsonWriter {
      */
     public static void writeAsNestedEntry(Map.Entry<String, ? extends Collection<Integer>> entry, Writer writer,
             int level) throws IOException {
-        // writer.write("\n");
         quote(entry.getKey(), writer, level);
         writer.write(": ");
         asArray(entry.getValue(), writer, level);
-        // writer.write("\n}");
     }
 
     /**
@@ -183,7 +177,6 @@ public class SimpleJsonWriter {
         writer.write(": {\n");
         asNestedArray(entry.getValue(), writer, level);
         writer.write("}");
-
     }
 
     /**
@@ -198,31 +191,16 @@ public class SimpleJsonWriter {
      */
     public static void asNestedArray(Map<String, ? extends Collection<Integer>> elements, Writer writer, int level)
             throws IOException {
-
-        // int size = elements.size();
-
         var locationIter = elements.entrySet().iterator();
         level++;
         if (locationIter.hasNext()) {
             writeAsNestedEntry(locationIter.next(), writer, level);
         }
         while (locationIter.hasNext()) {
-            // Print out String stuff
             writer.write(",\n");
             writeAsNestedEntry(locationIter.next(), writer, level);
-
         }
         writer.write("\n");
-
-        /*
-         * The generic notation:
-         *
-         * Map<String, ? extends Collection<Integer>> elements
-         *
-         * ...may be confusing. You can mentally replace it with:
-         *
-         * HashMap<String, HashSet<Integer>> elements
-         */
     }
 
     /**
@@ -238,14 +216,7 @@ public class SimpleJsonWriter {
      * @throws IOException if an IO error occurs
      */
     public static String indexToJson(Map<String, TreeMap<String, TreeSet<Integer>>> index, Writer writer, int level)
-            throws IOException { // TODO Want
-        // code that
-        // works for
-        // anything
-        // that uses
-        // the same
-        // nested map
-        // structure
+            throws IOException {
         writer.write("{");
         var locationIter = index.entrySet().iterator();
         level++;
@@ -254,23 +225,11 @@ public class SimpleJsonWriter {
             writeIndexToJson(locationIter.next(), writer, level);
         }
         while (locationIter.hasNext()) {
-            // Print out String stuff
             writer.write(",\n");
             writeIndexToJson(locationIter.next(), writer, level);
         }
         writer.write("\n");
         indent("}", writer, level - 1);
-        /*
-         * writer.write("{\n");
-         * 
-         * int numWords = index.numWords(); int wordIterations = 0; Iterator<String>
-         * words = index.getWords().iterator(); while (words.hasNext()) { level++;
-         * String word = words.next(); quote(word, writer, level);
-         * writer.write(": {\n"); asNestedArray(index.getMap(word), writer, level++);
-         * level--; if (wordIterations < numWords - 1) { indent("},\n", writer, level);
-         * } else { indent("}\n", writer, level); } wordIterations++; level--; }
-         * writer.write("}");
-         */
         return writer.toString();
     }
 
