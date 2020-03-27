@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
+
 /**
  * Helper Class for CS 212 Projects
  * 
@@ -19,6 +21,9 @@ public class FileHandler {
      */
 
     private final InvertedIndex index;
+
+    /** The default stemmer algorithm used by this class. */
+    public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
     /**
      * Constructor for FileHandler Class
@@ -38,7 +43,6 @@ public class FileHandler {
     public void handleFiles(Path path) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
         for (Path filePath : listPaths) {
-            System.out.println("FILEpath: " + filePath);
             handleIndex(filePath);
         }
     }
@@ -57,22 +61,13 @@ public class FileHandler {
         int linePosition = 0;
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
-            TextFileStemmer stemmer = new TextFileStemmer();
+            SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
             while ((line = reader.readLine()) != null) {
-                /*
-                 * TODO Start with the easy and general solution... but then see if there is a
-                 * way to optimize the efficiency.
-                 * 
-                 * Create 1 stemmer object per FILE Call TextParser.parse here Loop through and
-                 * stem, then add immediately to the index
-                 */
-                ArrayList<String> allStems = TextFileStemmer.listStems(line);
+                ArrayList<String> allStems = TextFileStemmer.listStems(line, stemmer);
                 linePosition = 0;
                 for (String word : allStems) {
-
-                    if (this.index.add(word, path.toString(), filePosition + linePosition)) {
-                        linePosition++;
-                    }
+                    linePosition++;
+                    this.index.add(word, path.toString(), filePosition + linePosition);
                 }
                 filePosition += allStems.size();
             }

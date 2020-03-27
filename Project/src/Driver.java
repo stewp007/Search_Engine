@@ -3,8 +3,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
-// TODO Still seeing 5 warnings---use Piazza so we have the same config.
-
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -42,7 +40,6 @@ public class Driver {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    System.out.println("Path: " + path);
                     handler.handleFiles(path);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
@@ -58,8 +55,6 @@ public class Driver {
                 output = parser.getPath("-index");
             }
             handler.getIndexJson(index, output);
-            // index.getIndex(output);
-            // SimpleJsonWriter.indexJsonToFile(output);
             return;
         }
         // calculate time elapsed and output

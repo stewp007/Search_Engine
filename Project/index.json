@@ -1,14 +1,17 @@
 {
-  "aardvark":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/digits.txt": [
+  "aardvark": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/digits.txt": [
       1,
       2
     ]
-,
-  "alpaca":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/a/b/c/d/subdir.txt": [
+},
+  "alpaca": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/a/b/c/d/subdir.txt": [
       1
     ]
-,
-  "antelop":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/symbols.txt": [
+},
+  "antelop": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/symbols.txt": [
       1,
       2,
       3,
@@ -20,8 +23,9 @@
       9,
       10
     ]
-,
-  "axolotl":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "axolotl": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       7
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -31,12 +35,14 @@
       7,
       18
     ]
-,
-  "capybara":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/capital_extension.TXT": [
+},
+  "capybara": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/capital_extension.TXT": [
       1
     ]
-,
-  "echidna":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "echidna": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       10
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -46,53 +52,64 @@
       10,
       21
     ]
-,
-  "eight":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "eight": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       8
     ]
-,
-  "eighteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "eighteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       18
     ]
-,
-  "eleph":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/capitals.txt": [
+},
+  "eleph": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/capitals.txt": [
       1,
       2,
       3,
       4
     ]
-,
-  "eleven":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "eleven": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       11
     ]
-,
-  "fifteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "fifteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       15
     ]
-,
-  "five":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "five": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       5
     ]
-,
-  "four":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "four": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       4
     ]
-,
-  "fourteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "fourteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       14
     ]
-,
-  "hello":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
+},
+  "hello": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
       1,
       3,
       5
     ]
-,
-  "hidden":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/.txt/hidden.txt": [
+},
+  "hidden": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/.txt/hidden.txt": [
       1
     ]
-,
-  "lori":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "lori": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       4,
       5,
       6
@@ -110,8 +127,9 @@
       16,
       17
     ]
-,
-  "mongoos":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "mongoos": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       3
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -121,8 +139,9 @@
       3,
       14
     ]
-,
-  "narwhal":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "narwhal": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       8
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -132,16 +151,19 @@
       8,
       19
     ]
-,
-  "nine":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "nine": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       9
     ]
-,
-  "nineteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "nineteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       19
     ]
-,
-  "observ":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "observ": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       2,
       4,
       5,
@@ -154,16 +176,19 @@
       12,
       13
     ]
-,
-  "observa":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "observa": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       1
     ]
-,
-  "observacion":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "observacion": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       3
     ]
-,
-  "okapi":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "okapi": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       1,
       2
     ],
@@ -177,21 +202,25 @@
       12,
       13
     ]
-,
-  "one":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "one": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       1
     ]
-,
-  "perfor":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "perfor": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       14,
       15
     ]
-,
-  "perforc":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "perforc": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       16
     ]
-,
-  "perform":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
+},
+  "perform": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/words.tExT": [
       17,
       18,
       19,
@@ -201,8 +230,9 @@
       23,
       24
     ]
-,
-  "platypus":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "platypus": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       9
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -212,12 +242,14 @@
       9,
       20
     ]
-,
-  "practi":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
+},
+  "practi": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
       8
     ]
-,
-  "practic":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
+},
+  "practic": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
       1,
       2,
       3,
@@ -226,8 +258,9 @@
       6,
       7
     ]
-,
-  "practis":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
+},
+  "practis": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
       9,
       10,
       11,
@@ -236,29 +269,35 @@
       14,
       15
     ]
-,
-  "practition":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
+},
+  "practition": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/dir.txt/findme.Txt": [
       16,
       17
     ]
-,
-  "seven":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "seven": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       7
     ]
-,
-  "seventeen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "seventeen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       17
     ]
-,
-  "six":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "six": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       6
     ]
-,
-  "sixteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "sixteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       16
     ]
-,
-  "tarsier":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
+},
+  "tarsier": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals.text": [
       11
     ],
     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/animals_copy.text": [
@@ -268,35 +307,42 @@
       11,
       22
     ]
-,
-  "ten":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "ten": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       10
     ]
-,
-  "thirteen":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "thirteen": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       13
     ]
-,
-  "three":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "three": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       3
     ]
-,
-  "twelv":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "twelv": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       12
     ]
-,
-  "twenti":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "twenti": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       20
     ]
-,
-  "two":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
+},
+  "two": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/position.teXt": [
       2
     ]
-,
-  "world":     "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
+},
+  "world": {
+    "/Users/stewartpowell/Desktop/CS212/workspaces/project-tests/Project Tests/input/text/simple/hello.txt": [
       2,
       4,
       6
     ]
-
+}
 }

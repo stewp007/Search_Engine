@@ -362,8 +362,6 @@ public class SimpleJsonWriter {
      */
     public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
             throws IOException {
-        // TODO Auto-generated method stub
-
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             indexToJson(index, writer, 0);
         }

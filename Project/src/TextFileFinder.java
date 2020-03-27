@@ -29,9 +29,12 @@ public class TextFileFinder {
      * @see Files#walk(Path, FileVisitOption...)
      */
     // TODO Try to call path.toString().toLowerCase() and reuse it
-    public static final Predicate<Path> isText = (path) -> Files.isRegularFile(path) && !Files.isDirectory(path)
-            ? path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text")
-            : false;
+    public static final Predicate<Path> isText = (path) -> {
+        String strPath = path.toString().toLowerCase();
+        return Files.isRegularFile(path) && !Files.isDirectory(path)
+                ? strPath.endsWith(".txt") || strPath.endsWith(".text")
+                : false;
+    };
 
     /**
      * A lambda function that returns true if the path is a file that ends in a .txt
@@ -83,33 +86,5 @@ public class TextFileFinder {
     public static List<Path> list(Path start) throws IOException {
         // THIS METHOD IS PROVIDED FOR YOU DO NOT MODIFY
         return find(start).collect(Collectors.toList());
-    }
-
-    /**
-     * Demonstrates usage of this class.
-     *
-     * @param args unused
-     * @throws IOException if an I/O error occurs
-     */
-    public static void main(String[] args) throws IOException {
-        // TODO Modify or remove as needed to debug code.
-
-        String format = "%-25s: %b%n";
-
-        Path validText1 = Path.of("text", "simple", "hello.txt");
-        System.out.printf(format, validText1, isText.test(validText1));
-
-        Path validText2 = Path.of("text", "simple", "words.tExT");
-        System.out.printf(format, validText2, isText.test(validText2));
-
-        Path invalidText1 = Path.of("text", "simple", "no_extension");
-        System.out.printf(format, invalidText1, isText.test(invalidText1));
-
-        Path invalidText2 = Path.of("text", "simple", "dir.txt");
-        System.out.printf(format, invalidText2, isText.test(invalidText2));
-
-        Path simple = Path.of("text", "simple");
-        System.out.println();
-        System.out.println(list(simple));
     }
 }
