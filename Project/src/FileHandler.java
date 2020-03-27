@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * Helper Class for CS 212 Projects
@@ -58,6 +57,7 @@ public class FileHandler {
         int linePosition = 0;
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
+            TextFileStemmer stemmer = new TextFileStemmer();
             while ((line = reader.readLine()) != null) {
                 /*
                  * TODO Start with the easy and general solution... but then see if there is a
@@ -66,20 +66,31 @@ public class FileHandler {
                  * Create 1 stemmer object per FILE Call TextParser.parse here Loop through and
                  * stem, then add immediately to the index
                  */
-                TreeSet<String> uniqueStems = TextFileStemmer.uniqueStems(line);
                 ArrayList<String> allStems = TextFileStemmer.listStems(line);
-                for (String uniqueWord : uniqueStems) {
-                    linePosition = 0;
-                    for (String allWord : allStems) {
+                linePosition = 0;
+                for (String word : allStems) {
+
+                    if (this.index.add(word, path.toString(), filePosition + linePosition)) {
                         linePosition++;
-                        if (uniqueWord.equals(allWord)) {
-                            this.index.add(uniqueWord, path.toString(), filePosition + linePosition);
-                        }
                     }
                 }
                 filePosition += allStems.size();
             }
         }
         return true;
+    }
+
+    /**
+     * handles exceptions for getting the Json form of the index
+     * 
+     * @param index the invertedIndex to be turned into json form
+     * @param path  the output file
+     */
+    public void getIndexJson(InvertedIndex index, Path path) {
+        try {
+            index.getIndex(path);
+        } catch (IOException e) {
+            System.out.println("Error retrieving Json form of the Index.");
+        }
     }
 }

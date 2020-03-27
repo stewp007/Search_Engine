@@ -153,31 +153,36 @@ public class SimpleJsonWriter {
     }
 
     /**
-     * @param entry
-     * @param writer
-     * @param level
-     * @throws IOException
+     * Writes a nested entry into pretty json format
+     * 
+     * @param entry  the Map entry
+     * @param writer the writer to do the writign
+     * @param level  the level of Indentation
+     * @throws IOException throws an IOException
      */
     public static void writeAsNestedEntry(Map.Entry<String, ? extends Collection<Integer>> entry, Writer writer,
             int level) throws IOException {
-        writer.write("{\n");
+        // writer.write("\n");
         quote(entry.getKey(), writer, level);
         writer.write(": ");
         asArray(entry.getValue(), writer, level);
-        writer.write("}");
+        // writer.write("\n}");
     }
 
     /**
-     * @param entry
-     * @param writer
-     * @param level
-     * @throws IOException
+     * Writes the index into pretty Json format
+     * 
+     * @param entry  the index to be written
+     * @param writer the writer
+     * @param level  the level of indentation
+     * @throws IOException throws IOException
      */
     public static void writeIndexToJson(Map.Entry<String, TreeMap<String, TreeSet<Integer>>> entry, Writer writer,
             int level) throws IOException {
         quote(entry.getKey(), writer, level);
-        writer.write(": ");
+        writer.write(": {\n");
         asNestedArray(entry.getValue(), writer, level);
+        writer.write("}");
 
     }
 
@@ -349,10 +354,11 @@ public class SimpleJsonWriter {
     }
 
     /**
-     * @param index
-     * @param invertedIndex
-     * @param path
-     * @throws IOException
+     * Outputs the given index in Json form to the given Path
+     * 
+     * @param index the index to output
+     * @param path  the Path to output the Json to
+     * @throws IOException throws IOException
      */
     public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
             throws IOException {

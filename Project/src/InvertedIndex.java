@@ -140,15 +140,13 @@ public class InvertedIndex {
     }
 
     /**
-     * @param path
+     * Gets the pretty Json format of the Index
+     * 
+     * @param path the path to output the Json Index
+     * @throws IOException throws IOException
      */
-    public void getIndex(Path path) {
-        try {
-            SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void getIndex(Path path) throws IOException {
+        SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
     }
 
     @Override

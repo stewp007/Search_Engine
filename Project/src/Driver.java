@@ -57,7 +57,8 @@ public class Driver {
             if (parser.hasValue("-index")) {
                 output = parser.getPath("-index");
             }
-            index.getIndex(output);
+            handler.getIndexJson(index, output);
+            // index.getIndex(output);
             // SimpleJsonWriter.indexJsonToFile(output);
             return;
         }
