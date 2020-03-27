@@ -160,10 +160,11 @@ public class SimpleJsonWriter {
      */
     public static void writeAsNestedEntry(Map.Entry<String, ? extends Collection<Integer>> entry, Writer writer,
             int level) throws IOException {
+        writer.write("{\n");
         quote(entry.getKey(), writer, level);
         writer.write(": ");
         asArray(entry.getValue(), writer, level);
-
+        writer.write("}");
     }
 
     /**
