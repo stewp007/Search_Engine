@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+// TODO Clean up all the commented out code 
+
 /**
  * This is the InvertedIndex data structure used for USF CS212 Project 1
  *
@@ -52,6 +54,10 @@ public class InvertedIndex {
         return Collections.unmodifiableSet(invertedIndex.keySet());
     }
 
+    /*
+     * TODO This is still breaking encapsulation---no safe way to return
+     * nested data structures. Remove.
+     */
     /**
      * returns an Unmodifiable Map associated with the InvertedIndex
      * 
@@ -71,6 +77,12 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
+      /*
+       * TODO This code throws a null pointer exception if the word does not exist. 
+       * 
+       * if the word is in your index, return what you have.
+       * otherwise, return Collections.emptySet()
+       */
         return Collections.unmodifiableSet(invertedIndex.get(word).keySet());
     }
 
@@ -83,6 +95,7 @@ public class InvertedIndex {
      *         location
      */
     public Set<Integer> getPositions(String word, String location) {
+      // TODO Same issue as getLocations
         return Collections.unmodifiableSet(invertedIndex.get(word).get(location));
     }
 
@@ -152,7 +165,6 @@ public class InvertedIndex {
     @Override
     public String toString() {
         return invertedIndex.toString();
-
     }
 
 }

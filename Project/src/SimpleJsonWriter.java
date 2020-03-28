@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * @version Spring 2020
  */
 public class SimpleJsonWriter {
-
+  
     /**
      * Writes the elements as a pretty JSON array.
      *
@@ -90,7 +90,7 @@ public class SimpleJsonWriter {
      * @throws IOException if an IO error occurs
      */
     public static void asObject(Map<String, Integer> elements, Writer writer, int level) throws IOException {
-
+      // TODO Use the approach in asArray here too
         int c = 0;
         int size = elements.size();
 
@@ -324,7 +324,6 @@ public class SimpleJsonWriter {
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
             indexToJson(index, writer, 0);
         }
-
     }
 
 }

@@ -70,7 +70,6 @@ public class TextFileFinder {
                 FileVisitOption.FOLLOW_LINKS);
 
         return fileStream;
-
     }
 
     /**
