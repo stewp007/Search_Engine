@@ -20,7 +20,6 @@ public class InvertedIndex {
      * the data structure to be used
      */
     private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
-    // private TreeMap<String, WordIndex> invertedIndex;
 
     /**
      * Instantiates the InvertedIndex object
@@ -42,7 +41,6 @@ public class InvertedIndex {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
         return invertedIndex.get(word).get(path).add(position);
-
     }
 
     /**
@@ -55,8 +53,8 @@ public class InvertedIndex {
     }
 
     /*
-     * TODO This is still breaking encapsulation---no safe way to return
-     * nested data structures. Remove.
+     * TODO This is still breaking encapsulation---no safe way to return nested data
+     * structures. Remove.
      */
     /**
      * returns an Unmodifiable Map associated with the InvertedIndex
@@ -77,12 +75,12 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
-      /*
-       * TODO This code throws a null pointer exception if the word does not exist. 
-       * 
-       * if the word is in your index, return what you have.
-       * otherwise, return Collections.emptySet()
-       */
+        /*
+         * TODO This code throws a null pointer exception if the word does not exist.
+         * 
+         * if the word is in your index, return what you have. otherwise, return
+         * Collections.emptySet()
+         */
         return Collections.unmodifiableSet(invertedIndex.get(word).keySet());
     }
 
@@ -95,7 +93,7 @@ public class InvertedIndex {
      *         location
      */
     public Set<Integer> getPositions(String word, String location) {
-      // TODO Same issue as getLocations
+        // TODO Same issue as getLocations
         return Collections.unmodifiableSet(invertedIndex.get(word).get(location));
     }
 
