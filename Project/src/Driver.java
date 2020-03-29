@@ -49,12 +49,29 @@ public class Driver {
             }
         }
 
+        if (parser.hasFlag("-counts")) {
+            Path counts = parser.getPath("-counts", Path.of("counts.json"));
+            // get counts
+        }
+
+        if (parser.hasFlag("-query")) {
+            Path query = parser.getPath("-query");
+            if (query != null) {
+                // query file is provided
+                if (parser.hasFlag("-exact")) {
+                    // perform exact search
+                } else {
+                    // perform partial search
+                }
+                if (parser.hasFlag("-results")) {
+                    Path results = parser.getPath("-results", Path.of("results.json"));
+                    // store results
+                }
+            } // else do nothing
+        }
+
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
-            if (parser.hasValue("-index")) {
-                output = parser.getPath("-index");
-            }
-            
             // TODO Move the try/catch and call to index.getIndex here
             // TODO Handler should only be for building
             handler.getIndexJson(index, output);
