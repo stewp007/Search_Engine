@@ -54,6 +54,9 @@ public class Driver {
             if (parser.hasValue("-index")) {
                 output = parser.getPath("-index");
             }
+            
+            // TODO Move the try/catch and call to index.getIndex here
+            // TODO Handler should only be for building
             handler.getIndexJson(index, output);
             return;
         }

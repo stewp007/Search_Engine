@@ -62,6 +62,15 @@ public class FileHandler {
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
             SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
+            // TODO String location = path.toString(); <--- use this in index.add
+            
+            /*
+             * TODO Need to do this WITHOUT calling listStems, which creates an unnecessary list
+             * (poor for storage and time efficiency). 
+             * 
+             * Parser and stem the words in here and add directly into the index.
+             */
+            
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> allStems = TextFileStemmer.listStems(line, stemmer);
                 linePosition = 0;
@@ -75,6 +84,7 @@ public class FileHandler {
         return true;
     }
 
+    // TODO Call getIndex in Driver and remove this from here
     /**
      * handles exceptions for getting the Json form of the index
      * 

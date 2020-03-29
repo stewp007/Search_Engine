@@ -52,7 +52,6 @@ public class TextFileStemmer {
         ArrayList<String> stemmedWords = new ArrayList<>();
         stemIntoContainer(line, stemmer, stemmedWords);
         return stemmedWords;
-
     }
 
     /**
