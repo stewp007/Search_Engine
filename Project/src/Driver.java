@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -33,8 +34,10 @@ public class Driver {
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
         InvertedIndex index = new InvertedIndex();
+        // Counter Map
+        TreeMap<String, Integer> counter = new TreeMap<String, Integer>();
         // Initialize FileHandler
-        FileHandler handler = new FileHandler(index);
+        FileHandler handler = new FileHandler(index, counter);
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");

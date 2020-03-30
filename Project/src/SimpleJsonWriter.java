@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * @version Spring 2020
  */
 public class SimpleJsonWriter {
-  
+
     /**
      * Writes the elements as a pretty JSON array.
      *
@@ -90,23 +90,20 @@ public class SimpleJsonWriter {
      * @throws IOException if an IO error occurs
      */
     public static void asObject(Map<String, Integer> elements, Writer writer, int level) throws IOException {
-      // TODO Use the approach in asArray here too
-        int c = 0;
-        int size = elements.size();
-
-        writer.write("{\n");
-
-        for (var entry : elements.entrySet()) {
-            if (size > 1 && c < size - 1) {
-                quote(entry.getKey(), writer, 1);
-                writer.write(":");
-                indent(" " + entry.getValue() + ",\n", writer, 0);
-            } else {
-                quote(entry.getKey(), writer, 1);
-                writer.write(":");
-                indent(" " + entry.getValue() + "\n", writer, 0);
-            }
-            c++;
+        // TODO Use the approach in asArray here too
+        var input = elements.entrySet().iterator();
+        writer.write("{");
+        if (input.hasNext()) {
+            var entry = input.next();
+            writer.write("\n");
+            quote(entry.getKey(), writer, level + 1);
+            writer.write(": " + entry.getValue());
+        }
+        while (input.hasNext()) {
+            var entry = input.next();
+            writer.write("\n");
+            quote(entry.getKey(), writer, level + 1);
+            writer.write(": " + entry.getValue() + ",");
         }
 
         writer.write("}");

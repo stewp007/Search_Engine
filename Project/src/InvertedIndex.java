@@ -63,7 +63,7 @@ public class InvertedIndex {
      * @return Map<String, TreeSet<Integer>> the map associated with the
      *         InvertedIndex
      */
-    public Map<String, TreeSet<Integer>> getMap(String word) {
+    private Map<String, TreeSet<Integer>> getMap(String word) {
         return Collections.unmodifiableMap(invertedIndex.get(word));
     }
 

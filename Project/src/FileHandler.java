@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -21,6 +22,7 @@ public class FileHandler {
      */
 
     private final InvertedIndex index;
+    private final TreeMap<String, Integer> counter;
 
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
@@ -28,10 +30,12 @@ public class FileHandler {
     /**
      * Constructor for FileHandler Class
      * 
-     * @param index the InvertedIndex associated with the FileHandler
+     * @param index   the InvertedIndex associated with the FileHandler
+     * @param counter the word counter associated with the FileHandler
      */
-    public FileHandler(InvertedIndex index) {
+    public FileHandler(InvertedIndex index, TreeMap<String, Integer> counter) {
         this.index = index;
+        this.counter = counter;
     }
 
     /**
@@ -62,21 +66,21 @@ public class FileHandler {
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
             SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
-            // TODO String location = path.toString(); <--- use this in index.add
-            
+            String location = path.toString();
+
             /*
-             * TODO Need to do this WITHOUT calling listStems, which creates an unnecessary list
-             * (poor for storage and time efficiency). 
+             * TODO Need to do this WITHOUT calling listStems, which creates an unnecessary
+             * list (poor for storage and time efficiency).
              * 
              * Parser and stem the words in here and add directly into the index.
              */
-            
+
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> allStems = TextFileStemmer.listStems(line, stemmer);
                 linePosition = 0;
                 for (String word : allStems) {
                     linePosition++;
-                    this.index.add(word, path.toString(), filePosition + linePosition);
+                    this.index.add(word, location, filePosition + linePosition);
                 }
                 filePosition += allStems.size();
             }
