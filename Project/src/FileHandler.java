@@ -84,22 +84,11 @@ public class FileHandler {
                 }
                 filePosition += allStems.size();
             }
+            if (filePosition > 0) {
+                this.counter.putIfAbsent(location, filePosition);
+            }
         }
         return true;
     }
 
-    // TODO Call getIndex in Driver and remove this from here
-    /**
-     * handles exceptions for getting the Json form of the index
-     * 
-     * @param index the invertedIndex to be turned into json form
-     * @param path  the output file
-     */
-    public void getIndexJson(InvertedIndex index, Path path) {
-        try {
-            index.getIndex(path);
-        } catch (IOException e) {
-            System.out.println("Error retrieving Json form of the Index.");
-        }
-    }
 }

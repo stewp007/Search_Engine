@@ -54,7 +54,12 @@ public class Driver {
 
         if (parser.hasFlag("-counts")) {
             Path counts = parser.getPath("-counts", Path.of("counts.json"));
-            // get counts
+            try {
+                SimpleJsonWriter.asObject(counter, counts);
+            } catch (IOException e) {
+                System.out.println("Unable to create a Json of the counter.");
+            }
+
         }
 
         if (parser.hasFlag("-query")) {
@@ -75,9 +80,11 @@ public class Driver {
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
-            // TODO Move the try/catch and call to index.getIndex here
-            // TODO Handler should only be for building
-            handler.getIndexJson(index, output);
+            try {
+                index.getIndex(output);
+            } catch (IOException e) {
+                System.out.println("Error retrieving Json form of the Index.");
+            }
             return;
         }
         // calculate time elapsed and output

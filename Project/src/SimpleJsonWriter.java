@@ -90,7 +90,7 @@ public class SimpleJsonWriter {
      * @throws IOException if an IO error occurs
      */
     public static void asObject(Map<String, Integer> elements, Writer writer, int level) throws IOException {
-        // TODO Use the approach in asArray here too
+
         var input = elements.entrySet().iterator();
         writer.write("{");
         if (input.hasNext()) {
@@ -101,12 +101,12 @@ public class SimpleJsonWriter {
         }
         while (input.hasNext()) {
             var entry = input.next();
-            writer.write("\n");
+            writer.write(",\n");
             quote(entry.getKey(), writer, level + 1);
-            writer.write(": " + entry.getValue() + ",");
+            writer.write(": " + entry.getValue());
         }
 
-        writer.write("}");
+        writer.write("\n}");
 
     }
 
