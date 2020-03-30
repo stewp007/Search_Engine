@@ -31,7 +31,7 @@ public class TextFileStemmer {
      * @param stemmer   the stemmer to do the stemming
      * @param container the container used to add the words to
      */
-    private static void stemIntoContainer(String line, Stemmer stemmer, Collection<String> container) {
+    public static void stemIntoContainer(String line, Stemmer stemmer, Collection<String> container) {
         String[] splitWords = TextParser.parse(line);
         for (String word : splitWords) {
             container.add(stemmer.stem(word).toString());

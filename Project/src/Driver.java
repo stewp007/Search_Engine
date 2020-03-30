@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.TreeMap;
+import java.util.List;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -13,6 +13,11 @@ import java.util.TreeMap;
  * @version Spring 2020
  */
 public class Driver {
+
+    /**
+     * static variable flag used for exact or partial searches
+     */
+    public static boolean exact = false;
 
     /**
      * Initializes the classes necessary based on the provided command-line
@@ -35,9 +40,9 @@ public class Driver {
         // Initialize the InvertedIndex
         InvertedIndex index = new InvertedIndex();
         // Counter Map
-        TreeMap<String, Integer> counter = new TreeMap<String, Integer>();
+        // TreeMap<String, Integer> counter = new TreeMap<String, Integer>();
         // Initialize FileHandler
-        FileHandler handler = new FileHandler(index, counter);
+        FileHandler handler = new FileHandler(index);
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
@@ -55,7 +60,7 @@ public class Driver {
         if (parser.hasFlag("-counts")) {
             Path counts = parser.getPath("-counts", Path.of("counts.json"));
             try {
-                SimpleJsonWriter.asObject(counter, counts);
+                SimpleJsonWriter.asObject(index.getCounter(), counts);
             } catch (IOException e) {
                 System.out.println("Unable to create a Json of the counter.");
             }
@@ -67,9 +72,13 @@ public class Driver {
             if (query != null) {
                 // query file is provided
                 if (parser.hasFlag("-exact")) {
-                    // perform exact search
-                } else {
-                    // perform partial search
+                    exact = true;
+                }
+                try {
+                    List<SearchResult> listResults = handler.handleQueries(query, exact);
+                    System.out.println(listResults);
+                } catch (IOException e) {
+                    System.out.println("Unable to perform the search for the given Query file: " + query);
                 }
                 if (parser.hasFlag("-results")) {
                     Path results = parser.getPath("-results", Path.of("results.json"));

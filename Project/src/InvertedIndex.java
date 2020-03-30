@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -20,12 +22,17 @@ public class InvertedIndex {
      * the data structure to be used
      */
     private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
+    /**
+     * the counter for files
+     */
+    private final TreeMap<String, Integer> counter;
 
     /**
      * Instantiates the InvertedIndex object
      */
     public InvertedIndex() {
         this.invertedIndex = new TreeMap<String, TreeMap<String, TreeSet<Integer>>>();
+        this.counter = new TreeMap<String, Integer>();
     }
 
     /**
@@ -75,13 +82,9 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
-        /*
-         * TODO This code throws a null pointer exception if the word does not exist.
-         * 
-         * if the word is in your index, return what you have. otherwise, return
-         * Collections.emptySet()
-         */
-        return Collections.unmodifiableSet(invertedIndex.get(word).keySet());
+        return Collections.unmodifiableSet(invertedIndex.get(word).keySet()) != null
+                ? Collections.unmodifiableSet(invertedIndex.get(word).keySet())
+                : Collections.emptySet();
     }
 
     /**
@@ -93,8 +96,9 @@ public class InvertedIndex {
      *         location
      */
     public Set<Integer> getPositions(String word, String location) {
-        // TODO Same issue as getLocations
-        return Collections.unmodifiableSet(invertedIndex.get(word).get(location));
+        return Collections.unmodifiableSet(invertedIndex.get(word).get(location)) != null
+                ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
+                : Collections.emptySet();
     }
 
     /**
@@ -160,9 +164,62 @@ public class InvertedIndex {
         SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
     }
 
+    /**
+     * Searches for exact matches in the Index
+     * 
+     * @param queries the queries to search for
+     * @return A list of the Search Result Objects in sorted order
+     */
+    public List<SearchResult> exactSearch(List<String> queries) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+        String where;
+        int count = 0;
+        double score = 0;
+        var query = queries.iterator();
+        while (query.hasNext()) {
+            // int count = 0;
+            String key = query.next();
+            if (this.invertedIndex.containsKey(key)) {
+                var entry = invertedIndex.get(key).keySet().iterator();
+                while (entry.hasNext()) {
+                    String location = entry.next();
+                    where = location;
+                    var positions = invertedIndex.get(key).get(location).iterator();
+                    while (positions.hasNext()) {
+                        count++;
+                        positions.next();
+                    }
+                    score = count / counter.get(location);
+                    results.add(new SearchResult(where, count, score));
+                    count = 0;
+                }
+
+            }
+        }
+        Collections.sort(results);
+        return results;
+    }
+
+    /**
+     * Searches for partial matches in the Index
+     * 
+     * @param queries the queries to search for
+     * @return the list of partial SearchResults
+     */
+    public List<SearchResult> partialSearch(List<String> queries) {
+        return null;
+    }
+
     @Override
     public String toString() {
         return invertedIndex.toString();
+    }
+
+    /**
+     * @return the counter
+     */
+    public TreeMap<String, Integer> getCounter() {
+        return counter;
     }
 
 }

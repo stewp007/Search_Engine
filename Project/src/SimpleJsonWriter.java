@@ -173,7 +173,8 @@ public class SimpleJsonWriter {
         quote(entry.getKey(), writer, level);
         writer.write(": {\n");
         asNestedArray(entry.getValue(), writer, level);
-        writer.write("}");
+        // writer.write("}");
+        indent("}", writer, level);
     }
 
     /**

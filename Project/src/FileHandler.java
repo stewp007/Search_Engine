@@ -4,8 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -22,7 +22,10 @@ public class FileHandler {
      */
 
     private final InvertedIndex index;
-    private final TreeMap<String, Integer> counter;
+    /**
+     * Class Member to reference the counter
+     */
+    // private final TreeMap<String, Integer> counter;
 
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
@@ -33,9 +36,8 @@ public class FileHandler {
      * @param index   the InvertedIndex associated with the FileHandler
      * @param counter the word counter associated with the FileHandler
      */
-    public FileHandler(InvertedIndex index, TreeMap<String, Integer> counter) {
+    public FileHandler(InvertedIndex index) {
         this.index = index;
-        this.counter = counter;
     }
 
     /**
@@ -52,6 +54,39 @@ public class FileHandler {
     }
 
     /**
+     * Cleans and parses queries from the given Path
+     * 
+     * @param path  the path of the Query file
+     * @param exact flag for partial or exact search
+     * @return the list of Search Results
+     * @throws IOException throws an IOException
+     */
+    public List<SearchResult> handleQueries(Path path, boolean exact) throws IOException {
+        List<String> cleanedQueries = new ArrayList<String>();
+        SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
+        String stemmedWord;
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parsedQueries = TextParser.parse(line);
+                for (String word : parsedQueries) {
+                    stemmedWord = stemmer.stem(word).toString();
+                    if (!cleanedQueries.contains(stemmedWord)) {
+                        cleanedQueries.add(stemmedWord);
+                    }
+                    Collections.sort(cleanedQueries);
+                }
+
+            }
+        }
+        if (exact) {
+            return this.index.exactSearch(cleanedQueries);
+        } else {
+            return this.index.partialSearch(cleanedQueries);
+        }
+    }
+
+    /**
      * 
      * Adds the contents of a file to the Index
      * 
@@ -63,29 +98,23 @@ public class FileHandler {
     public boolean handleIndex(Path path) throws IOException {
         int filePosition = 0;
         int linePosition = 0;
+        SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            String line;
-            SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
             String location = path.toString();
-
-            /*
-             * TODO Need to do this WITHOUT calling listStems, which creates an unnecessary
-             * list (poor for storage and time efficiency).
-             * 
-             * Parser and stem the words in here and add directly into the index.
-             */
-
+            String line;
+            String stemmedWord;
             while ((line = reader.readLine()) != null) {
-                ArrayList<String> allStems = TextFileStemmer.listStems(line, stemmer);
+                String[] allStems = TextParser.parse(line);
                 linePosition = 0;
                 for (String word : allStems) {
                     linePosition++;
-                    this.index.add(word, location, filePosition + linePosition);
+                    stemmedWord = stemmer.stem(word).toString();
+                    this.index.add(stemmedWord, location, filePosition + linePosition);
                 }
-                filePosition += allStems.size();
+                filePosition += allStems.length;
             }
             if (filePosition > 0) {
-                this.counter.putIfAbsent(location, filePosition);
+                this.index.getCounter().putIfAbsent(location, filePosition);
             }
         }
         return true;
