@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -59,43 +58,23 @@ public class FileHandler {
     public boolean handleIndex(Path path) throws IOException {
         int filePosition = 0;
         int linePosition = 0;
+        SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String location = path.toString();
             String line;
-            SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
-            // TODO String location = path.toString(); <--- use this in index.add
-            
-            /*
-             * TODO Need to do this WITHOUT calling listStems, which creates an unnecessary list
-             * (poor for storage and time efficiency). 
-             * 
-             * Parser and stem the words in here and add directly into the index.
-             */
-            
+            String stemmedWord;
             while ((line = reader.readLine()) != null) {
-                ArrayList<String> allStems = TextFileStemmer.listStems(line, stemmer);
+                String[] allStems = TextParser.parse(line);
                 linePosition = 0;
                 for (String word : allStems) {
                     linePosition++;
-                    this.index.add(word, path.toString(), filePosition + linePosition);
+                    stemmedWord = stemmer.stem(word).toString();
+                    this.index.add(stemmedWord, location, filePosition + linePosition);
                 }
-                filePosition += allStems.size();
+                filePosition += allStems.length;
             }
         }
         return true;
     }
 
-    // TODO Call getIndex in Driver and remove this from here
-    /**
-     * handles exceptions for getting the Json form of the index
-     * 
-     * @param index the invertedIndex to be turned into json form
-     * @param path  the output file
-     */
-    public void getIndexJson(InvertedIndex index, Path path) {
-        try {
-            index.getIndex(path);
-        } catch (IOException e) {
-            System.out.println("Error retrieving Json form of the Index.");
-        }
-    }
 }

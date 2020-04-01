@@ -54,10 +54,12 @@ public class Driver {
             if (parser.hasValue("-index")) {
                 output = parser.getPath("-index");
             }
-            
-            // TODO Move the try/catch and call to index.getIndex here
-            // TODO Handler should only be for building
-            handler.getIndexJson(index, output);
+
+            try {
+                index.getIndex(output);
+            } catch (IOException e) {
+                System.out.println("Error retrieving Json form of the Index.");
+            }
             return;
         }
         // calculate time elapsed and output

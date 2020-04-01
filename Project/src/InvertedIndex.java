@@ -2,12 +2,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-// TODO Clean up all the commented out code 
 
 /**
  * This is the InvertedIndex data structure used for USF CS212 Project 1
@@ -20,7 +17,6 @@ public class InvertedIndex {
      * the data structure to be used
      */
     private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
-    // private TreeMap<String, WordIndex> invertedIndex;
 
     /**
      * Instantiates the InvertedIndex object
@@ -54,21 +50,6 @@ public class InvertedIndex {
         return Collections.unmodifiableSet(invertedIndex.keySet());
     }
 
-    /*
-     * TODO This is still breaking encapsulation---no safe way to return
-     * nested data structures. Remove.
-     */
-    /**
-     * returns an Unmodifiable Map associated with the InvertedIndex
-     * 
-     * @param word the word to get value from
-     * @return Map<String, TreeSet<Integer>> the map associated with the
-     *         InvertedIndex
-     */
-    public Map<String, TreeSet<Integer>> getMap(String word) {
-        return Collections.unmodifiableMap(invertedIndex.get(word));
-    }
-
     /**
      * returns an Unmodifiable Set of the locations associated with a given word
      * associated with the InvertedIndex
@@ -77,13 +58,9 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
-      /*
-       * TODO This code throws a null pointer exception if the word does not exist. 
-       * 
-       * if the word is in your index, return what you have.
-       * otherwise, return Collections.emptySet()
-       */
-        return Collections.unmodifiableSet(invertedIndex.get(word).keySet());
+        return Collections.unmodifiableSet(invertedIndex.get(word).keySet()) != null
+                ? Collections.unmodifiableSet(invertedIndex.get(word).keySet())
+                : Collections.emptySet();
     }
 
     /**
@@ -95,8 +72,9 @@ public class InvertedIndex {
      *         location
      */
     public Set<Integer> getPositions(String word, String location) {
-      // TODO Same issue as getLocations
-        return Collections.unmodifiableSet(invertedIndex.get(word).get(location));
+        return Collections.unmodifiableSet(invertedIndex.get(word).get(location)) != null
+                ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
+                : Collections.emptySet();
     }
 
     /**
@@ -119,7 +97,8 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsPosition(String word, String location, Integer position) {
-        return this.containsLocation(word, location) ? this.getMap(word).get(location).contains(position) : false;
+        return this.containsLocation(word, location) ? this.invertedIndex.get(word).get(location).contains(position)
+                : false;
     }
 
     /**
