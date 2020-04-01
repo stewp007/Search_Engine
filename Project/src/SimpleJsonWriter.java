@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -202,9 +203,7 @@ public class SimpleJsonWriter {
     }
 
     /**
-     * Writes the elements as a pretty JSON object with a nested array. The generic
-     * notation used allows this method to be used for any type of map with any type
-     * of nested collection of integer objects.
+     * Writes the elements as a pretty JSON object with a nested array.
      *
      * @param index  the index to convert to JSON
      * @param writer the writer to use
@@ -229,6 +228,135 @@ public class SimpleJsonWriter {
         writer.write("\n");
         indent("}", writer, level - 1);
         return writer.toString();
+    }
+
+    /**
+     * Outputs the given index in Json form to the given Path
+     * 
+     * @param index the index to output
+     * @param path  the Path to output the Json to
+     * @throws IOException throws IOException
+     */
+    public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
+            throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            indexToJson(index, writer, 0);
+        }
+    }
+
+    /**
+     * Writes the elements as a pretty JSON object with a nested array. The generic
+     * notation used allows this method to be used for any type of map with any type
+     * of nested collection of integer objects.
+     *
+     * @param results the SearchResults to write
+     * @param writer  the writer to use
+     * @param level   the initial indent level
+     * @throws IOException if an IO error occurs
+     */
+    public static void asNestedSearchResult(Collection<SearchResult> results, Writer writer, int level)
+            throws IOException {
+
+        var resultIter = results.iterator();
+        level++;
+        if (resultIter.hasNext()) {
+            SearchResult result = resultIter.next();
+            String formatted = String.format("%.8f", result.getScore());
+            writer.write("\n");
+            indent("{", writer, level - 1);
+            writer.write("\n");
+            quote("where", writer, level);
+            writer.write(": ");
+            quote(result.getWhere(), writer);
+            writer.write(",\n");
+            quote("count", writer, level);
+            writer.write(": ");
+            writer.write(result.getCount().toString());
+            writer.write(",\n");
+            quote("score", writer, level);
+            writer.write(": ");
+            writer.write(formatted + "\n");
+            indent("}", writer, level - 1);
+        }
+        while (resultIter.hasNext()) {
+            SearchResult result = resultIter.next();
+            String formatted = String.format("%.8f", result.getScore());
+            writer.write(",\n");
+            indent("{", writer, level - 1);
+            writer.write("\n");
+            quote("where", writer, level);
+            writer.write(": ");
+            quote(result.getWhere(), writer);
+            writer.write(",\n");
+            quote("count", writer, level);
+            writer.write(": ");
+            writer.write(result.getCount().toString());
+            writer.write(",\n");
+            quote("score", writer, level);
+            writer.write(": ");
+            writer.write(formatted + "\n");
+            indent("}", writer, level - 1);
+
+        }
+        writer.write("\n");
+    }
+
+    /**
+     * Writes the index into pretty Json format
+     * 
+     * @param entry  the index to be written
+     * @param writer the writer
+     * @param level  the level of indentation
+     * @throws IOException throws IOException
+     */
+    public static void writeResultsToJson(Map.Entry<String, List<SearchResult>> entry, Writer writer, int level)
+            throws IOException {
+        quote(entry.getKey(), writer, level);
+        writer.write(": [");
+        asNestedSearchResult(entry.getValue(), writer, level + 1);
+        indent("]", writer, level);
+    }
+
+    /**
+     * Converts the search results into a pretty Json format
+     * 
+     * @param results the search results
+     * @param writer  the writer used to write
+     * @param level   the level of indentation
+     * @return a String of the Json results
+     * @throws IOException throws an IOException
+     */
+    public static String writeSearchResults(TreeMap<String, List<SearchResult>> results, Writer writer, int level)
+            throws IOException {
+        writer.write("{");
+        var queryWord = results.entrySet().iterator();
+        level++;
+        if (queryWord.hasNext()) {
+            writer.write("\n");
+            writeResultsToJson(queryWord.next(), writer, level);
+        }
+        while (queryWord.hasNext()) {
+            writer.write(",\n");
+            writeResultsToJson(queryWord.next(), writer, level);
+        }
+        writer.write("\n}");
+        return writer.toString();
+
+    }
+
+    /**
+     * Writes the search Results into pretty Json format to the given file
+     * 
+     * @param results the search results
+     * @param path    the path to output to
+     * @throws IOException if there is an error opening the file
+     */
+    public static void writeSearchResultsToFile(TreeMap<String, List<SearchResult>> results, Path path)
+            throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            writeSearchResults(results, writer, 0);
+        }
+
     }
 
     /**
@@ -308,20 +436,6 @@ public class SimpleJsonWriter {
         // THIS CODE IS PROVIDED FOR YOU; DO NOT MODIFY
         indent(writer, times);
         quote(element, writer);
-    }
-
-    /**
-     * Outputs the given index in Json form to the given Path
-     * 
-     * @param index the index to output
-     * @param path  the Path to output the Json to
-     * @throws IOException throws IOException
-     */
-    public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
-            throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            indexToJson(index, writer, 0);
-        }
     }
 
 }

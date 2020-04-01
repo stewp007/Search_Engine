@@ -21,21 +21,14 @@ public class SearchResult implements Comparable<SearchResult> {
     private double score;
 
     /**
-     * the query or queries used to get the result
-     */
-    private String queries;
-
-    /**
      * Constructor for the Search Results
      * 
-     * @param queries the queries used
-     * 
-     * @param where   the location of one or more of the matches
-     * @param count   total matches within the text file
-     * @param score   the total matches divided by the total words
+     * @param where the location of one or more of the matches
+     * @param count total matches within the text file
+     * @param score the total matches divided by the total words
      */
-    public SearchResult(String queries, String where, Integer count, double score) {
-        this.queries = queries;
+    public SearchResult(String where, Integer count, double score) {
+
         this.where = where;
         this.count = count;
         this.score = score;
@@ -66,24 +59,6 @@ public class SearchResult implements Comparable<SearchResult> {
      */
     public double getScore() {
         return score;
-    }
-
-    /**
-     * gets the queries
-     * 
-     * @return the queries used
-     */
-    public String getQueries() {
-        return queries;
-    }
-
-    /**
-     * sets the queries
-     * 
-     * @param queries the queries used
-     */
-    public void setQueries(String queries) {
-        this.queries = queries;
     }
 
     /**
@@ -119,8 +94,7 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public String toString() {
-        return "\"" + queries + "\": [\nwhere: " + this.where + "\ncount: " + this.count + "\nscore: " + this.score
-                + "\n]\n";
+        return "\nwhere: " + this.where + "\ncount: " + this.count + "\nscore: " + this.score + "\n";
     }
 
 }

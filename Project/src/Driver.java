@@ -2,7 +2,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -73,14 +72,15 @@ public class Driver {
                     exact = true;
                 }
                 try {
-                    List<SearchResult> listResults = handler.handleQueries(query, exact);
-                    System.out.println(listResults);
+                    Path results = parser.getPath("-results", Path.of("results.json"));
+                    handler.handleQueries(query, exact, results);
+
+                    /*
+                     * if (parser.hasFlag("-results")) { Path results = parser.getPath("-results",
+                     * Path.of("results.json")); // store results }
+                     */
                 } catch (IOException e) {
                     System.out.println("Unable to perform the search for the given Query file: " + query);
-                }
-                if (parser.hasFlag("-results")) {
-                    Path results = parser.getPath("-results", Path.of("results.json"));
-                    // store results
                 }
             } // else do nothing
         }

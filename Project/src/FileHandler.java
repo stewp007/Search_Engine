@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -56,15 +57,15 @@ public class FileHandler {
     /**
      * Cleans and parses queries from the given Path
      * 
-     * @param path  the path of the Query file
-     * @param exact flag for partial or exact search
-     * @return the list of Search Results
+     * @param path   the path of the Query file
+     * @param exact  flag for partial or exact search
+     * @param output the file to output the Json results
      * @throws IOException throws an IOException
      */
-    public List<SearchResult> handleQueries(Path path, boolean exact) throws IOException {
+    public void handleQueries(Path path, boolean exact, Path output) throws IOException {
         List<String> allQueries = new ArrayList<String>();
         List<String> cleanedQueries = new ArrayList<String>();
-        List<SearchResult> allResults = new ArrayList<SearchResult>();
+        TreeMap<String, List<SearchResult>> allResults = new TreeMap<String, List<SearchResult>>();
         SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
         String stemmedWord;
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -80,8 +81,8 @@ public class FileHandler {
 
                 }
                 Collections.sort(cleanedQueries);
-                if (exact) {
-                    allResults.addAll(this.index.exactSearch(cleanedQueries));
+                if (exact && !cleanedQueries.isEmpty()) {
+                    allResults.put(String.join(" ", cleanedQueries), this.index.exactSearch(cleanedQueries));
                 } else {
                     // allResults.putAll(this.index.partialSearch(cleanedQueries));
                 }
@@ -89,7 +90,7 @@ public class FileHandler {
             }
         }
         // Collections.sort(allResults);
-        return allResults;
+        SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
 
     }
 
