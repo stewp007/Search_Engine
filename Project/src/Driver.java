@@ -39,8 +39,6 @@ public class Driver {
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
         InvertedIndex index = new InvertedIndex();
-        // Counter Map
-        // TreeMap<String, Integer> counter = new TreeMap<String, Integer>();
         // Initialize FileHandler
         FileHandler handler = new FileHandler(index);
 

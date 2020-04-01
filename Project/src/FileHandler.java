@@ -62,7 +62,9 @@ public class FileHandler {
      * @throws IOException throws an IOException
      */
     public List<SearchResult> handleQueries(Path path, boolean exact) throws IOException {
+        List<String> allQueries = new ArrayList<String>();
         List<String> cleanedQueries = new ArrayList<String>();
+        List<SearchResult> allResults = new ArrayList<SearchResult>();
         SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
         String stemmedWord;
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -71,19 +73,24 @@ public class FileHandler {
                 String[] parsedQueries = TextParser.parse(line);
                 for (String word : parsedQueries) {
                     stemmedWord = stemmer.stem(word).toString();
-                    if (!cleanedQueries.contains(stemmedWord)) {
+                    if (!cleanedQueries.contains(stemmedWord) && !allQueries.contains(stemmedWord)) {
                         cleanedQueries.add(stemmedWord);
+                        allQueries.add(stemmedWord);
                     }
-                    Collections.sort(cleanedQueries);
-                }
 
+                }
+                Collections.sort(cleanedQueries);
+                if (exact) {
+                    allResults.addAll(this.index.exactSearch(cleanedQueries));
+                } else {
+                    // allResults.putAll(this.index.partialSearch(cleanedQueries));
+                }
+                cleanedQueries.clear();
             }
         }
-        if (exact) {
-            return this.index.exactSearch(cleanedQueries);
-        } else {
-            return this.index.partialSearch(cleanedQueries);
-        }
+        // Collections.sort(allResults);
+        return allResults;
+
     }
 
     /**

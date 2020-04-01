@@ -165,6 +165,64 @@ public class InvertedIndex {
     }
 
     /**
+     * helper function for exact and partial search
+     * 
+     * @param query   the query word
+     * @param results the list of results
+     * @param queries the queries used
+     */
+    public void createNewResult(String query, List<SearchResult> results, String queries) {
+        var entries = invertedIndex.get(query).keySet().iterator();
+
+        if (entries.hasNext()) {
+
+            while (entries.hasNext()) {
+
+                String location = entries.next();
+
+                SearchResult currResult = new SearchResult(queries, location, 0, 0);
+
+                int newCount = 0;
+
+                var positions = invertedIndex.get(query).get(location).iterator();
+
+                if (positions.hasNext()) {
+
+                    while (positions.hasNext()) {
+
+                        newCount++;
+                        positions.next();
+                    }
+                } else {
+
+                    newCount = 1;
+                }
+
+                currResult.setCount(newCount);
+                int newScore = newCount / counter.get(location);
+                currResult.setScore(newScore);
+
+                results.add(currResult);
+            }
+        } else {
+
+            String location = entries.toString();
+            SearchResult currResult = new SearchResult(queries, location, 0, 0);
+            int newCount = 0;
+            var positions = invertedIndex.get(query).get(location).iterator();
+            while (positions.hasNext()) {
+                newCount++;
+            }
+            currResult.setCount(newCount);
+            int newScore = newCount / counter.get(location);
+            currResult.setScore(newScore);
+
+            results.add(currResult);
+        }
+
+    }
+
+    /**
      * Searches for exact matches in the Index
      * 
      * @param queries the queries to search for
@@ -172,28 +230,39 @@ public class InvertedIndex {
      */
     public List<SearchResult> exactSearch(List<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        String where;
-        int count = 0;
-        double score = 0;
+        String queryConcat = "";
         var query = queries.iterator();
-        while (query.hasNext()) {
-            // int count = 0;
-            String key = query.next();
-            if (this.invertedIndex.containsKey(key)) {
-                var entry = invertedIndex.get(key).keySet().iterator();
-                while (entry.hasNext()) {
-                    String location = entry.next();
-                    where = location;
-                    var positions = invertedIndex.get(key).get(location).iterator();
-                    while (positions.hasNext()) {
-                        count++;
-                        positions.next();
-                    }
-                    score = count / counter.get(location);
-                    results.add(new SearchResult(where, count, score));
-                    count = 0;
-                }
 
+        while (query.hasNext()) { // traverse through every query
+
+            System.out.println("Looping through the Queries."); // Debug delete later
+            String queryStr = query.next();
+            queryConcat += queryStr;
+            queryConcat += " ";
+            SearchResult currResult = new SearchResult("DEFAULT", "DEFAULT", 0, 0);
+            if (invertedIndex.containsKey(queryStr)) {// check if query is in the index
+                System.out.println("Query is in the Index."); // debug delete later
+                for (SearchResult prevResult : results) {
+                    System.out.println("Looping through old results."); // debug delete later
+                    for (String entry : invertedIndex.get(queryStr).keySet()) {
+                        if (entry.equals(prevResult.getWhere())) {
+                            currResult = prevResult;
+                            queryConcat.strip();
+                            currResult.setQueries(queryConcat);
+                            int updateCount = currResult.getCount();
+                            var positions = invertedIndex.get(queryStr).get(currResult.getWhere()).iterator();
+                            while (positions.hasNext()) {
+                                updateCount++;
+                                positions.next();
+                            }
+                            currResult.setCount(updateCount);
+                            int updateScore = updateCount / counter.get(currResult.getWhere());
+                            currResult.setScore(updateScore);
+                            break;
+                        }
+                    }
+                }
+                createNewResult(queryStr, results, queryConcat.strip());
             }
         }
         Collections.sort(results);
