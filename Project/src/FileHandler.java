@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -64,29 +65,18 @@ public class FileHandler {
      * @throws IOException throws an IOException
      */
     public void handleQueries(Path path, boolean exact, Path output, Boolean result) throws IOException {
-        List<String> allQueries = new ArrayList<String>();
         List<String> cleanedQueries = new ArrayList<String>();
         TreeMap<String, List<SearchResult>> allResults = new TreeMap<String, List<SearchResult>>();
-        SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
-        String stemmedWord;
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parsedQueries = TextParser.parse(line);
-                for (String word : parsedQueries) {
-                    stemmedWord = stemmer.stem(word).toString();
-                    if (!cleanedQueries.contains(stemmedWord) && !allQueries.contains(stemmedWord)) {
-                        cleanedQueries.add(stemmedWord);
-                        allQueries.add(stemmedWord);
-                    }
-
-                }
+                TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
                 Collections.sort(cleanedQueries);
-                if (!cleanedQueries.isEmpty()) {
+                if (!cleaned.isEmpty()) {
                     if (exact) {
-                        allResults.put(String.join(" ", cleanedQueries), this.index.exactSearch(cleanedQueries));
+                        allResults.put(String.join(" ", cleaned), this.index.exactSearch(cleaned));
                     } else {
-                        allResults.put(String.join(" ", cleanedQueries), this.index.partialSearch(cleanedQueries));
+                        allResults.put(String.join(" ", cleaned), this.index.partialSearch(cleaned));
                     }
                     cleanedQueries.clear();
                 }

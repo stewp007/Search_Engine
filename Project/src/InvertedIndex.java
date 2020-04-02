@@ -167,19 +167,20 @@ public class InvertedIndex {
     /**
      * helper function for exact and partial search
      * 
-     * @param query   the query word
-     * @param results the list of results
-     * @param queries the queries used
+     * @param query    the query word
+     * @param location the location
+     * @param results  the list of results
+     * @param queries  the queries used
      */
-    public void createNewResult(String query, List<SearchResult> results) {
-        for (String location : invertedIndex.get(query).keySet()) {
-            SearchResult currResult = new SearchResult(location, 0, 0);
-            int newCount = numPositions(query, location);
-            currResult.setCount(newCount);
-            double newScore = (double) newCount / counter.get(location);
-            currResult.setScore(newScore);
-            results.add(currResult);
-        }
+    public void createNewResult(String query, String location, List<SearchResult> results) {
+
+        SearchResult currResult = new SearchResult(location, 0, 0);
+        int newCount = numPositions(query, location);
+        currResult.setCount(newCount);
+        double newScore = (double) newCount / counter.get(location);
+        currResult.setScore(newScore);
+        results.add(currResult);
+
     }
 
     /**
@@ -190,18 +191,30 @@ public class InvertedIndex {
      */
     public boolean updateResult(String query, List<SearchResult> results) {
         boolean updated = false;
+        // System.out.println("Start Updating: " + query); // debug delete later
         for (String location : invertedIndex.get(query).keySet()) {
+            // System.out.println("Key Location: " + location); // debug delete later
+            updated = false;
             for (SearchResult prevResult : results) {
+                // System.out.print(prevResult.getWhere());
                 if (location.equals(prevResult.getWhere())) {
+                    // System.out.println(" Found a match."); // debug delete later
+                    // System.out.println("Updating result: " + prevResult); // debug delete later
                     int updateCount = prevResult.getCount();
                     updateCount += numPositions(query, location);
                     prevResult.setCount(updateCount);
                     double updateScore = (double) updateCount / counter.get(location);
                     prevResult.setScore(updateScore);
                     updated = true;
+                } else {
+                    // System.out.println(" Not a match."); // Debug delete later
                 }
             }
+            if (!updated) {
+                createNewResult(query, location, results);
+            }
         }
+        // System.out.println("Finished Updating"); // debug delete later
         return updated;
     }
 
@@ -211,14 +224,12 @@ public class InvertedIndex {
      * @param queries the queries to search for
      * @return A list of the Search Result Objects in sorted order
      */
-    public List<SearchResult> exactSearch(List<String> queries) {
+    public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         System.out.println("Queries: " + queries); // debug delete later
         for (String query : queries) { // traverse through every query
             if (invertedIndex.containsKey(query)) {// check if key starts with the query
-                if (!updateResult(query, results)) {
-                    createNewResult(query, results);
-                }
+                updateResult(query, results);
             }
         }
         results.sort(null);
@@ -231,15 +242,13 @@ public class InvertedIndex {
      * @param queries the queries to search for
      * @return the list of partial SearchResults
      */
-    public List<SearchResult> partialSearch(List<String> queries) {
+    public List<SearchResult> partialSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         System.out.println("Queries: " + queries); // debug delete later
         for (String query : queries) { // traverse through every query
             for (String key : invertedIndex.keySet()) {
                 if (key.startsWith(query)) {// check if key starts with the query
-                    if (!updateResult(key, results)) {
-                        createNewResult(key, results);
-                    }
+                    updateResult(key, results);
                 }
             }
         }
