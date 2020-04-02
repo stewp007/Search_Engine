@@ -76,6 +76,10 @@ public class InvertedIndex {
                 ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
                 : Collections.emptySet();
     }
+    
+    /*
+     * TODO Missing a containsWord(String word) method.
+     */
 
     /**
      * Checks if the inverted index contains the specified location
@@ -85,6 +89,14 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsLocation(String word, String location) {
+      /*
+       * TODO Nice to see you using the ? ternary operator, but it isn't necessary here.
+       * Can do this instead:
+       * 
+       * return invertedIndex.containsKey(word) & invertedIndex.get(word).get(location) != null
+       * 
+       * Fix it here and in the other methods.
+       */
         return invertedIndex.containsKey(word) ? invertedIndex.get(word).get(location) != null : false;
     }
 

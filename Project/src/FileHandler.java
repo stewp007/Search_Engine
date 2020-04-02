@@ -76,5 +76,17 @@ public class FileHandler {
         }
         return true;
     }
+    
+    /*
+     * TODO Will eventually help to have a static and non-static way to build the index (for project 3). I recommend:
+     * 
+     * public static boolean handleIndex(Path path, InvertedIndex index) throws IOException {
+     *     your original handleIndex implementation as-is except in a static method
+     * }
+     * 
+     * public boolean handleIndex(Path path) throws IOException {
+     *     handleIndex(path, this.index)
+     * }
+     */
 
 }

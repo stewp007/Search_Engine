@@ -51,7 +51,7 @@ public class Driver {
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
-            if (parser.hasValue("-index")) {
+            if (parser.hasValue("-index")) { // TODO Remove? Should be already taken care of by the getPath method call above.
                 output = parser.getPath("-index");
             }
 

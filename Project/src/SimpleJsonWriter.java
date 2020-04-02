@@ -319,5 +319,10 @@ public class SimpleJsonWriter {
             indexToJson(index, writer, 0);
         }
     }
+    
+    /*
+     * TODO Reorder so the indexToJson methods are all next to each other. 
+     * You can drag methods up and down in the "Outline" view to reorder them in Eclipse.
+     */
 
 }
