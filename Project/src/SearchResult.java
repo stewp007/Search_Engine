@@ -85,10 +85,10 @@ public class SearchResult implements Comparable<SearchResult> {
             if (Integer.compare(this.count, other.count) == 0) {
                 return this.where.compareToIgnoreCase(other.where);
             } else {
-                return Integer.compare(this.count, other.count);
+                return Integer.compare(other.count, this.count);
             }
         } else {
-            return Double.compare(this.score, other.score);
+            return Double.compare(other.score, this.score);
         }
     }
 

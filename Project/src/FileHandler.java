@@ -60,9 +60,10 @@ public class FileHandler {
      * @param path   the path of the Query file
      * @param exact  flag for partial or exact search
      * @param output the file to output the Json results
+     * @param result whether to ouptut the search to a file or not
      * @throws IOException throws an IOException
      */
-    public void handleQueries(Path path, boolean exact, Path output) throws IOException {
+    public void handleQueries(Path path, boolean exact, Path output, Boolean result) throws IOException {
         List<String> allQueries = new ArrayList<String>();
         List<String> cleanedQueries = new ArrayList<String>();
         TreeMap<String, List<SearchResult>> allResults = new TreeMap<String, List<SearchResult>>();
@@ -81,16 +82,19 @@ public class FileHandler {
 
                 }
                 Collections.sort(cleanedQueries);
-                if (exact && !cleanedQueries.isEmpty()) {
-                    allResults.put(String.join(" ", cleanedQueries), this.index.exactSearch(cleanedQueries));
-                } else {
-                    // allResults.putAll(this.index.partialSearch(cleanedQueries));
+                if (!cleanedQueries.isEmpty()) {
+                    if (exact) {
+                        allResults.put(String.join(" ", cleanedQueries), this.index.exactSearch(cleanedQueries));
+                    } else {
+                        allResults.put(String.join(" ", cleanedQueries), this.index.partialSearch(cleanedQueries));
+                    }
+                    cleanedQueries.clear();
                 }
-                cleanedQueries.clear();
             }
         }
-        // Collections.sort(allResults);
-        SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
+        if (result) {
+            SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
+        }
 
     }
 

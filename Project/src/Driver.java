@@ -66,19 +66,18 @@ public class Driver {
 
         if (parser.hasFlag("-query")) {
             Path query = parser.getPath("-query");
+            boolean result = false;
             if (query != null) {
                 // query file is provided
                 if (parser.hasFlag("-exact")) {
                     exact = true;
                 }
                 try {
+                    if (parser.hasFlag("-results")) {
+                        result = true;
+                    }
                     Path results = parser.getPath("-results", Path.of("results.json"));
-                    handler.handleQueries(query, exact, results);
-
-                    /*
-                     * if (parser.hasFlag("-results")) { Path results = parser.getPath("-results",
-                     * Path.of("results.json")); // store results }
-                     */
+                    handler.handleQueries(query, exact, results, result);
                 } catch (IOException e) {
                     System.out.println("Unable to perform the search for the given Query file: " + query);
                 }
