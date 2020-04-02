@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -82,6 +84,15 @@ public class Driver {
                     System.out.println("Unable to perform the search for the given Query file: " + query);
                 }
             } // else do nothing
+        } else if (parser.hasFlag("-results")) {
+            Path empty = Path.of("results.json");
+            TreeMap<String, List<SearchResult>> emptyResults = new TreeMap<String, List<SearchResult>>();
+            try {
+                SimpleJsonWriter.writeSearchResultsToFile(emptyResults, empty);
+            } catch (IOException e) {
+                System.out.println("Unable to write default empty results.");
+            }
+
         }
 
         if (parser.hasFlag("-index")) {
