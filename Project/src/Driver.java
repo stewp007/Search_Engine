@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -12,7 +14,6 @@ import java.time.Instant;
  * @version Spring 2020
  */
 public class Driver {
-
     /**
      * Initializes the classes necessary based on the provided command-line
      * arguments. This includes (but is not limited to) how to build or search an
@@ -47,6 +48,46 @@ public class Driver {
             } else {
                 System.out.println("Error: Forgot a value for -path");
             }
+        }
+
+        if (parser.hasFlag("-counts")) {
+            Path counts = parser.getPath("-counts", Path.of("counts.json"));
+            try {
+                SimpleJsonWriter.asObject(index.getCounter(), counts);
+            } catch (IOException e) {
+                System.out.println("Unable to create a Json of the counter.");
+            }
+
+        }
+
+        if (parser.hasFlag("-query")) {
+            Path query = parser.getPath("-query");
+            boolean result = false;
+            boolean exact = false;
+            if (query != null) {
+                // query file is provided
+                if (parser.hasFlag("-exact")) {
+                    exact = true;
+                }
+                try {
+                    if (parser.hasFlag("-results")) {
+                        result = true;
+                    }
+                    Path results = parser.getPath("-results", Path.of("results.json"));
+                    handler.handleQueries(query, exact, results, result);
+                } catch (IOException e) {
+                    System.out.println("Unable to perform the search for the given Query file: " + query);
+                }
+            } // else do nothing
+        } else if (parser.hasFlag("-results")) {
+            Path empty = Path.of("results.json");
+            TreeMap<String, List<SearchResult>> emptyResults = new TreeMap<String, List<SearchResult>>();
+            try {
+                SimpleJsonWriter.writeSearchResultsToFile(emptyResults, empty);
+            } catch (IOException e) {
+                System.out.println("Unable to write default empty results.");
+            }
+
         }
 
         if (parser.hasFlag("-index")) {

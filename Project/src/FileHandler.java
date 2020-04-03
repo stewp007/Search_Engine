@@ -3,7 +3,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
@@ -20,14 +24,14 @@ public class FileHandler {
      */
 
     private final InvertedIndex index;
-
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
     /**
      * Constructor for FileHandler Class
      * 
-     * @param index the InvertedIndex associated with the FileHandler
+     * @param index   the InvertedIndex associated with the FileHandler
+     * @param counter the word counter associated with the FileHandler
      */
     public FileHandler(InvertedIndex index) {
         this.index = index;
@@ -44,6 +48,39 @@ public class FileHandler {
         for (Path filePath : listPaths) {
             handleIndex(filePath);
         }
+    }
+
+    /**
+     * Cleans and parses queries from the given Path
+     * 
+     * @param path   the path of the Query file
+     * @param exact  flag for partial or exact search
+     * @param output the file to output the Json results
+     * @param result whether to ouptut the search to a file or not
+     * @throws IOException throws an IOException
+     */
+    public void handleQueries(Path path, boolean exact, Path output, Boolean result) throws IOException {
+        List<String> cleanedQueries = new ArrayList<String>();
+        TreeMap<String, List<SearchResult>> allResults = new TreeMap<String, List<SearchResult>>();
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
+                Collections.sort(cleanedQueries);
+                if (!cleaned.isEmpty()) {
+                    if (exact) {
+                        allResults.put(String.join(" ", cleaned), this.index.exactSearch(cleaned));
+                    } else {
+                        allResults.put(String.join(" ", cleaned), this.index.partialSearch(cleaned));
+                    }
+                    cleanedQueries.clear();
+                }
+            }
+        }
+        if (result) {
+            SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
+        }
+
     }
 
     /**
@@ -73,6 +110,9 @@ public class FileHandler {
                     index.add(stemmedWord, location, filePosition + linePosition);
                 }
                 filePosition += allStems.length;
+            }
+            if (filePosition > 0) {
+                index.getCounter().putIfAbsent(location, filePosition);
             }
         }
         return true;
