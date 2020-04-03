@@ -14,12 +14,6 @@ import java.util.TreeMap;
  * @version Spring 2020
  */
 public class Driver {
-
-    /**
-     * static variable flag used for exact or partial searches
-     */
-    public static boolean exact = false;
-
     /**
      * Initializes the classes necessary based on the provided command-line
      * arguments. This includes (but is not limited to) how to build or search an
@@ -69,6 +63,7 @@ public class Driver {
         if (parser.hasFlag("-query")) {
             Path query = parser.getPath("-query");
             boolean result = false;
+            boolean exact = false;
             if (query != null) {
                 // query file is provided
                 if (parser.hasFlag("-exact")) {
