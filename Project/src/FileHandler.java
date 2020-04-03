@@ -50,12 +50,13 @@ public class FileHandler {
      * 
      * Adds the contents of a file to the Index
      * 
-     * @param path the path to collect into the Index
+     * @param path  the path to collect into the Index
+     * @param index the invertedIndex to be created
      * 
      * @return boolean
      * @throws IOException Throws if there is an issue opening the file
      */
-    public boolean handleIndex(Path path) throws IOException {
+    public static boolean handleIndex(Path path, InvertedIndex index) throws IOException {
         int filePosition = 0;
         int linePosition = 0;
         SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
@@ -69,24 +70,22 @@ public class FileHandler {
                 for (String word : allStems) {
                     linePosition++;
                     stemmedWord = stemmer.stem(word).toString();
-                    this.index.add(stemmedWord, location, filePosition + linePosition);
+                    index.add(stemmedWord, location, filePosition + linePosition);
                 }
                 filePosition += allStems.length;
             }
         }
         return true;
     }
-    
-    /*
-     * TODO Will eventually help to have a static and non-static way to build the index (for project 3). I recommend:
-     * 
-     * public static boolean handleIndex(Path path, InvertedIndex index) throws IOException {
-     *     your original handleIndex implementation as-is except in a static method
-     * }
-     * 
-     * public boolean handleIndex(Path path) throws IOException {
-     *     handleIndex(path, this.index)
-     * }
-     */
 
+    /**
+     * Adds the contents of a file to an InvertedIndex
+     * 
+     * @param path the path to collect into the Index
+     * @return boolean
+     * @throws IOException throws an IOException
+     */
+    public boolean handleIndex(Path path) throws IOException {
+        return handleIndex(path, this.index);
+    }
 }

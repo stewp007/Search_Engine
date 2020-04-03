@@ -228,6 +228,20 @@ public class SimpleJsonWriter {
     }
 
     /**
+     * Outputs the given index in Json form to the given Path
+     * 
+     * @param index the index to output
+     * @param path  the Path to output the Json to
+     * @throws IOException throws IOException
+     */
+    public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
+            throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            indexToJson(index, writer, 0);
+        }
+    }
+
+    /**
      * Indents using 2 spaces by the number of times specified.
      *
      * @param writer the writer to use
@@ -305,24 +319,4 @@ public class SimpleJsonWriter {
         indent(writer, times);
         quote(element, writer);
     }
-
-    /**
-     * Outputs the given index in Json form to the given Path
-     * 
-     * @param index the index to output
-     * @param path  the Path to output the Json to
-     * @throws IOException throws IOException
-     */
-    public static void indexToJsonFile(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path)
-            throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            indexToJson(index, writer, 0);
-        }
-    }
-    
-    /*
-     * TODO Reorder so the indexToJson methods are all next to each other. 
-     * You can drag methods up and down in the "Outline" view to reorder them in Eclipse.
-     */
-
 }

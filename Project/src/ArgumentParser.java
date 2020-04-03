@@ -117,10 +117,7 @@ public class ArgumentParser {
      * @return {@code true} if the flag is mapped to a non-null value
      */
     public boolean hasValue(String flag) {
-      
-        // TODO Ternary operator not needed here...
-        // TODO return map.get(flag) != null;
-        return map.get(flag) != null ? true : false;
+        return map.get(flag) != null;
     }
 
     /**

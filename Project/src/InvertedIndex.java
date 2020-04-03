@@ -76,10 +76,16 @@ public class InvertedIndex {
                 ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
                 : Collections.emptySet();
     }
-    
-    /*
-     * TODO Missing a containsWord(String word) method.
+
+    /**
+     * Checks if the inverted index contains the specified word
+     * 
+     * @param word the word to check if its in the index
+     * @return boolean
      */
+    public boolean containsWord(String word) {
+        return invertedIndex.containsKey(word);
+    }
 
     /**
      * Checks if the inverted index contains the specified location
@@ -89,15 +95,7 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsLocation(String word, String location) {
-      /*
-       * TODO Nice to see you using the ? ternary operator, but it isn't necessary here.
-       * Can do this instead:
-       * 
-       * return invertedIndex.containsKey(word) & invertedIndex.get(word).get(location) != null
-       * 
-       * Fix it here and in the other methods.
-       */
-        return invertedIndex.containsKey(word) ? invertedIndex.get(word).get(location) != null : false;
+        return invertedIndex.containsKey(word) & invertedIndex.get(word).get(location) != null;
     }
 
     /**
@@ -109,8 +107,7 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsPosition(String word, String location, Integer position) {
-        return this.containsLocation(word, location) ? this.invertedIndex.get(word).get(location).contains(position)
-                : false;
+        return invertedIndex.get(word).get(location).contains(position) && containsLocation(word, location) != false;
     }
 
     /**
@@ -129,7 +126,7 @@ public class InvertedIndex {
      * @return int
      */
     public int numLocations(String word) {
-        return invertedIndex.containsKey(word) ? invertedIndex.get(word).size() : 0;
+        return invertedIndex.get(word) != null ? invertedIndex.get(word).size() : 0;
     }
 
     /**
