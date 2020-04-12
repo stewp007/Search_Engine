@@ -1,12 +1,12 @@
 /**
  * Generates the Search results
  */
-
+// TODO Fix Javadoc
 /**
  * @author stewartpowell
  *
  */
-public class SearchResult implements Comparable<SearchResult> {
+public class SearchResult implements Comparable<SearchResult> { // TODO Move to an inner class in InvertedIndex
     /**
      * the location of one or more of the matches
      */
@@ -69,6 +69,13 @@ public class SearchResult implements Comparable<SearchResult> {
     public void setCount(int newCount) {
         this.count = newCount;
     }
+    
+    /* TODO 
+    private void update(String word) {
+      this.count += index.get(word).get(where).size();
+      also update the score right away
+    }
+    */
 
     /**
      * sets a new score

@@ -200,7 +200,13 @@ public class InvertedIndex {
         }
         return updated;
     }
-
+    
+    /* TODO 
+    public List<SearchResult> search(Collection<String> queries, boolean exact) {
+      return exact ? exactSearch(queries) : partialSearch(queries);
+    }
+	*/
+    
     /**
      * Searches for exact matches in the Index
      * 
@@ -209,11 +215,26 @@ public class InvertedIndex {
      */
     public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
+        // TODO Map<String (location), SearchResult> lookup = ...
+        
         for (String query : queries) { // traverse through every query
             if (invertedIndex.containsKey(query)) {// check if key starts with the query
                 updateResult(query, results);
+                
+                /*
+                 * TODO 
+                 * 
+                 * for each location of this key
+                 * 		if the location exists in the lookup map
+                 * 			lookup.get(location).update(...)
+                 * 		else
+                 * 			create the new search result
+                 * 			add the result to the list
+                 * 			add the result to the map
+                 */
             }
         }
+        
         results.sort(null);
         return results;
     }

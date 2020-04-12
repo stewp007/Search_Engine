@@ -11,6 +11,13 @@ import java.util.TreeSet;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+/*
+ * TODO Break this up into two different handlers...
+ * 
+ * IndexHandler
+ * QueryHandler
+ */
+
 /**
  * Helper Class for CS 212 Projects
  * 
@@ -65,6 +72,7 @@ public class FileHandler {
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
+              // TODO call the other handleQueries method
                 TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
                 Collections.sort(cleanedQueries);
                 if (!cleaned.isEmpty()) {
@@ -82,6 +90,17 @@ public class FileHandler {
         }
 
     }
+    
+    /* TODO 
+    public void handleQueries(String line, boolean exact) throws IOException {
+      TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
+      String joined = String.join(" ", cleaned);
+      
+      if (!cleaned.isEmpty() && allResults.containsKey(joined)) {
+          allResults.put(joined, this.index.search(cleaned, exact));
+      }
+    }
+    */
 
     /**
      * 

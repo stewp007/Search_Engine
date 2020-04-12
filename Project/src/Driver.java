@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.TreeMap;
 
+// TODO Seeing 2 warnings, check Eclipse settings
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -60,6 +62,13 @@ public class Driver {
 
         }
 
+        /* TODO Try something like this:
+        if (parser.hasFlag("-query")) {
+          Path query = parser.getPath("-query");
+          handler.handleQueries(query, parser.hasFlag("-exact"));
+        }
+        */
+        
         if (parser.hasFlag("-query")) {
             Path query = parser.getPath("-query");
             boolean result = false;
@@ -89,6 +98,12 @@ public class Driver {
             }
 
         }
+        
+        /* TODO 
+        if (parser.hasFlag("-results")) {
+          call a method in your handler to output the results
+        }
+        */
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
