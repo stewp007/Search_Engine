@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -244,18 +245,18 @@ public class SimpleJsonWriter {
     /**
      * Writes the elements as a pretty JSON object with a nested SearchResult.
      * 
-     * @param results the SearchResults to write
-     * @param writer  the writer to use
-     * @param level   the initial indent level
+     * @param list   the SearchResults to write
+     * @param writer the writer to use
+     * @param level  the initial indent level
      * @throws IOException if an IO error occurs
      */
-    public static void asNestedSearchResult(Collection<SearchResult> results, Writer writer, int level)
+    public static void asNestedSearchResult(List<InvertedIndex.SearchResult> list, Writer writer, int level)
             throws IOException {
 
-        var resultIter = results.iterator();
+        var resultIter = list.iterator();
         level++;
         if (resultIter.hasNext()) {
-            SearchResult result = resultIter.next();
+            InvertedIndex.SearchResult result = resultIter.next();
             String formatted = String.format("%.8f", result.getScore());
             writer.write("\n");
             indent("{", writer, level - 1);
@@ -274,7 +275,7 @@ public class SimpleJsonWriter {
             indent("}", writer, level - 1);
         }
         while (resultIter.hasNext()) {
-            SearchResult result = resultIter.next();
+            InvertedIndex.SearchResult result = resultIter.next();
             String formatted = String.format("%.8f", result.getScore());
             writer.write(",\n");
             indent("{", writer, level - 1);
@@ -304,8 +305,8 @@ public class SimpleJsonWriter {
      * @param level  the level of indentation
      * @throws IOException throws IOException
      */
-    public static void writeResultsToJson(Map.Entry<String, List<SearchResult>> entry, Writer writer, int level)
-            throws IOException {
+    public static void writeResultsToJson(Entry<String, List<InvertedIndex.SearchResult>> entry, Writer writer,
+            int level) throws IOException {
         quote(entry.getKey(), writer, level);
         writer.write(": [");
         asNestedSearchResult(entry.getValue(), writer, level + 1);
@@ -315,16 +316,16 @@ public class SimpleJsonWriter {
     /**
      * Converts the search results into a pretty Json format
      * 
-     * @param results the search results
-     * @param writer  the writer used to write
-     * @param level   the level of indentation
+     * @param allResults the search results
+     * @param writer     the writer used to write
+     * @param level      the level of indentation
      * @return a String of the Json results
      * @throws IOException throws an IOException
      */
-    public static String writeSearchResults(TreeMap<String, List<SearchResult>> results, Writer writer, int level)
-            throws IOException {
+    public static String writeSearchResults(TreeMap<String, List<InvertedIndex.SearchResult>> allResults, Writer writer,
+            int level) throws IOException {
         writer.write("{");
-        var queryWord = results.entrySet().iterator();
+        var queryWord = allResults.entrySet().iterator();
         level++;
         if (queryWord.hasNext()) {
             writer.write("\n");
@@ -342,14 +343,14 @@ public class SimpleJsonWriter {
     /**
      * Writes the search Results into pretty Json format to the given file
      * 
-     * @param results the search results
-     * @param path    the path to output to
+     * @param allResults the search results
+     * @param path       the path to output to
      * @throws IOException if there is an error opening the file
      */
-    public static void writeSearchResultsToFile(TreeMap<String, List<SearchResult>> results, Path path)
+    public static void writeSearchResultsToFile(TreeMap<String, List<InvertedIndex.SearchResult>> allResults, Path path)
             throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            writeSearchResults(results, writer, 0);
+            writeSearchResults(allResults, writer, 0);
         }
 
     }

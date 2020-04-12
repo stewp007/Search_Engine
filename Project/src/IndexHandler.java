@@ -3,20 +3,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
-
-/*
- * TODO Break this up into two different handlers...
- * 
- * IndexHandler
- * QueryHandler
- */
 
 /**
  * Helper Class for CS 212 Projects
@@ -24,12 +13,9 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author stewartpowell
  *
  */
-public class FileHandler {
+public class IndexHandler {
 
-    /**
-     * Class Member to reference the index
-     */
-
+    /** Class Member to reference the index */
     private final InvertedIndex index;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
@@ -40,7 +26,7 @@ public class FileHandler {
      * @param index   the InvertedIndex associated with the FileHandler
      * @param counter the word counter associated with the FileHandler
      */
-    public FileHandler(InvertedIndex index) {
+    public IndexHandler(InvertedIndex index) {
         this.index = index;
     }
 
@@ -56,51 +42,6 @@ public class FileHandler {
             handleIndex(filePath);
         }
     }
-
-    /**
-     * Cleans and parses queries from the given Path
-     * 
-     * @param path   the path of the Query file
-     * @param exact  flag for partial or exact search
-     * @param output the file to output the Json results
-     * @param result whether to ouptut the search to a file or not
-     * @throws IOException throws an IOException
-     */
-    public void handleQueries(Path path, boolean exact, Path output, Boolean result) throws IOException {
-        List<String> cleanedQueries = new ArrayList<String>();
-        TreeMap<String, List<SearchResult>> allResults = new TreeMap<String, List<SearchResult>>();
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-              // TODO call the other handleQueries method
-                TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
-                Collections.sort(cleanedQueries);
-                if (!cleaned.isEmpty()) {
-                    if (exact) {
-                        allResults.put(String.join(" ", cleaned), this.index.exactSearch(cleaned));
-                    } else {
-                        allResults.put(String.join(" ", cleaned), this.index.partialSearch(cleaned));
-                    }
-                    cleanedQueries.clear();
-                }
-            }
-        }
-        if (result) {
-            SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
-        }
-
-    }
-    
-    /* TODO 
-    public void handleQueries(String line, boolean exact) throws IOException {
-      TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
-      String joined = String.join(" ", cleaned);
-      
-      if (!cleaned.isEmpty() && allResults.containsKey(joined)) {
-          allResults.put(joined, this.index.search(cleaned, exact));
-      }
-    }
-    */
 
     /**
      * 

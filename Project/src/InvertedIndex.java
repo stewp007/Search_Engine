@@ -164,49 +164,29 @@ public class InvertedIndex {
      * @param location the location
      * @param results  the list of results
      * @param queries  the queries used
+     * @return the newly created SearchResult
      */
-    public void createNewResult(String query, String location, List<SearchResult> results) {
+    public SearchResult createNewResult(String query, String location, List<SearchResult> results) {
         SearchResult currResult = new SearchResult(location, 0, 0);
         int newCount = numPositions(query, location);
         currResult.setCount(newCount);
         double newScore = (double) newCount / counter.get(location);
         currResult.setScore(newScore);
         results.add(currResult);
+        return currResult;
     }
 
     /**
+     * Searches the index with the given queries
      * 
-     * @param query   the query being used for search
-     * @param results the list of previous results
-     * @return true or false if updated result or not
+     * @param queries the words to search for
+     * @param exact   whether to do an exact or partial search
+     * @return the list of search results generated from the search
      */
-    public boolean updateResult(String query, List<SearchResult> results) {
-        boolean updated = false;
-        for (String location : invertedIndex.get(query).keySet()) {
-            updated = false;
-            for (SearchResult prevResult : results) {
-                if (location.equals(prevResult.getWhere())) {
-                    int updateCount = prevResult.getCount();
-                    updateCount += numPositions(query, location);
-                    prevResult.setCount(updateCount);
-                    double updateScore = (double) updateCount / counter.get(location);
-                    prevResult.setScore(updateScore);
-                    updated = true;
-                }
-            }
-            if (!updated) {
-                createNewResult(query, location, results);
-            }
-        }
-        return updated;
-    }
-    
-    /* TODO 
     public List<SearchResult> search(Collection<String> queries, boolean exact) {
-      return exact ? exactSearch(queries) : partialSearch(queries);
+        return exact ? exactSearch(queries) : partialSearch(queries);
     }
-	*/
-    
+
     /**
      * Searches for exact matches in the Index
      * 
@@ -215,26 +195,20 @@ public class InvertedIndex {
      */
     public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        // TODO Map<String (location), SearchResult> lookup = ...
-        
+        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
+        SearchResult newResult;
         for (String query : queries) { // traverse through every query
             if (invertedIndex.containsKey(query)) {// check if key starts with the query
-                updateResult(query, results);
-                
-                /*
-                 * TODO 
-                 * 
-                 * for each location of this key
-                 * 		if the location exists in the lookup map
-                 * 			lookup.get(location).update(...)
-                 * 		else
-                 * 			create the new search result
-                 * 			add the result to the list
-                 * 			add the result to the map
-                 */
+                for (String location : invertedIndex.get(query).keySet()) {
+                    if (lookup.containsKey(location)) {
+                        lookup.get(location).update(query);
+                    } else {
+                        newResult = createNewResult(query, location, results);
+                        lookup.put(location, newResult);
+                    }
+                }
             }
         }
-        
         results.sort(null);
         return results;
     }
@@ -247,10 +221,19 @@ public class InvertedIndex {
      */
     public List<SearchResult> partialSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
+        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
+        SearchResult newResult;
         for (String query : queries) { // traverse through every query
             for (String key : invertedIndex.keySet()) {
                 if (key.startsWith(query)) {// check if key starts with the query
-                    updateResult(key, results);
+                    for (String location : invertedIndex.get(key).keySet()) {
+                        if (lookup.containsKey(location)) {
+                            lookup.get(location).update(key);
+                        } else {
+                            newResult = createNewResult(key, location, results);
+                            lookup.put(location, newResult);
+                        }
+                    }
                 }
             }
         }
@@ -264,10 +247,120 @@ public class InvertedIndex {
     }
 
     /**
+     * returns the counter
+     * 
      * @return the counter
      */
     public TreeMap<String, Integer> getCounter() {
         return counter;
+    }
+
+    /**
+     * Inner SearchResult class
+     * 
+     * @author stewartpowell
+     *
+     */
+    public class SearchResult implements Comparable<SearchResult> {
+        /**
+         * the location of one or more of the matches
+         */
+        private final String where;
+        /**
+         * the total number of matches within the text file
+         */
+        private Integer count;
+        /**
+         * the total number of matches divide by the total number of words
+         */
+        private double score;
+
+        /**
+         * Constructor for the Search Results
+         * 
+         * @param where the location of one or more of the matches
+         * @param count total matches within the text file
+         * @param score the total matches divided by the total words
+         */
+        public SearchResult(String where, Integer count, double score) {
+            this.where = where;
+            this.count = count;
+            this.score = score;
+        }
+
+        /**
+         * gets where
+         * 
+         * @return the location of one or more of the matches
+         */
+        public String getWhere() {
+            return where;
+        }
+
+        /**
+         * gets the count of the search result
+         * 
+         * @return the count
+         */
+        public Integer getCount() {
+            return count;
+        }
+
+        /**
+         * gets the score of the search result
+         * 
+         * @return the score
+         */
+        public double getScore() {
+            return score;
+        }
+
+        /**
+         * sets a new count
+         * 
+         * @param newCount the new count number
+         */
+        public void setCount(int newCount) {
+            this.count = newCount;
+        }
+
+        /**
+         * updates the SearchResult of the given query
+         * 
+         * @param word the query word
+         */
+        private void update(String word) {
+            count += invertedIndex.get(word).get(where).size();
+            score = (double) count / counter.get(where);
+        }
+
+        /**
+         * sets a new score
+         * 
+         * @param newScore the new score
+         */
+        public void setScore(double newScore) {
+            this.score = newScore;
+        }
+
+        @Override
+        public int compareTo(SearchResult other) {
+            if (Double.compare(this.score, other.score) == 0) {
+                if (Integer.compare(this.count, other.count) == 0) {
+                    return this.where.compareToIgnoreCase(other.where);
+                } else {
+                    return Integer.compare(other.count, this.count);
+                }
+            } else {
+                return Double.compare(other.score, this.score);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "\nwhere: " + this.where + "\ncount: " + this.count + "\nscore: " + this.score + "\n";
+        }
+
     }
 
 }

@@ -2,10 +2,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.TreeMap;
-
-// TODO Seeing 2 warnings, check Eclipse settings
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -36,14 +32,16 @@ public class Driver {
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
         InvertedIndex index = new InvertedIndex();
-        // Initialize FileHandler
-        FileHandler handler = new FileHandler(index);
+        // Initialize IndexHandler
+        IndexHandler indexHandler = new IndexHandler(index);
+        // Initialize QueryHandler
+        QueryHandler queryHandler = new QueryHandler(index);
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    handler.handleFiles(path);
+                    indexHandler.handleFiles(path);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
                 }
@@ -62,48 +60,20 @@ public class Driver {
 
         }
 
-        /* TODO Try something like this:
-        if (parser.hasFlag("-query")) {
-          Path query = parser.getPath("-query");
-          handler.handleQueries(query, parser.hasFlag("-exact"));
-        }
-        */
-        
         if (parser.hasFlag("-query")) {
             Path query = parser.getPath("-query");
-            boolean result = false;
-            boolean exact = false;
             if (query != null) {
-                // query file is provided
-                if (parser.hasFlag("-exact")) {
-                    exact = true;
-                }
                 try {
-                    if (parser.hasFlag("-results")) {
-                        result = true;
-                    }
-                    Path results = parser.getPath("-results", Path.of("results.json"));
-                    handler.handleQueries(query, exact, results, result);
+                    queryHandler.handleQueries(query, parser.hasFlag("-exact"));
                 } catch (IOException e) {
-                    System.out.println("Unable to perform the search for the given Query file: " + query);
+                    System.out.println("Unable to Search those Queries.");
                 }
-            } // else do nothing
-        } else if (parser.hasFlag("-results")) {
-            Path empty = Path.of("results.json");
-            TreeMap<String, List<SearchResult>> emptyResults = new TreeMap<String, List<SearchResult>>();
-            try {
-                SimpleJsonWriter.writeSearchResultsToFile(emptyResults, empty);
-            } catch (IOException e) {
-                System.out.println("Unable to write default empty results.");
             }
+        }
 
-        }
-        
-        /* TODO 
         if (parser.hasFlag("-results")) {
-          call a method in your handler to output the results
+            queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
         }
-        */
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
