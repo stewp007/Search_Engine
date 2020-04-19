@@ -16,7 +16,7 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class IndexHandler {
 
     /** Class Member to reference the index */
-    private final InvertedIndex index;
+    private final ThreadedInvertedIndex index;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
@@ -26,20 +26,22 @@ public class IndexHandler {
      * @param index   the InvertedIndex associated with the FileHandler
      * @param counter the word counter associated with the FileHandler
      */
-    public IndexHandler(InvertedIndex index) {
+    public IndexHandler(ThreadedInvertedIndex index) {
         this.index = index;
     }
 
     /**
      * Searches through files starting at the given Path
      * 
-     * @param path the path of the file to handle
+     * @param path       the path of the file to handle
+     * @param numThreads the number of threads to use
      * @throws IOException throws if there is an issue opening the file
      */
-    public void handleFiles(Path path) throws IOException {
+    public void handleFiles(Path path, int numThreads) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
+        WorkQueue queue = new WorkQueue(numThreads);
         for (Path filePath : listPaths) {
-            handleIndex(filePath);
+            queue.execute(new IndexBuilder(filePath, this.index));
         }
     }
 
@@ -81,11 +83,50 @@ public class IndexHandler {
     /**
      * Adds the contents of a file to an InvertedIndex
      * 
-     * @param path the path to collect into the Index
+     * @param path       the path to collect into the Index
+     * @param numThreads the number of threads to use
      * @return boolean
      * @throws IOException throws an IOException
      */
     public boolean handleIndex(Path path) throws IOException {
         return handleIndex(path, this.index);
+    }
+
+    /**
+     * Runnable Object used for building an index
+     * 
+     * @author stewartpowell
+     *
+     */
+    public static class IndexBuilder implements Runnable {
+        /** The path used for building */
+        private final Path path;
+
+        /** The Thread safe InvertedIndex */
+        private final ThreadedInvertedIndex index;
+
+        /**
+         * Constructer for IndexBuilder
+         * 
+         * @param path  the path used for building
+         * @param index the ThreadedInvertedIndex
+         */
+        public IndexBuilder(Path path, ThreadedInvertedIndex index) {
+            this.path = path;
+            this.index = index;
+        }
+
+        @Override
+        public void run() {
+            synchronized (index) {
+                try {
+                    handleIndex(path, this.index);
+                } catch (IOException e) {
+                    // Some log message if I had logger setup
+                }
+            }
+
+        }
+
     }
 }

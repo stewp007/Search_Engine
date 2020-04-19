@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -189,13 +189,6 @@ public class ThreadedInvertedIndex extends InvertedIndex {
         }
     }
 
-    @Override
-    public String toString() {
-        synchronized (lock) {
-            return super.toString();
-        }
-    }
-
     /**
      * returns the counter
      * 
@@ -203,7 +196,35 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     public TreeMap<String, Integer> getCounter() {
         synchronized (lock) {
-            return (TreeMap<String, Integer>) Collections.unmodifiableMap(counter);
+            return counter;
+        }
+    }
+
+    @Override
+    public List<SearchResult> search(Collection<String> queries, boolean exact) {
+        synchronized (lock) {
+            return super.search(queries, exact);
+        }
+    }
+
+    @Override
+    public List<SearchResult> exactSearch(Collection<String> queries) {
+        synchronized (lock) {
+            return super.exactSearch(queries);
+        }
+    }
+
+    @Override
+    public List<SearchResult> partialSearch(Collection<String> queries) {
+        synchronized (lock) {
+            return super.partialSearch(queries);
+        }
+    }
+
+    @Override
+    public String toString() {
+        synchronized (lock) {
+            return super.toString();
         }
     }
 }

@@ -31,17 +31,31 @@ public class Driver {
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
-        InvertedIndex index = new InvertedIndex();
+        ThreadedInvertedIndex index = new ThreadedInvertedIndex();
         // Initialize IndexHandler
         IndexHandler indexHandler = new IndexHandler(index);
         // Initialize QueryHandler
         QueryHandler queryHandler = new QueryHandler(index);
 
+        int numThreads;
+        if (parser.hasFlag("-threads")) {
+            try {
+                numThreads = Integer.parseInt(parser.getString("-threads", "5"));
+                if (numThreads <= 0) {
+                    numThreads = 5;
+                }
+            } catch (NumberFormatException e) {
+                numThreads = 5;
+            }
+        } else {
+            numThreads = 1;
+        }
+
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    indexHandler.handleFiles(path);
+                    indexHandler.handleFiles(path, numThreads);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
                 }
