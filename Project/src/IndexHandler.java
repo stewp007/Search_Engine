@@ -17,17 +17,20 @@ public class IndexHandler {
 
     /** Class Member to reference the index */
     private final ThreadedInvertedIndex index;
+    /** The WorkQueue used for this class */
+    private WorkQueue queue;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
     /**
      * Constructor for FileHandler Class
      * 
-     * @param index   the InvertedIndex associated with the FileHandler
-     * @param counter the word counter associated with the FileHandler
+     * @param index      the InvertedIndex associated with the FileHandler
+     * @param numThreads the number of threads to use
      */
-    public IndexHandler(ThreadedInvertedIndex index) {
+    public IndexHandler(ThreadedInvertedIndex index, int numThreads) {
         this.index = index;
+        this.queue = new WorkQueue(numThreads);
     }
 
     /**
@@ -39,10 +42,18 @@ public class IndexHandler {
      */
     public void handleFiles(Path path, int numThreads) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
-        WorkQueue queue = new WorkQueue(numThreads);
         for (Path filePath : listPaths) {
             queue.execute(new IndexBuilder(filePath, this.index));
         }
+
+        try {
+            queue.finish();
+        } catch (InterruptedException e) {
+            System.out.println("Interupted Thread while Handling Files.");
+            Thread.currentThread().interrupt();
+        }
+        queue.shutdown();
+
     }
 
     /**
@@ -98,7 +109,7 @@ public class IndexHandler {
      * @author stewartpowell
      *
      */
-    public static class IndexBuilder implements Runnable {
+    private class IndexBuilder implements Runnable {
         /** The path used for building */
         private final Path path;
 
@@ -118,11 +129,11 @@ public class IndexHandler {
 
         @Override
         public void run() {
-            synchronized (index) {
+            synchronized (queue) {
                 try {
                     handleIndex(path, this.index);
                 } catch (IOException e) {
-                    // Some log message if I had logger setup
+                    System.out.println("IOException occured in IndexBuilder @" + path);
                 }
             }
 

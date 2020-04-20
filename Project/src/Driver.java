@@ -28,15 +28,13 @@ public class Driver {
             System.out.println("Please provide necessary arguments.");
             return;
         }
+
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
         ThreadedInvertedIndex index = new ThreadedInvertedIndex();
-        // Initialize IndexHandler
-        IndexHandler indexHandler = new IndexHandler(index);
-        // Initialize QueryHandler
-        QueryHandler queryHandler = new QueryHandler(index);
 
+        // gets the number of threads to use for building and searching
         int numThreads;
         if (parser.hasFlag("-threads")) {
             try {
@@ -50,6 +48,11 @@ public class Driver {
         } else {
             numThreads = 1;
         }
+
+        // Initialize IndexHandler
+        IndexHandler indexHandler = new IndexHandler(index, numThreads);
+        // Initialize QueryHandler
+        QueryHandler queryHandler = new QueryHandler(index, numThreads);
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
@@ -78,7 +81,7 @@ public class Driver {
             Path query = parser.getPath("-query");
             if (query != null) {
                 try {
-                    queryHandler.handleQueries(query, parser.hasFlag("-exact"));
+                    queryHandler.handleQueries(query, parser.hasFlag("-exact"), numThreads);
                 } catch (IOException e) {
                     System.out.println("Unable to Search those Queries.");
                 }

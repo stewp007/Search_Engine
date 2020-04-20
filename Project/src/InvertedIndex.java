@@ -196,19 +196,22 @@ public class InvertedIndex {
     public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
-        SearchResult newResult;
-        for (String query : queries) { // traverse through every query
-            if (invertedIndex.containsKey(query)) {// check if key starts with the query
-                for (String location : invertedIndex.get(query).keySet()) {
-                    if (lookup.containsKey(location)) {
-                        lookup.get(location).update(query);
-                    } else {
-                        newResult = createNewResult(query, location, results);
-                        lookup.put(location, newResult);
+        synchronized (lookup) {
+            SearchResult newResult;
+            for (String query : queries) { // traverse through every query
+                if (invertedIndex.containsKey(query)) {// check if key starts with the query
+                    for (String location : invertedIndex.get(query).keySet()) {
+                        if (lookup.containsKey(location)) {
+                            lookup.get(location).update(query);
+                        } else {
+                            newResult = createNewResult(query, location, results);
+                            lookup.put(location, newResult);
+                        }
                     }
                 }
             }
         }
+
         results.sort(null);
         return results;
     }
