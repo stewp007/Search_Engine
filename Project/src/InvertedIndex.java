@@ -163,7 +163,6 @@ public class InvertedIndex {
      * @param query    the query word
      * @param location the location
      * @param results  the list of results
-     * @param queries  the queries used
      * @return the newly created SearchResult
      */
     public SearchResult createNewResult(String query, String location, List<SearchResult> results) {

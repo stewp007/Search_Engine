@@ -38,10 +38,8 @@ public class QueryHandler {
     /**
      * Cleans and parses queries from the given Path
      * 
-     * @param path   the path of the Query file
-     * @param exact  flag for partial or exact search
-     * @param output the file to output the Json results
-     * @param result whether to ouptut the search to a file or not
+     * @param path  the path of the Query file
+     * @param exact flag for partial or exact search
      * @throws IOException throws an IOException
      */
     public void handleQueries(Path path, boolean exact) throws IOException {

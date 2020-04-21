@@ -23,8 +23,7 @@ public class IndexHandler {
     /**
      * Constructor for FileHandler Class
      * 
-     * @param index   the InvertedIndex associated with the FileHandler
-     * @param counter the word counter associated with the FileHandler
+     * @param index the InvertedIndex associated with the FileHandler
      */
     public IndexHandler(InvertedIndex index) {
         this.index = index;
