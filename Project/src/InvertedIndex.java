@@ -46,6 +46,15 @@ public class InvertedIndex {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
         return invertedIndex.get(word).get(path).add(position);
+        
+        /*
+         * TODO 
+         * Option 1: If the add(position) returned true, add 1 
+         * to the count for this location.
+         * 
+         * Option 2: Always keep the maximum position encountered
+         * for a location.
+         */
     }
 
     /**
@@ -65,6 +74,7 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
+      // TODO Need to change how you avoid the null pointer exceptions
         return Collections.unmodifiableSet(invertedIndex.get(word).keySet()) != null
                 ? Collections.unmodifiableSet(invertedIndex.get(word).keySet())
                 : Collections.emptySet();
@@ -114,6 +124,7 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsPosition(String word, String location, Integer position) {
+      // TODO Call containsLocation(...) first
         return invertedIndex.get(word).get(location).contains(position) & containsLocation(word, location) != false;
     }
 
@@ -157,6 +168,7 @@ public class InvertedIndex {
         SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
     }
 
+    // TODO Remove
     /**
      * helper function for exact and partial search
      * 
@@ -194,8 +206,9 @@ public class InvertedIndex {
      */
     public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
-        SearchResult newResult;
+        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>(); // TODO HashMap
+        SearchResult newResult; // TODO Move this inside of the else below
+        
         for (String query : queries) { // traverse through every query
             if (invertedIndex.containsKey(query)) {// check if key starts with the query
                 for (String location : invertedIndex.get(query).keySet()) {
@@ -205,6 +218,16 @@ public class InvertedIndex {
                         newResult = createNewResult(query, location, results);
                         lookup.put(location, newResult);
                     }
+                    
+                    /* TODO 
+                    if (!lookup.containsKey(location)) {
+                      SearchResult result = new SearchResult(location);
+                      lookup.put(location, result);
+                      results.add(result);
+                    }
+                    
+                    lookup.get(location).update(query);
+                    */
                 }
             }
         }
@@ -223,9 +246,15 @@ public class InvertedIndex {
         TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
         SearchResult newResult;
         for (String query : queries) { // traverse through every query
+          // TODO Use tailMap. See: https://github.com/usf-cs212-2020/lectures/blob/master/Data%20Structures/src/FindDemo.java#L140-L156
             for (String key : invertedIndex.keySet()) {
                 if (key.startsWith(query)) {// check if key starts with the query
-                    for (String location : invertedIndex.get(key).keySet()) {
+                    
+                  /*
+                   * TODO Put the inner for loop in a private searchHelper method that
+                   * you can call in both exact and partialSearch
+                   */
+                  for (String location : invertedIndex.get(key).keySet()) {
                         if (lookup.containsKey(location)) {
                             lookup.get(location).update(key);
                         } else {
@@ -251,6 +280,9 @@ public class InvertedIndex {
      * @return the counter
      */
     public TreeMap<String, Integer> getCounter() {
+      /*
+       * TODO Avoid breaking encapsulation, make unmodifiable
+       */
         return counter;
     }
 
@@ -268,7 +300,7 @@ public class InvertedIndex {
         /**
          * the total number of matches within the text file
          */
-        private Integer count;
+        private Integer count; // TODO int
         /**
          * the total number of matches divide by the total number of words
          */
@@ -280,7 +312,7 @@ public class InvertedIndex {
          * @param where the location of one or more of the matches
          * @param count total matches within the text file
          * @param score the total matches divided by the total words
-         */
+         */ // TODO Remove count, score parameters, set those values to 0.
         public SearchResult(String where, Integer count, double score) {
             this.where = where;
             this.count = count;
@@ -319,7 +351,7 @@ public class InvertedIndex {
          * 
          * @param newCount the new count number
          */
-        public void setCount(int newCount) {
+        public void setCount(int newCount) { // TODO Remove
             this.count = newCount;
         }
 
@@ -338,7 +370,7 @@ public class InvertedIndex {
          * 
          * @param newScore the new score
          */
-        public void setScore(double newScore) {
+        public void setScore(double newScore) { // TODO Update
             this.score = newScore;
         }
 
