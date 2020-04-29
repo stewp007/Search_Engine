@@ -17,7 +17,6 @@ public class QueryHandler {
     /**
      * Class Member to reference the index
      */
-
     private final InvertedIndex index;
 
     /**
@@ -65,6 +64,14 @@ public class QueryHandler {
         if (!cleaned.isEmpty() && !allResults.containsKey(joined)) {
             allResults.put(joined, this.index.search(cleaned, exact));
         }
+        
+        /* TODO 
+        if (cleaned.isEmpty() || allResults.containsKey(joined)) {
+          return;
+        }
+        
+        allResults.put(joined, this.index.search(cleaned, exact));
+        */
     }
 
     /**
@@ -79,5 +86,4 @@ public class QueryHandler {
             System.out.println("Unable to write the results to the given output file: " + output);
         }
     }
-
 }
