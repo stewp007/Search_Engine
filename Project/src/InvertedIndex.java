@@ -3,7 +3,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -23,7 +25,7 @@ public class InvertedIndex {
     /**
      * the counter for files
      */
-    private final TreeMap<String, Integer> counter;
+    private final Map<String, Integer> counter;
 
     /**
      * Instantiates the InvertedIndex object
@@ -45,16 +47,13 @@ public class InvertedIndex {
     public boolean add(String word, String path, int position) {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
-        return invertedIndex.get(word).get(path).add(position);
-        
-        /*
-         * TODO 
-         * Option 1: If the add(position) returned true, add 1 
-         * to the count for this location.
-         * 
-         * Option 2: Always keep the maximum position encountered
-         * for a location.
-         */
+        if (invertedIndex.get(word).get(path).add(position)) {
+            counter.putIfAbsent(path, 0);
+            int increment = counter.get(path);
+            counter.put(path, increment + 1);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -74,9 +73,7 @@ public class InvertedIndex {
      * @return Set<String> the set of locations associated with the given word
      */
     public Set<String> getLocations(String word) {
-      // TODO Need to change how you avoid the null pointer exceptions
-        return Collections.unmodifiableSet(invertedIndex.get(word).keySet()) != null
-                ? Collections.unmodifiableSet(invertedIndex.get(word).keySet())
+        return invertedIndex.get(word) != null ? Collections.unmodifiableSet(invertedIndex.get(word).keySet())
                 : Collections.emptySet();
     }
 
@@ -89,8 +86,7 @@ public class InvertedIndex {
      *         location
      */
     public Set<Integer> getPositions(String word, String location) {
-        return Collections.unmodifiableSet(invertedIndex.get(word).get(location)) != null
-                ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
+        return containsLocation(word, location) ? Collections.unmodifiableSet(invertedIndex.get(word).get(location))
                 : Collections.emptySet();
     }
 
@@ -124,8 +120,7 @@ public class InvertedIndex {
      * @return boolean
      */
     public boolean containsPosition(String word, String location, Integer position) {
-      // TODO Call containsLocation(...) first
-        return invertedIndex.get(word).get(location).contains(position) & containsLocation(word, location) != false;
+        return containsLocation(word, location) & invertedIndex.get(word).get(location).contains(position) != false;
     }
 
     /**
@@ -168,25 +163,6 @@ public class InvertedIndex {
         SimpleJsonWriter.indexToJsonFile(this.invertedIndex, path);
     }
 
-    // TODO Remove
-    /**
-     * helper function for exact and partial search
-     * 
-     * @param query    the query word
-     * @param location the location
-     * @param results  the list of results
-     * @return the newly created SearchResult
-     */
-    public SearchResult createNewResult(String query, String location, List<SearchResult> results) {
-        SearchResult currResult = new SearchResult(location, 0, 0);
-        int newCount = numPositions(query, location);
-        currResult.setCount(newCount);
-        double newScore = (double) newCount / counter.get(location);
-        currResult.setScore(newScore);
-        results.add(currResult);
-        return currResult;
-    }
-
     /**
      * Searches the index with the given queries
      * 
@@ -199,6 +175,24 @@ public class InvertedIndex {
     }
 
     /**
+     * helper function for exact and partial search
+     * 
+     * @param key     the key in the inverted index
+     * @param lookup  the lookup map
+     * @param results the list of results
+     */
+    private void searchHelper(String key, Map<String, SearchResult> lookup, List<SearchResult> results) {
+        for (String location : invertedIndex.get(key).keySet()) {
+            if (!lookup.containsKey(location)) {
+                SearchResult result = new SearchResult(location);
+                lookup.put(location, result);
+                results.add(result);
+            }
+            lookup.get(location).update(key);
+        }
+    }
+
+    /**
      * Searches for exact matches in the Index
      * 
      * @param queries the queries to search for
@@ -206,29 +200,10 @@ public class InvertedIndex {
      */
     public List<SearchResult> exactSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>(); // TODO HashMap
-        SearchResult newResult; // TODO Move this inside of the else below
-        
+        HashMap<String, SearchResult> lookup = new HashMap<String, SearchResult>();
         for (String query : queries) { // traverse through every query
             if (invertedIndex.containsKey(query)) {// check if key starts with the query
-                for (String location : invertedIndex.get(query).keySet()) {
-                    if (lookup.containsKey(location)) {
-                        lookup.get(location).update(query);
-                    } else {
-                        newResult = createNewResult(query, location, results);
-                        lookup.put(location, newResult);
-                    }
-                    
-                    /* TODO 
-                    if (!lookup.containsKey(location)) {
-                      SearchResult result = new SearchResult(location);
-                      lookup.put(location, result);
-                      results.add(result);
-                    }
-                    
-                    lookup.get(location).update(query);
-                    */
-                }
+                searchHelper(query, lookup, results);
             }
         }
         results.sort(null);
@@ -244,25 +219,12 @@ public class InvertedIndex {
     public List<SearchResult> partialSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
-        SearchResult newResult;
         for (String query : queries) { // traverse through every query
-          // TODO Use tailMap. See: https://github.com/usf-cs212-2020/lectures/blob/master/Data%20Structures/src/FindDemo.java#L140-L156
-            for (String key : invertedIndex.keySet()) {
-                if (key.startsWith(query)) {// check if key starts with the query
-                    
-                  /*
-                   * TODO Put the inner for loop in a private searchHelper method that
-                   * you can call in both exact and partialSearch
-                   */
-                  for (String location : invertedIndex.get(key).keySet()) {
-                        if (lookup.containsKey(location)) {
-                            lookup.get(location).update(key);
-                        } else {
-                            newResult = createNewResult(key, location, results);
-                            lookup.put(location, newResult);
-                        }
-                    }
+            for (String key : invertedIndex.tailMap(query).keySet()) {
+                if (!key.startsWith(query)) {
+                    break;
                 }
+                searchHelper(key, lookup, results);
             }
         }
         results.sort(null);
@@ -279,11 +241,8 @@ public class InvertedIndex {
      * 
      * @return the counter
      */
-    public TreeMap<String, Integer> getCounter() {
-      /*
-       * TODO Avoid breaking encapsulation, make unmodifiable
-       */
-        return counter;
+    public Map<String, Integer> getCounter() {
+        return Collections.unmodifiableMap(counter);
     }
 
     /**
@@ -300,7 +259,7 @@ public class InvertedIndex {
         /**
          * the total number of matches within the text file
          */
-        private Integer count; // TODO int
+        private int count;
         /**
          * the total number of matches divide by the total number of words
          */
@@ -310,13 +269,11 @@ public class InvertedIndex {
          * Constructor for the Search Results
          * 
          * @param where the location of one or more of the matches
-         * @param count total matches within the text file
-         * @param score the total matches divided by the total words
-         */ // TODO Remove count, score parameters, set those values to 0.
-        public SearchResult(String where, Integer count, double score) {
+         */
+        public SearchResult(String where) {
             this.where = where;
-            this.count = count;
-            this.score = score;
+            this.count = 0;
+            this.score = 0;
         }
 
         /**
@@ -333,7 +290,7 @@ public class InvertedIndex {
          * 
          * @return the count
          */
-        public Integer getCount() {
+        public int getCount() {
             return count;
         }
 
@@ -347,15 +304,6 @@ public class InvertedIndex {
         }
 
         /**
-         * sets a new count
-         * 
-         * @param newCount the new count number
-         */
-        public void setCount(int newCount) { // TODO Remove
-            this.count = newCount;
-        }
-
-        /**
          * updates the SearchResult of the given query
          * 
          * @param word the query word
@@ -363,15 +311,6 @@ public class InvertedIndex {
         private void update(String word) {
             count += invertedIndex.get(word).get(where).size();
             score = (double) count / counter.get(where);
-        }
-
-        /**
-         * sets a new score
-         * 
-         * @param newScore the new score
-         */
-        public void setScore(double newScore) { // TODO Update
-            this.score = newScore;
         }
 
         @Override

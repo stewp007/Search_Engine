@@ -70,10 +70,6 @@ public class IndexHandler {
                 }
                 filePosition += allStems.length;
             }
-            // TODO Remove from here
-            if (filePosition > 0) {
-                index.getCounter().putIfAbsent(location, filePosition);
-            }
         }
         return true;
     }

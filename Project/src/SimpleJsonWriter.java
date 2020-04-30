@@ -267,7 +267,7 @@ public class SimpleJsonWriter {
             writer.write(",\n");
             quote("count", writer, level);
             writer.write(": ");
-            writer.write(result.getCount().toString());
+            writer.write(String.valueOf(result.getCount()));
             writer.write(",\n");
             quote("score", writer, level);
             writer.write(": ");
@@ -286,7 +286,7 @@ public class SimpleJsonWriter {
             writer.write(",\n");
             quote("count", writer, level);
             writer.write(": ");
-            writer.write(result.getCount().toString());
+            writer.write(String.valueOf(result.getCount()));
             writer.write(",\n");
             quote("score", writer, level);
             writer.write(": ");

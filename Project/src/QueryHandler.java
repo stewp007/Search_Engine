@@ -61,17 +61,12 @@ public class QueryHandler {
     public void handleQueries(String line, boolean exact) throws IOException {
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
-        if (!cleaned.isEmpty() && !allResults.containsKey(joined)) {
-            allResults.put(joined, this.index.search(cleaned, exact));
-        }
-        
-        /* TODO 
         if (cleaned.isEmpty() || allResults.containsKey(joined)) {
-          return;
+            return;
         }
-        
+
         allResults.put(joined, this.index.search(cleaned, exact));
-        */
+
     }
 
     /**
