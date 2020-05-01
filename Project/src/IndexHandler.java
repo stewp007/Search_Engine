@@ -7,6 +7,11 @@ import java.util.List;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+/*
+ * TODO Restore the original handler
+ * Extend this one to create a multithreaded one
+ */
+
 /**
  * Helper Class for CS 212 Projects
  * 
@@ -125,7 +130,7 @@ public class IndexHandler {
 
         @Override
         public void run() {
-            synchronized (queue) {
+            synchronized (queue) { // TODO Remove
                 try {
                     handleIndex(path, this.index);
                 } catch (IOException e) {
@@ -133,6 +138,13 @@ public class IndexHandler {
                 }
             }
 
+            // TODO https://github.com/usf-cs212-2020/lectures/blob/master/Multithreading%20Work%20Queues/src/WorkQueueDirectoryListing.java#L102-L115
+            /*
+             * TODO
+             * InvertedIndex local = new InvertedIndex();
+             * handleIndex(path, local);
+             * index.addAll(local); <--- create this method
+             */
         }
 
     }
