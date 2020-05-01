@@ -205,6 +205,7 @@ public class InvertedIndex {
                 searchHelper(query, lookup, results);
             }
         }
+
         results.sort(null);
         return results;
     }

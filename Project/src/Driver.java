@@ -28,20 +28,37 @@ public class Driver {
             System.out.println("Please provide necessary arguments.");
             return;
         }
+
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
         // Initialize the InvertedIndex
-        InvertedIndex index = new InvertedIndex();
+        ThreadedInvertedIndex index = new ThreadedInvertedIndex();
+
+        // gets the number of threads to use for building and searching
+        int numThreads;
+        if (parser.hasFlag("-threads")) {
+            try {
+                numThreads = Integer.parseInt(parser.getString("-threads", "5"));
+                if (numThreads <= 0) {
+                    numThreads = 5;
+                }
+            } catch (NumberFormatException e) {
+                numThreads = 5;
+            }
+        } else {
+            numThreads = 1;
+        }
+
         // Initialize IndexHandler
-        IndexHandler indexHandler = new IndexHandler(index);
+        IndexHandler indexHandler = new IndexHandler(index, numThreads);
         // Initialize QueryHandler
-        QueryHandler queryHandler = new QueryHandler(index);
+        QueryHandler queryHandler = new QueryHandler(index, numThreads);
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    indexHandler.handleFiles(path);
+                    indexHandler.handleFiles(path, numThreads);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
                 }
@@ -64,7 +81,7 @@ public class Driver {
             Path query = parser.getPath("-query");
             if (query != null) {
                 try {
-                    queryHandler.handleQueries(query, parser.hasFlag("-exact"));
+                    queryHandler.handleQueries(query, parser.hasFlag("-exact"), numThreads);
                 } catch (IOException e) {
                     System.out.println("Unable to Search those Queries.");
                 }
