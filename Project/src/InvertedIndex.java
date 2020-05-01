@@ -48,8 +48,8 @@ public class InvertedIndex {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
         if (invertedIndex.get(word).get(path).add(position)) {
-            counter.putIfAbsent(path, 0);
-            int increment = counter.get(path);
+            counter.putIfAbsent(path, 0); // TODO Remove
+            int increment = counter.get(path); // TODO counter.getOrDefault(path, 0);
             counter.put(path, increment + 1);
             return true;
         }
@@ -218,7 +218,7 @@ public class InvertedIndex {
      */
     public List<SearchResult> partialSearch(Collection<String> queries) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>();
+        TreeMap<String, SearchResult> lookup = new TreeMap<String, SearchResult>(); // TODO HashMap
         for (String query : queries) { // traverse through every query
             for (String key : invertedIndex.tailMap(query).keySet()) {
                 if (!key.startsWith(query)) {
