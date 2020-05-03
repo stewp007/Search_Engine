@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/*
+ * TODO Restore the original handler
+ * Extend this one to create a multithreaded one
+ */
+
 /**
  * Handles the Queries used for Search
  * 
@@ -76,6 +81,7 @@ public class QueryHandler {
     public void handleQueries(String line, boolean exact) throws IOException {
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
+        // TODO For multithreadd version protect access to allResults
         if (cleaned.isEmpty() || allResults.containsKey(joined)) {
             return;
         }

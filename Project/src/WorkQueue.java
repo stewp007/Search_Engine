@@ -75,7 +75,7 @@ public class WorkQueue {
      *
      * @throws InterruptedException if interrupted
      */
-    public void finish() throws InterruptedException {
+    public void finish() throws InterruptedException { // TODO synchronized method
         synchronized (this) {
             while (pending > 0) {
                 this.wait();

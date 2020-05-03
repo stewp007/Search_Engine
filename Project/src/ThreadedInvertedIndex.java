@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class ThreadedInvertedIndex extends InvertedIndex {
     /** The lock used to protect concurrent access to the underlying set. */
-    private SimpleReadWriteLock lock;
+    private SimpleReadWriteLock lock; // TODO final
 
     /**
      * Instantiates the Thread safe InvertedIndex object
@@ -37,6 +37,8 @@ public class ThreadedInvertedIndex extends InvertedIndex {
         boolean result = false;
         lock.writeLock().lock();
         try {
+          // TODO return super.add(...)
+          // TODO Fix this in the other methods too
             result = super.add(word, path, position);
         } finally {
             lock.writeLock().unlock();
@@ -244,6 +246,7 @@ public class ThreadedInvertedIndex extends InvertedIndex {
         return counter;
     }
 
+    // TODO Remove
     @Override
     public List<SearchResult> search(Collection<String> queries, boolean exact) {
         List<SearchResult> results;
