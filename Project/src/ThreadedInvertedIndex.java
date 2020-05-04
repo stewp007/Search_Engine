@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class ThreadedInvertedIndex extends InvertedIndex {
     /** The lock used to protect concurrent access to the underlying set. */
-    private SimpleReadWriteLock lock; // TODO final
+    private final SimpleReadWriteLock lock;
 
     /**
      * Instantiates the Thread safe InvertedIndex object
@@ -34,16 +34,22 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public boolean add(String word, String path, int position) {
-        boolean result = false;
         lock.writeLock().lock();
         try {
-          // TODO return super.add(...)
-          // TODO Fix this in the other methods too
-            result = super.add(word, path, position);
+            return super.add(word, path, position);
         } finally {
             lock.writeLock().unlock();
         }
-        return result;
+    }
+
+    @Override
+    public void addAll(InvertedIndex otherIndex) {
+        lock.writeLock().lock();
+        try {
+            super.addAll(otherIndex);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     /**
@@ -53,14 +59,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public Collection<String> getWords() {
-        Collection<String> words;
         lock.readLock().lock();
         try {
-            words = super.getWords();
+            return super.getWords();
         } finally {
             lock.readLock().unlock();
         }
-        return words;
     }
 
     /**
@@ -72,14 +76,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public Set<String> getLocations(String word) {
-        Set<String> locations;
         lock.readLock().lock();
         try {
-            locations = super.getLocations(word);
+            return super.getLocations(word);
         } finally {
             lock.readLock().unlock();
         }
-        return locations;
     }
 
     /**
@@ -92,14 +94,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public Set<Integer> getPositions(String word, String location) {
-        Set<Integer> positions;
         lock.readLock().lock();
         try {
-            positions = super.getPositions(word, location);
+            return super.getPositions(word, location);
         } finally {
             lock.readLock().unlock();
         }
-        return positions;
     }
 
     /**
@@ -110,14 +110,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public boolean containsWord(String word) {
-        boolean result = false;
         lock.readLock().lock();
         try {
-            result = super.containsWord(word);
+            return super.containsWord(word);
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     /**
@@ -129,14 +127,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public boolean containsLocation(String word, String location) {
-        boolean result = false;
         lock.readLock().lock();
         try {
-            result = super.containsLocation(word, location);
+            return super.containsLocation(word, location);
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     /**
@@ -149,14 +145,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public boolean containsPosition(String word, String location, Integer position) {
-        boolean result = false;
         lock.readLock().lock();
         try {
-            result = super.containsPosition(word, location, position);
+            return super.containsPosition(word, location, position);
         } finally {
             lock.readLock().unlock();
         }
-        return result;
     }
 
     /**
@@ -166,14 +160,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public int numWords() {
-        int numWords;
         lock.readLock().lock();
         try {
-            numWords = super.numWords();
+            return super.numWords();
         } finally {
             lock.readLock().unlock();
         }
-        return numWords;
     }
 
     /**
@@ -184,14 +176,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public int numLocations(String word) {
-        int numLocations;
         lock.readLock().lock();
         try {
-            numLocations = super.numLocations(word);
+            return super.numLocations(word);
         } finally {
             lock.readLock().unlock();
         }
-        return numLocations;
     }
 
     /**
@@ -203,14 +193,12 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public int numPositions(String word, String location) {
-        int numPositions;
         lock.readLock().lock();
         try {
-            numPositions = super.numPositions(word, location);
+            return super.numPositions(word, location);
         } finally {
             lock.readLock().unlock();
         }
-        return numPositions;
     }
 
     /**
@@ -236,62 +224,41 @@ public class ThreadedInvertedIndex extends InvertedIndex {
      */
     @Override
     public Map<String, Integer> getCounter() {
-        Map<String, Integer> counter;
         lock.readLock().lock();
         try {
-            counter = super.getCounter();
+            return super.getCounter();
         } finally {
             lock.readLock().unlock();
         }
-        return counter;
-    }
-
-    // TODO Remove
-    @Override
-    public List<SearchResult> search(Collection<String> queries, boolean exact) {
-        List<SearchResult> results;
-        lock.readLock().lock();
-        try {
-            results = super.search(queries, exact);
-        } finally {
-            lock.readLock().unlock();
-        }
-        return results;
     }
 
     @Override
     public List<SearchResult> exactSearch(Collection<String> queries) {
-        List<SearchResult> results;
         lock.readLock().lock();
         try {
-            results = super.exactSearch(queries);
+            return super.exactSearch(queries);
         } finally {
             lock.readLock().unlock();
         }
-        return results;
     }
 
     @Override
     public List<SearchResult> partialSearch(Collection<String> queries) {
-        List<SearchResult> results;
         lock.readLock().lock();
         try {
-            results = super.partialSearch(queries);
+            return super.partialSearch(queries);
         } finally {
             lock.readLock().unlock();
         }
-        return results;
     }
 
     @Override
     public String toString() {
-        String toString;
         lock.readLock().lock();
         try {
-            toString = super.toString();
+            return super.toString();
         } finally {
             lock.readLock().unlock();
         }
-        return toString;
     }
 }

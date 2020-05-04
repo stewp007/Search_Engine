@@ -31,10 +31,7 @@ public class Driver {
 
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
-        // Initialize the InvertedIndex
-        ThreadedInvertedIndex index = new ThreadedInvertedIndex();
 
-        // gets the number of threads to use for building and searching
         int numThreads;
         if (parser.hasFlag("-threads")) {
             try {
@@ -49,16 +46,36 @@ public class Driver {
             numThreads = 1;
         }
 
-        // Initialize IndexHandler
-        IndexHandler indexHandler = new IndexHandler(index, numThreads);
-        // Initialize QueryHandler
-        QueryHandler queryHandler = new QueryHandler(index, numThreads);
+        ThreadedInvertedIndex threadedIndex = null;
+        ThreadedIndexHandler threadedIndexHandler = null;
+        ThreadedQueryHandler threadedQueryHandler = null;
+
+        InvertedIndex singleIndex = null;
+        IndexHandler singleIndexHandler = null;
+        QueryHandler singleQueryHandler = null;
+
+        if (numThreads > 1) {
+            threadedIndex = new ThreadedInvertedIndex();
+            // Initialize ThreadedIndexHandler
+            threadedIndexHandler = new ThreadedIndexHandler(threadedIndex, numThreads);
+            // Initialize ThreadedQueryHandler
+            threadedQueryHandler = new ThreadedQueryHandler(threadedIndex, numThreads);
+        } else {
+            singleIndex = new InvertedIndex();
+            singleIndexHandler = new IndexHandler(singleIndex);
+            singleQueryHandler = new QueryHandler(singleIndex);
+        }
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    indexHandler.handleFiles(path, numThreads);
+                    if (numThreads > 1) {
+                        threadedIndexHandler.handleFiles(path, numThreads);
+                    } else {
+                        singleIndexHandler.handleFiles(path);
+                    }
+
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
                 }
@@ -70,7 +87,11 @@ public class Driver {
         if (parser.hasFlag("-counts")) {
             Path counts = parser.getPath("-counts", Path.of("counts.json"));
             try {
-                SimpleJsonWriter.asObject(index.getCounter(), counts);
+                if (numThreads > 1) {
+                    SimpleJsonWriter.asObject(threadedIndex.getCounter(), counts);
+                } else {
+                    SimpleJsonWriter.asObject(singleIndex.getCounter(), counts);
+                }
             } catch (IOException e) {
                 System.out.println("Unable to create a Json of the counter.");
             }
@@ -81,7 +102,12 @@ public class Driver {
             Path query = parser.getPath("-query");
             if (query != null) {
                 try {
-                    queryHandler.handleQueries(query, parser.hasFlag("-exact"), numThreads);
+                    if (numThreads > 1) {
+                        threadedQueryHandler.handleQueries(query, parser.hasFlag("-exact"), numThreads);
+                    } else {
+                        singleQueryHandler.handleQueries(query, parser.hasFlag("-exact"));
+                    }
+
                 } catch (IOException e) {
                     System.out.println("Unable to Search those Queries.");
                 }
@@ -89,13 +115,21 @@ public class Driver {
         }
 
         if (parser.hasFlag("-results")) {
-            queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
+            if (numThreads > 1) {
+                threadedQueryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
+            } else {
+                singleQueryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
+            }
         }
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
             try {
-                index.getIndex(output);
+                if (numThreads > 1) {
+                    threadedIndex.getIndex(output);
+                } else {
+                    singleIndex.getIndex(output);
+                }
             } catch (IOException e) {
                 System.out.println("Error retrieving Json form of the Index.");
             }

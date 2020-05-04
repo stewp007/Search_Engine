@@ -56,6 +56,29 @@ public class InvertedIndex {
     }
 
     /**
+     * Adds the word, path, and position to the index
+     * 
+     * @param otherIndex the index we are adding
+     */
+    public void addAll(InvertedIndex otherIndex) {
+        for (String key : otherIndex.invertedIndex.keySet()) {
+            TreeMap<String, TreeSet<Integer>> existing = invertedIndex.putIfAbsent(key,
+                    otherIndex.invertedIndex.get(key));
+            if (existing != null) {
+                // add to existing inner map
+                for (String path : otherIndex.invertedIndex.get(key).keySet()) {
+                    TreeSet<Integer> positions = invertedIndex.get(key).putIfAbsent(path,
+                            otherIndex.invertedIndex.get(key).get(path));
+                    if (positions != null) {
+                        invertedIndex.get(key).get(path).addAll(otherIndex.invertedIndex.get(key).get(path));
+                    }
+                }
+            }
+        }
+        counter.putAll(otherIndex.counter);
+    }
+
+    /**
      * returns an unmodifiable collection of the keys of the Index
      * 
      * @return Collection<String>

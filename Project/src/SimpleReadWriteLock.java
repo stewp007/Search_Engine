@@ -32,7 +32,7 @@ public class SimpleReadWriteLock {
      *      "https://wiki.sei.cmu.edu/confluence/display/java/LCK00-J.+Use+private+final+lock+objects+to+synchronize+classes+that+may+interact+with+untrusted+code">
      *      SEI CERT Oracle Coding Standard for Java</a>
      */
-    private Object lock; // TODO final
+    private final Object lock;
 
     /**
      * Initializes a new simple read/write lock.
@@ -141,7 +141,9 @@ public class SimpleReadWriteLock {
         public void unlock() {
             synchronized (lock) {
                 readers--;
-                lock.notifyAll(); // TODO Only call when there are no readers
+                if (readers == 0) {
+                    lock.notifyAll();
+                }
             }
         }
 
@@ -155,7 +157,14 @@ public class SimpleReadWriteLock {
         /**
          * The thread used for writing
          */
-        private Thread writeThread = null; // TODO Initialize in a constructor?
+        private Thread writeThread;
+
+        /**
+         * Constructor for WriteLock
+         */
+        public WriteLock() {
+            this.writeThread = null;
+        }
 
         /**
          * Will wait until there are no active readers or writers in the system, and
@@ -197,8 +206,7 @@ public class SimpleReadWriteLock {
                 }
                 writers--;
                 lock.notifyAll();
-                
-                // TODO writeThread = null;
+                writeThread = null;
             }
         }
     }

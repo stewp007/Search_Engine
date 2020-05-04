@@ -7,11 +7,6 @@ import java.util.List;
 
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
-/*
- * TODO Restore the original handler
- * Extend this one to create a multithreaded one
- */
-
 /**
  * Helper Class for CS 212 Projects
  * 
@@ -21,44 +16,30 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class IndexHandler {
 
     /** Class Member to reference the index */
-    private final ThreadedInvertedIndex index;
-    /** The WorkQueue used for this class */
-    private WorkQueue queue;
+    protected final InvertedIndex index;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
     /**
      * Constructor for FileHandler Class
      * 
-     * @param index      the InvertedIndex associated with the FileHandler
-     * @param numThreads the number of threads to use
+     * @param index the InvertedIndex associated with the FileHandler
      */
-    public IndexHandler(ThreadedInvertedIndex index, int numThreads) {
+    public IndexHandler(InvertedIndex index) {
         this.index = index;
-        this.queue = new WorkQueue(numThreads);
     }
 
     /**
      * Searches through files starting at the given Path
      * 
-     * @param path       the path of the file to handle
-     * @param numThreads the number of threads to use
+     * @param path the path of the file to handle
      * @throws IOException throws if there is an issue opening the file
      */
-    public void handleFiles(Path path, int numThreads) throws IOException {
+    public void handleFiles(Path path) throws IOException {
         List<Path> listPaths = TextFileFinder.list(path);
         for (Path filePath : listPaths) {
-            queue.execute(new IndexBuilder(filePath, this.index));
+            handleIndex(filePath);
         }
-
-        try {
-            queue.finish();
-        } catch (InterruptedException e) {
-            System.out.println("Interupted Thread while Handling Files.");
-            Thread.currentThread().interrupt();
-        }
-        queue.shutdown();
-
     }
 
     /**
@@ -102,50 +83,5 @@ public class IndexHandler {
      */
     public boolean handleIndex(Path path) throws IOException {
         return handleIndex(path, this.index);
-    }
-
-    /**
-     * Runnable Object used for building an index
-     * 
-     * @author stewartpowell
-     *
-     */
-    private class IndexBuilder implements Runnable {
-        /** The path used for building */
-        private final Path path;
-
-        /** The Thread safe InvertedIndex */
-        private final ThreadedInvertedIndex index;
-
-        /**
-         * Constructer for IndexBuilder
-         * 
-         * @param path  the path used for building
-         * @param index the ThreadedInvertedIndex
-         */
-        public IndexBuilder(Path path, ThreadedInvertedIndex index) {
-            this.path = path;
-            this.index = index;
-        }
-
-        @Override
-        public void run() {
-            synchronized (queue) { // TODO Remove
-                try {
-                    handleIndex(path, this.index);
-                } catch (IOException e) {
-                    System.out.println("IOException occured in IndexBuilder @" + path);
-                }
-            }
-
-            // TODO https://github.com/usf-cs212-2020/lectures/blob/master/Multithreading%20Work%20Queues/src/WorkQueueDirectoryListing.java#L102-L115
-            /*
-             * TODO
-             * InvertedIndex local = new InvertedIndex();
-             * handleIndex(path, local);
-             * index.addAll(local); <--- create this method
-             */
-        }
-
     }
 }
