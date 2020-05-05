@@ -13,7 +13,7 @@ import java.util.TreeSet;
  *
  */
 public class QueryHandler {
-
+  // TODO private
     /**
      * Class Member to reference the index
      */
@@ -34,6 +34,7 @@ public class QueryHandler {
         this.allResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
     }
 
+    // TODO Delete here and inherit from the interface
     /**
      * Cleans and parses queries from the given Path
      * 

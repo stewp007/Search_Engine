@@ -3,6 +3,8 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
+// TODO Fix warning setup in Eclipse
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -29,6 +31,34 @@ public class Driver {
             return;
         }
 
+        /*
+         * TODO 
+         * ArgumentParser parser = new ArgumentParser(args);
+         * WorkQueue queue = null;
+         * InvertedIndex index;
+         * IndexHandler handler;
+         * QueryHandlerInterface query;
+         * 
+         * if (-threads) {
+         * 		ThreadedInvertedIndex threadSafe = new ...
+         * 		index = threadSafe;
+         * 
+         * 		queue = ...
+         * 
+         * 		handler = ThreadedIndexHandler(threadSafe, queue);
+         * 		query = ...
+         * }
+         * else {
+         * 		index = new InvertedIndex();
+         * }
+         * 
+         * 
+         * all the same if/else blocks from project 2
+         * 
+         * if queue != null, shutdown
+         */
+        
+        
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
 

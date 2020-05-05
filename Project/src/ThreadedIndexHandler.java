@@ -12,11 +12,14 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  */
 public class ThreadedIndexHandler extends IndexHandler {
 
+  	// TODO private final ThreadedInvertedIndex index;
+  
     /** The WorkQueue used for this class */
     private WorkQueue queue;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
+    // TODO Pass in a WorkQueue created and shutdown in Driver instead
     /**
      * Constructor for FileHandler Class
      * 
@@ -36,20 +39,22 @@ public class ThreadedIndexHandler extends IndexHandler {
      * @throws IOException throws if there is an issue opening the file
      */
     public void handleFiles(Path path, int numThreads) throws IOException {
+      // TODO Replace up to the finish call... super.handleFiles(path, numThreads);
         List<Path> listPaths = TextFileFinder.list(path);
         for (Path filePath : listPaths) {
             queue.execute(new IndexBuilder(filePath, this.index));
         }
         try {
             queue.finish();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { // TODO Catch the InterruptedException in WorkQueue and do the same thing there
             System.out.println("Interupted Thread while Handling Files.");
             Thread.currentThread().interrupt();
         }
-        queue.shutdown();
+        queue.shutdown(); // TODO This happens in Driver
 
     }
 
+    // TODO Remove
     /**
      * 
      * Adds the contents of a file to the Index
@@ -73,6 +78,7 @@ public class ThreadedIndexHandler extends IndexHandler {
      */
     @Override
     public boolean handleIndex(Path path) throws IOException {
+      // TODO Add to the work queue instead... put the queue.execute(...)
         return handleIndex(path, this.index);
     }
 
@@ -87,7 +93,7 @@ public class ThreadedIndexHandler extends IndexHandler {
         private final Path path;
 
         /** The Thread safe InvertedIndex */
-        private final InvertedIndex index;
+        private final InvertedIndex index; // TODO thread-safe reference
 
         /**
          * Constructer for IndexBuilder
@@ -95,7 +101,7 @@ public class ThreadedIndexHandler extends IndexHandler {
          * @param path  the path used for building
          * @param index the ThreadedInvertedIndex
          */
-        public IndexBuilder(Path path, InvertedIndex index) {
+        public IndexBuilder(Path path, InvertedIndex index) {  // TODO thread-safe reference
             this.path = path;
             this.index = index;
         }
@@ -108,7 +114,7 @@ public class ThreadedIndexHandler extends IndexHandler {
             } catch (IOException e) {
                 System.out.println("Unable to Handle this Index");
             }
-            synchronized (index) {
+            synchronized (index) { // TODO Remove
                 index.addAll(local);
             }
         }

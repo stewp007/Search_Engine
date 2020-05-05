@@ -75,6 +75,11 @@ public class InvertedIndex {
                 }
             }
         }
+        
+        /*
+         * TODO Loop through otherIndex.counter and if there is overlap
+         * add the two counts together.
+         */
         counter.putAll(otherIndex.counter);
     }
 

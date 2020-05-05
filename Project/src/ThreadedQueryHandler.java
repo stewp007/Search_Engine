@@ -4,6 +4,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.TreeSet;
 
+/*
+ * TODO Create a QueryHandlerInterface that both Threaded and QueryHandler
+ * implement.
+ * 
+ * Include all the common methods into the interface, and have a default
+ * implementation of the handleQueries(Path, boolean).
+ * 
+ * Add your own index and treemap to this class.
+ */
+
 /**
  * Handles the Queries used for Search
  * 
@@ -25,7 +35,7 @@ public class ThreadedQueryHandler extends QueryHandler {
      */
     public ThreadedQueryHandler(ThreadedInvertedIndex index, int numThreads) {
         super(index);
-        this.queue = new WorkQueue(numThreads);
+        this.queue = new WorkQueue(numThreads); // TODO pass in the work queue from driver
     }
 
     /**
@@ -37,7 +47,10 @@ public class ThreadedQueryHandler extends QueryHandler {
      * @throws IOException throws an IOException
      */
     public void handleQueries(Path path, boolean exact, int numThreads) throws IOException {
-
+      /*
+       * TODO QueryHandlerInterface.super.handleQueries(...)
+       * queue.finish();
+       */
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -49,7 +62,7 @@ public class ThreadedQueryHandler extends QueryHandler {
                 System.out.println("Thread was interrupted in QueryHandler");
                 Thread.currentThread().interrupt();
             }
-            queue.shutdown();
+            queue.shutdown(); // TODO This will be called in Driver instead
         }
     }
 
@@ -62,6 +75,10 @@ public class ThreadedQueryHandler extends QueryHandler {
      */
     @Override
     public void handleQueries(String line, boolean exact) throws IOException {
+      /*
+       * TODO Move the implementation into the run method. This method should
+       * just add a task to the work queue.
+       */
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
         synchronized (allResults) {
@@ -70,6 +87,20 @@ public class ThreadedQueryHandler extends QueryHandler {
             }
             allResults.put(joined, this.index.search(cleaned, exact));
         }
+        
+        /* TODO 
+        synchronized (allResults) {
+          if (cleaned.isEmpty() || allResults.containsKey(joined)) {
+              return;
+          }
+        }
+        
+        var blah = this.index.search(cleaned, exact);
+        
+        synchronized (allResults) {
+          allResults.put(joined, blah);
+        }
+        */
     }
 
     /**
