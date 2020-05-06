@@ -150,7 +150,6 @@ public class WorkQueue {
                         break;
                     } else {
                         r = queue.removeFirst();
-                        // pending--;
                     }
                 }
 

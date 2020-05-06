@@ -32,33 +32,23 @@ public class Driver {
         }
 
         /*
-         * TODO 
-         * ArgumentParser parser = new ArgumentParser(args);
-         * WorkQueue queue = null;
-         * InvertedIndex index;
-         * IndexHandler handler;
-         * QueryHandlerInterface query;
+         * TODO ArgumentParser parser = new ArgumentParser(args); WorkQueue queue =
+         * null; InvertedIndex index; IndexHandler handler; QueryHandlerInterface query;
          * 
-         * if (-threads) {
-         * 		ThreadedInvertedIndex threadSafe = new ...
-         * 		index = threadSafe;
+         * if (-threads) { ThreadedInvertedIndex threadSafe = new ... index =
+         * threadSafe;
          * 
-         * 		queue = ...
+         * queue = ...
          * 
-         * 		handler = ThreadedIndexHandler(threadSafe, queue);
-         * 		query = ...
-         * }
-         * else {
-         * 		index = new InvertedIndex();
-         * }
+         * handler = ThreadedIndexHandler(threadSafe, queue); query = ... } else { index
+         * = new InvertedIndex(); }
          * 
          * 
          * all the same if/else blocks from project 2
          * 
          * if queue != null, shutdown
          */
-        
-        
+
         // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
 
@@ -133,7 +123,7 @@ public class Driver {
             if (query != null) {
                 try {
                     if (numThreads > 1) {
-                        threadedQueryHandler.handleQueries(query, parser.hasFlag("-exact"), numThreads);
+                        threadedQueryHandler.handleQueries(query, parser.hasFlag("-exact"));
                     } else {
                         singleQueryHandler.handleQueries(query, parser.hasFlag("-exact"));
                     }

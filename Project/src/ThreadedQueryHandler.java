@@ -39,18 +39,17 @@ public class ThreadedQueryHandler extends QueryHandler {
     }
 
     /**
-     * Cleans and parses queries from the given Path
+     * Reads a file of queries and adds them to a work queue
      * 
-     * @param path       the path of the Query file
-     * @param exact      flag for partial or exact search
-     * @param numThreads the number of threads used for searching
+     * @param path  the path of the Query file
+     * @param exact flag for partial or exact search
      * @throws IOException throws an IOException
      */
-    public void handleQueries(Path path, boolean exact, int numThreads) throws IOException {
-      /*
-       * TODO QueryHandlerInterface.super.handleQueries(...)
-       * queue.finish();
-       */
+    @Override
+    public void handleQueries(Path path, boolean exact) throws IOException {
+        /*
+         * TODO QueryHandlerInterface.super.handleQueries(...) queue.finish();
+         */
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -75,10 +74,10 @@ public class ThreadedQueryHandler extends QueryHandler {
      */
     @Override
     public void handleQueries(String line, boolean exact) throws IOException {
-      /*
-       * TODO Move the implementation into the run method. This method should
-       * just add a task to the work queue.
-       */
+        /*
+         * TODO Move the implementation into the run method. This method should just add
+         * a task to the work queue.
+         */
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
         synchronized (allResults) {
@@ -87,20 +86,15 @@ public class ThreadedQueryHandler extends QueryHandler {
             }
             allResults.put(joined, this.index.search(cleaned, exact));
         }
-        
-        /* TODO 
-        synchronized (allResults) {
-          if (cleaned.isEmpty() || allResults.containsKey(joined)) {
-              return;
-          }
-        }
-        
-        var blah = this.index.search(cleaned, exact);
-        
-        synchronized (allResults) {
-          allResults.put(joined, blah);
-        }
-        */
+
+        /*
+         * TODO synchronized (allResults) { if (cleaned.isEmpty() ||
+         * allResults.containsKey(joined)) { return; } }
+         * 
+         * var blah = this.index.search(cleaned, exact);
+         * 
+         * synchronized (allResults) { allResults.put(joined, blah); }
+         */
     }
 
     /**
@@ -108,6 +102,7 @@ public class ThreadedQueryHandler extends QueryHandler {
      * 
      * @param output the path to output the results to
      */
+    @Override
     public void outputResults(Path output) {
         super.outputResults(output);
     }
