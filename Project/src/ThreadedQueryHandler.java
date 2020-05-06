@@ -77,6 +77,7 @@ public class ThreadedQueryHandler extends QueryHandler {
      * 
      * @param output the path to output the results to
      */
+    @Override
     public void outputResults(Path output) {
         super.outputResults(output);
     }
