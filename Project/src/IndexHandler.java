@@ -16,7 +16,7 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class IndexHandler {
 
     /** Class Member to reference the index */
-    protected final InvertedIndex index;
+    protected final InvertedIndex index; // TODO private
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
