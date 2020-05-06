@@ -73,11 +73,15 @@ public class WorkQueue {
     /**
      * Waits for all pending work to be finished.
      *
-     * @throws InterruptedException if interrupted
      */
-    public synchronized void finish() throws InterruptedException {
+    public synchronized void finish() {
         while (pending > 0) {
-            this.wait();
+            try {
+                this.wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
         }
     }
 

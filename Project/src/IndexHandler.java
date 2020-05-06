@@ -16,7 +16,7 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
 public class IndexHandler {
 
     /** Class Member to reference the index */
-    protected final InvertedIndex index; // TODO private
+    private final InvertedIndex index;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
@@ -49,10 +49,9 @@ public class IndexHandler {
      * @param path  the path to collect into the Index
      * @param index the invertedIndex to be created
      * 
-     * @return boolean
      * @throws IOException Throws if there is an issue opening the file
      */
-    public static boolean handleIndex(Path path, InvertedIndex index) throws IOException {
+    public static void handleIndex(Path path, InvertedIndex index) throws IOException {
         int filePosition = 0;
         int linePosition = 0;
         SnowballStemmer stemmer = new SnowballStemmer(DEFAULT);
@@ -71,17 +70,15 @@ public class IndexHandler {
                 filePosition += allStems.length;
             }
         }
-        return true;
     }
 
     /**
      * Adds the contents of a file to an InvertedIndex
      * 
      * @param path the path to collect into the Index
-     * @return boolean
      * @throws IOException throws an IOException
      */
-    public boolean handleIndex(Path path) throws IOException {
-        return handleIndex(path, this.index);
+    public void handleIndex(Path path) throws IOException {
+        handleIndex(path, this.index);
     }
 }

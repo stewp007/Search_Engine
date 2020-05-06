@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
@@ -12,17 +10,16 @@ import java.util.TreeSet;
  * @author stewartpowell
  *
  */
-public class QueryHandler {
-  // TODO private
+public class QueryHandler implements QueryHandlerInterface {
     /**
      * Class Member to reference the index
      */
-    protected final InvertedIndex index;
+    private final InvertedIndex index;
 
     /**
      * the List of all the search results that will be created
      */
-    protected final TreeMap<String, List<InvertedIndex.SearchResult>> allResults;
+    private final TreeMap<String, List<InvertedIndex.SearchResult>> allResults;
 
     /**
      * constructor for QueryHandler
@@ -34,7 +31,6 @@ public class QueryHandler {
         this.allResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
     }
 
-    // TODO Delete here and inherit from the interface
     /**
      * Cleans and parses queries from the given Path
      * 
@@ -42,14 +38,9 @@ public class QueryHandler {
      * @param exact flag for partial or exact search
      * @throws IOException throws an IOException
      */
+    @Override
     public void handleQueries(Path path, boolean exact) throws IOException {
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                handleQueries(line, exact);
-            }
-        }
-
+        QueryHandlerInterface.super.handleQueries(path, exact);
     }
 
     /**
@@ -59,6 +50,7 @@ public class QueryHandler {
      * @param exact whether exact or partial search will be performed
      * @throws IOException throws an IOException
      */
+    @Override
     public void handleQueries(String line, boolean exact) throws IOException {
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
@@ -75,6 +67,7 @@ public class QueryHandler {
      * 
      * @param output the path to output the results to
      */
+    @Override
     public void outputResults(Path output) {
         try {
             SimpleJsonWriter.writeSearchResultsToFile(allResults, output);

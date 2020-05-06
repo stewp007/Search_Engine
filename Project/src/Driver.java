@@ -3,8 +3,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
-// TODO Fix warning setup in Eclipse
-
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -31,29 +29,14 @@ public class Driver {
             return;
         }
 
-        /*
-         * TODO ArgumentParser parser = new ArgumentParser(args); WorkQueue queue =
-         * null; InvertedIndex index; IndexHandler handler; QueryHandlerInterface query;
-         * 
-         * if (-threads) { ThreadedInvertedIndex threadSafe = new ... index =
-         * threadSafe;
-         * 
-         * queue = ...
-         * 
-         * handler = ThreadedIndexHandler(threadSafe, queue); query = ... } else { index
-         * = new InvertedIndex(); }
-         * 
-         * 
-         * all the same if/else blocks from project 2
-         * 
-         * if queue != null, shutdown
-         */
-
-        // parse arguments into a Map
         ArgumentParser parser = new ArgumentParser(args);
+        WorkQueue queue = null;
+        InvertedIndex index;
+        IndexHandler indexHandler;
+        QueryHandlerInterface queryHandler;
 
-        int numThreads;
         if (parser.hasFlag("-threads")) {
+            int numThreads;
             try {
                 numThreads = Integer.parseInt(parser.getString("-threads", "5"));
                 if (numThreads <= 0) {
@@ -62,40 +45,22 @@ public class Driver {
             } catch (NumberFormatException e) {
                 numThreads = 5;
             }
+            ThreadedInvertedIndex threadSafe = new ThreadedInvertedIndex();
+            index = threadSafe;
+            queue = new WorkQueue(numThreads);
+            indexHandler = new ThreadedIndexHandler(threadSafe, queue);
+            queryHandler = new ThreadedQueryHandler(threadSafe, queue);
         } else {
-            numThreads = 1;
-        }
-
-        ThreadedInvertedIndex threadedIndex = null;
-        ThreadedIndexHandler threadedIndexHandler = null;
-        ThreadedQueryHandler threadedQueryHandler = null;
-
-        InvertedIndex singleIndex = null;
-        IndexHandler singleIndexHandler = null;
-        QueryHandler singleQueryHandler = null;
-
-        if (numThreads > 1) {
-            threadedIndex = new ThreadedInvertedIndex();
-            // Initialize ThreadedIndexHandler
-            threadedIndexHandler = new ThreadedIndexHandler(threadedIndex, numThreads);
-            // Initialize ThreadedQueryHandler
-            threadedQueryHandler = new ThreadedQueryHandler(threadedIndex, numThreads);
-        } else {
-            singleIndex = new InvertedIndex();
-            singleIndexHandler = new IndexHandler(singleIndex);
-            singleQueryHandler = new QueryHandler(singleIndex);
+            index = new InvertedIndex();
+            indexHandler = new IndexHandler(index);
+            queryHandler = new QueryHandler(index);
         }
 
         if (parser.hasFlag("-path")) {
             Path path = parser.getPath("-path");
             if (path != null) {
                 try {
-                    if (numThreads > 1) {
-                        threadedIndexHandler.handleFiles(path, numThreads);
-                    } else {
-                        singleIndexHandler.handleFiles(path);
-                    }
-
+                    indexHandler.handleFiles(path);
                 } catch (IOException e) {
                     System.out.println("Error handling file: " + path);
                 }
@@ -107,11 +72,7 @@ public class Driver {
         if (parser.hasFlag("-counts")) {
             Path counts = parser.getPath("-counts", Path.of("counts.json"));
             try {
-                if (numThreads > 1) {
-                    SimpleJsonWriter.asObject(threadedIndex.getCounter(), counts);
-                } else {
-                    SimpleJsonWriter.asObject(singleIndex.getCounter(), counts);
-                }
+                SimpleJsonWriter.asObject(index.getCounter(), counts);
             } catch (IOException e) {
                 System.out.println("Unable to create a Json of the counter.");
             }
@@ -122,12 +83,7 @@ public class Driver {
             Path query = parser.getPath("-query");
             if (query != null) {
                 try {
-                    if (numThreads > 1) {
-                        threadedQueryHandler.handleQueries(query, parser.hasFlag("-exact"));
-                    } else {
-                        singleQueryHandler.handleQueries(query, parser.hasFlag("-exact"));
-                    }
-
+                    queryHandler.handleQueries(query, parser.hasFlag("-exact"));
                 } catch (IOException e) {
                     System.out.println("Unable to Search those Queries.");
                 }
@@ -135,25 +91,20 @@ public class Driver {
         }
 
         if (parser.hasFlag("-results")) {
-            if (numThreads > 1) {
-                threadedQueryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
-            } else {
-                singleQueryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
-            }
+            queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
         }
 
         if (parser.hasFlag("-index")) {
             Path output = parser.getPath("-index", Path.of("index.json"));
             try {
-                if (numThreads > 1) {
-                    threadedIndex.getIndex(output);
-                } else {
-                    singleIndex.getIndex(output);
-                }
+                index.getIndex(output);
             } catch (IOException e) {
                 System.out.println("Error retrieving Json form of the Index.");
             }
             return;
+        }
+        if (queue != null) {
+            queue.shutdown();
         }
         // calculate time elapsed and output
         Duration elapsed = Duration.between(start, Instant.now());
