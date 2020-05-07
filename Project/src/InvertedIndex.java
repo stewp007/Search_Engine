@@ -77,11 +77,8 @@ public class InvertedIndex {
         }
 
         for (String location : otherIndex.counter.keySet()) {
-            if (!counter.containsKey(location)) {
-                counter.put(location, otherIndex.counter.get(location));
-            } else {
-                counter.put(location, otherIndex.counter.get(location) + counter.get(location));
-            }
+            int count = otherIndex.counter.getOrDefault(location, 0) + counter.getOrDefault(location, 0);
+            counter.put(location, count);
         }
     }
 
