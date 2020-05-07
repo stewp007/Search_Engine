@@ -31,6 +31,7 @@ public class QueryHandler implements QueryHandlerInterface {
         this.allResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
     }
 
+    // TODO Remove, just let the class inherit the default implementation
     /**
      * Cleans and parses queries from the given Path
      * 
