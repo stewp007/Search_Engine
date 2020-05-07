@@ -91,6 +91,7 @@ public class Driver {
         }
 
         if (parser.hasFlag("-results")) {
+            // TODO Expecting try/catch here?
             queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
         }
 
@@ -103,9 +104,11 @@ public class Driver {
             }
             return;
         }
+        
         if (queue != null) {
             queue.shutdown();
         }
+        
         // calculate time elapsed and output
         Duration elapsed = Duration.between(start, Instant.now());
         double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();
