@@ -14,7 +14,7 @@ public class ThreadedIndexHandler extends IndexHandler {
     /** The Thread-safe invertedindex */
     private final ThreadedInvertedIndex index;
     /** The WorkQueue used for this class */
-    private WorkQueue queue; // TODO final
+    private final WorkQueue queue;
     /** The default stemmer algorithm used by this class. */
     public static final SnowballStemmer.ALGORITHM DEFAULT = SnowballStemmer.ALGORITHM.ENGLISH;
 
@@ -50,8 +50,7 @@ public class ThreadedIndexHandler extends IndexHandler {
      */
     @Override
     public void handleIndex(Path path) throws IOException {
-        // TODO queue.execute(new IndexBuilder(path));
-        queue.execute(new IndexBuilder(path, this.index));
+        queue.execute(new IndexBuilder(path));
     }
 
     /**
@@ -64,18 +63,13 @@ public class ThreadedIndexHandler extends IndexHandler {
         /** The path used for building */
         private final Path path;
 
-        /** The Thread safe InvertedIndex */
-        private final ThreadedInvertedIndex index; // TODO Remove, can access index in parent class already!
-
         /**
          * Constructer for IndexBuilder
          * 
-         * @param path  the path used for building
-         * @param index the ThreadedInvertedIndex
+         * @param path the path used for building
          */
-        public IndexBuilder(Path path, ThreadedInvertedIndex index) {
+        public IndexBuilder(Path path) {
             this.path = path;
-            this.index = index;
         }
 
         @Override

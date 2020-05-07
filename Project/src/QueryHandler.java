@@ -31,28 +31,14 @@ public class QueryHandler implements QueryHandlerInterface {
         this.allResults = new TreeMap<String, List<InvertedIndex.SearchResult>>();
     }
 
-    // TODO Remove, just let the class inherit the default implementation
-    /**
-     * Cleans and parses queries from the given Path
-     * 
-     * @param path  the path of the Query file
-     * @param exact flag for partial or exact search
-     * @throws IOException throws an IOException
-     */
-    @Override
-    public void handleQueries(Path path, boolean exact) throws IOException {
-        QueryHandlerInterface.super.handleQueries(path, exact);
-    }
-
     /**
      * helper method to handleQueries
      * 
      * @param line  the line of queries
      * @param exact whether exact or partial search will be performed
-     * @throws IOException throws an IOException
      */
     @Override
-    public void handleQueries(String line, boolean exact) throws IOException {
+    public void handleQueries(String line, boolean exact) {
         TreeSet<String> cleaned = TextFileStemmer.uniqueStems(line);
         String joined = String.join(" ", cleaned);
         if (cleaned.isEmpty() || allResults.containsKey(joined)) {

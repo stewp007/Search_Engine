@@ -91,8 +91,11 @@ public class Driver {
         }
 
         if (parser.hasFlag("-results")) {
-            // TODO Expecting try/catch here?
-            queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
+            try {
+                queryHandler.outputResults(parser.getPath("-results", Path.of("results.json")));
+            } catch (IOException e) {
+                System.out.println("Unable to output results to the given file.");
+            }
         }
 
         if (parser.hasFlag("-index")) {
@@ -104,11 +107,11 @@ public class Driver {
             }
             return;
         }
-        
+
         if (queue != null) {
             queue.shutdown();
         }
-        
+
         // calculate time elapsed and output
         Duration elapsed = Duration.between(start, Instant.now());
         double seconds = (double) elapsed.toMillis() / Duration.ofSeconds(1).toMillis();

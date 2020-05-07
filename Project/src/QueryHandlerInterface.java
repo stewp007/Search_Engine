@@ -11,7 +11,8 @@ import java.nio.file.Path;
  */
 public interface QueryHandlerInterface {
     /**
-     * TODO Description here
+     * Default method to read from the given path and then perform a search
+     * 
      * @param path  the file containing the queries
      * @param exact flag for exact or partial search
      * @throws IOException if unable to open file
@@ -26,18 +27,19 @@ public interface QueryHandlerInterface {
     }
 
     /**
-     * TODO Description here
+     * helper function to {@link #handleQueries(Path path, boolean exact)}
+     * 
      * @param query the line of queries to search for
      * @param exact flag for exact or partial search
-     * @throws IOException if unable to
      */
-    public void handleQueries(String query, boolean exact) throws IOException;
+    public void handleQueries(String query, boolean exact);
 
     /**
      * Outputs the search results to the given output file
      * 
      * @param output the path to output the results to
+     * @throws IOException if unable to open output file
      */
-    public void outputResults(Path output);
+    public void outputResults(Path output) throws IOException;
 
 }

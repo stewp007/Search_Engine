@@ -23,7 +23,7 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
     /**
      * the work queue used to delegate tasks to each thread
      */
-    private WorkQueue queue; // TODO final
+    private final WorkQueue queue;
 
     /**
      * constructor for QueryHandler
@@ -55,10 +55,9 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
      * 
      * @param line  the line of queries
      * @param exact whether exact or partial search will be performed
-     * @throws IOException throws an IOException
      */
     @Override
-    public void handleQueries(String line, boolean exact) throws IOException {
+    public void handleQueries(String line, boolean exact) {
         queue.execute(new IndexSearcher(line, exact));
     }
 
@@ -68,13 +67,11 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
      * @param output the path to output the results to
      */
     @Override
-    public void outputResults(Path output) { // TODO Change this in interface to throw the exception to Driver instead
-        try {
-            // TODO Need to protect this read of shared data!
+    public void outputResults(Path output) throws IOException {
+        synchronized (allResults) {
             SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
-        } catch (IOException e) {
-            System.out.println("Unable to write the results to the given output file: " + output);
         }
+
     }
 
     /**
