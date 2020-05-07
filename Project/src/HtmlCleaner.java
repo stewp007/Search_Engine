@@ -68,7 +68,7 @@ public class HtmlCleaner {
      * @return text without any HTML comments
      */
     public static String stripComments(String html) {
-        return html.replaceAll("(?is)<!.*?->", " ");
+        return html.replaceAll("(?is)<!--.*?->", " ");
     }
 
     /**

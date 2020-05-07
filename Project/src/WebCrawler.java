@@ -109,7 +109,6 @@ public class WebCrawler {
             ArrayList<URL> listLinks = LinkParser.listLinks(link, html);
             html = HtmlCleaner.stripTags(html);
             html = HtmlCleaner.stripEntities(html);
-
             InvertedIndex local = new InvertedIndex();
             htmlToIndex(local, link, html);
             index.addAll(local);
