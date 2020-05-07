@@ -77,6 +77,9 @@ public class InvertedIndex {
         }
 
         for (String location : otherIndex.counter.keySet()) {
+            /* TODO Can slightly reduce # of lines...
+            int count = otherIndex.counter.getOrDefault(location, 0) + counter.get(location);
+            counter.put(location, count); */
             if (!counter.containsKey(location)) {
                 counter.put(location, otherIndex.counter.get(location));
             } else {

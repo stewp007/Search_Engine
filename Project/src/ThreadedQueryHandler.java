@@ -23,7 +23,7 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
     /**
      * the work queue used to delegate tasks to each thread
      */
-    private WorkQueue queue;
+    private WorkQueue queue; // TODO final
 
     /**
      * constructor for QueryHandler
@@ -68,8 +68,9 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
      * @param output the path to output the results to
      */
     @Override
-    public void outputResults(Path output) {
+    public void outputResults(Path output) { // TODO Change this in interface to throw the exception to Driver instead
         try {
+            // TODO Need to protect this read of shared data!
             SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
         } catch (IOException e) {
             System.out.println("Unable to write the results to the given output file: " + output);

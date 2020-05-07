@@ -11,7 +11,7 @@ import java.nio.file.Path;
  */
 public interface QueryHandlerInterface {
     /**
-     * 
+     * TODO Description here
      * @param path  the file containing the queries
      * @param exact flag for exact or partial search
      * @throws IOException if unable to open file
@@ -26,7 +26,7 @@ public interface QueryHandlerInterface {
     }
 
     /**
-     * 
+     * TODO Description here
      * @param query the line of queries to search for
      * @param exact flag for exact or partial search
      * @throws IOException if unable to
