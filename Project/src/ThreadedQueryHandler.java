@@ -43,12 +43,8 @@ public class ThreadedQueryHandler extends QueryHandler {
             while ((line = reader.readLine()) != null) {
                 queue.execute(new IndexSearcher(line, exact));
             }
-            try {
-                queue.finish();
-            } catch (InterruptedException e) {
-                System.out.println("Thread was interrupted in QueryHandler");
-                Thread.currentThread().interrupt();
-            }
+            queue.finish();
+
             queue.shutdown();
         }
     }

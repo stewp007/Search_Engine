@@ -40,12 +40,8 @@ public class ThreadedIndexHandler extends IndexHandler {
         for (Path filePath : listPaths) {
             queue.execute(new IndexBuilder(filePath, this.index));
         }
-        try {
-            queue.finish();
-        } catch (InterruptedException e) {
-            System.out.println("Interupted Thread while Handling Files.");
-            Thread.currentThread().interrupt();
-        }
+        queue.finish();
+
         queue.shutdown();
 
     }

@@ -73,7 +73,6 @@ public class WorkQueue {
     /**
      * Waits for all pending work to be finished.
      *
-     * @throws InterruptedException if interrupted
      */
     public synchronized void finish() {
         while (pending > 0) {

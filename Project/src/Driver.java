@@ -46,6 +46,25 @@ public class Driver {
             numThreads = 1;
         }
 
+        int limit = 0;
+        if (parser.hasFlag("-limit")) {
+            try {
+                limit = Integer.parseInt(parser.getString("-limit", "50"));
+                if (limit <= 0) {
+                    limit = 50;
+                }
+            } catch (NumberFormatException e) {
+                limit = 50;
+            }
+        }
+        String seed = null;
+        WebCrawler crawler;
+        WorkQueue queue = null;
+        if (parser.hasFlag("-url")) {
+            seed = parser.getString("-url");
+            numThreads = 5;
+        }
+
         ThreadedInvertedIndex threadedIndex = null;
         ThreadedIndexHandler threadedIndexHandler = null;
         ThreadedQueryHandler threadedQueryHandler = null;
@@ -64,6 +83,12 @@ public class Driver {
             singleIndex = new InvertedIndex();
             singleIndexHandler = new IndexHandler(singleIndex);
             singleQueryHandler = new QueryHandler(singleIndex);
+        }
+
+        if (seed != null) {
+            queue = new WorkQueue(numThreads);
+            crawler = new WebCrawler(threadedIndex, queue, limit);
+            crawler.crawlWeb(seed);
         }
 
         if (parser.hasFlag("-path")) {
@@ -134,6 +159,9 @@ public class Driver {
                 System.out.println("Error retrieving Json form of the Index.");
             }
             return;
+        }
+        if (queue != null) {
+            queue.shutdown();
         }
         // calculate time elapsed and output
         Duration elapsed = Duration.between(start, Instant.now());
