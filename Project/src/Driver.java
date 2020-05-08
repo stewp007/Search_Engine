@@ -50,7 +50,7 @@ public class Driver {
         String seed = null;
         int numThreads = 0;
 
-        if (parser.hasFlag("-threads")) {
+        if (parser.hasFlag("-threads") || parser.hasFlag("-url")) {
             try {
                 numThreads = Integer.parseInt(parser.getString("-threads", "5"));
                 if (numThreads <= 0) {
@@ -64,23 +64,26 @@ public class Driver {
             queue = new WorkQueue(numThreads);
             indexHandler = new ThreadedIndexHandler(threadSafe, queue);
             queryHandler = new ThreadedQueryHandler(threadSafe, queue);
-        } else if (parser.hasFlag("-url")) {
-            seed = parser.getString("-url");
-            numThreads = 5;
-            queue = new WorkQueue(numThreads);
-            ThreadedInvertedIndex threadSafe = new ThreadedInvertedIndex();
-            crawler = new WebCrawler(threadSafe, queue, limit);
-            indexHandler = new ThreadedIndexHandler(threadSafe, queue);
-            queryHandler = new ThreadedQueryHandler(threadSafe, queue);
-            index = threadSafe;
+            if (parser.hasFlag("-url")) {
+                if (parser.hasFlag("-limit")) {
+                    try {
+                        limit = Integer.parseInt(parser.getString("-limit", "50"));
+                        if (limit <= 0) {
+                            limit = 50;
+                        }
+                    } catch (NumberFormatException e) {
+                        limit = 50;
+                    }
+                }
+                seed = parser.getString("-url");
+                crawler = new WebCrawler(threadSafe, queue, limit);
+                crawler.crawlWeb(seed);
+
+            }
         } else {
             index = new InvertedIndex();
             indexHandler = new IndexHandler(index);
             queryHandler = new QueryHandler(index);
-        }
-
-        if (seed != null && crawler != null) {
-            crawler.crawlWeb(seed);
         }
 
         if (parser.hasFlag("-path")) {

@@ -55,7 +55,7 @@ public class HtmlCleaner {
      * @return text without any HTML tags
      */
     public static String stripTags(String html) {
-        return html.replaceAll("(?is)<.*?>", "");
+        return html.replaceAll("(?is)(<.*?>)", "");
     }
 
     // THE FOLLOWING REPLACE WITH A SINGLE SPACE
@@ -68,7 +68,7 @@ public class HtmlCleaner {
      * @return text without any HTML comments
      */
     public static String stripComments(String html) {
-        return html.replaceAll("(?is)<!--.*?->", " ");
+        return html.replaceAll("(?is)<!--([\\s\\S]*?)-->", " ");
     }
 
     /**
@@ -87,6 +87,6 @@ public class HtmlCleaner {
      * @return text without that HTML element
      */
     public static String stripElement(String html, String name) {
-        return html.replaceAll("(?is)<" + name + ".*?>.*?<\\/" + name + ".*?>", " ");
+        return html.replaceAll("(?is)(<" + name + ".*?/" + name + "\\s*?>)", " ");
     }
 }
