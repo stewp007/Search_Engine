@@ -5,7 +5,10 @@ import java.time.Instant;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
@@ -101,18 +104,36 @@ public class Driver {
                 ServerConnector connector = new ServerConnector(server);
                 connector.setHost("localhost");
                 connector.setPort(port);
+                // add static resource holders to web server
+                // this indicates where web files are accessible on the file system
+                ResourceHandler resourceHandler = new ResourceHandler();
+                resourceHandler.setResourceBase("photo");
+                resourceHandler.setDirectoriesListed(true);
 
-                ServletHandler handler = new ServletHandler();
-                handler.addServletWithMapping(new ServletHolder(new HomeServlet()), "/build");
-                try {
-                    handler.addServletWithMapping(new ServletHolder(new SearchServlet(threadSafe, queue, 50)),
-                            "/search");
-                } catch (IOException e) {
-                    System.out.println("Error with Server.");
-                }
+                // only serve static resources in the "/images" context directory
+                // this indicates where web files are accessible via the web server
+                ContextHandler resourceContext = new ContextHandler("/photo");
+                resourceContext.setHandler(resourceHandler);
 
+                // all other requests should be handled by the gallery servlet
+                ServletContextHandler servletContext = new ServletContextHandler();
+                servletContext.setContextPath("/");
+                servletContext.addServlet(new ServletHolder(new HomeServlet()), "/build");
+                servletContext.addServlet(new ServletHolder(new SearchServlet(threadSafe, queue, 50)), "/search");
+
+                /*
+                 * ServletHandler handler = new ServletHandler();
+                 * handler.addServletWithMapping(new ServletHolder(new HomeServlet()),
+                 * "/build"); try { handler.addServletWithMapping(new ServletHolder(new
+                 * SearchServlet(threadSafe, queue, 50)), "/search"); } catch (IOException e) {
+                 * System.out.println("Error with Server."); }
+                 */
+                // setup handlers (and handler order)
+                HandlerList handlers = new HandlerList();
+                handlers.addHandler(resourceContext);
+                handlers.addHandler(servletContext);
                 server.addConnector(connector);
-                server.setHandler(handler);
+                server.setHandler(handlers);
 
                 server.start();
                 server.join();

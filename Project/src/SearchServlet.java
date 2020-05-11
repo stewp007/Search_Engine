@@ -32,7 +32,7 @@ public class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 202020;
 
     /** The title to use for this webpage. */
-    private static final String TITLE = "Messages";
+    private static final String TITLE = "Stewart Powell";
 
     /** The logger to use for this servlet. */
     private static Logger log = Log.getRootLogger();
@@ -93,7 +93,6 @@ public class SearchServlet extends HttpServlet {
 
         String url = request.getParameter("url");
         System.out.println(url);
-
         url = url == null ? "https://www.cs.usfca.edu/~cs212/birds/" : url;
 
         // avoid xss attacks using apache commons text
@@ -104,8 +103,10 @@ public class SearchServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.printf("<html>%n");
+        out.printf(
+                "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">");
         out.printf("<head><title>%s</title></head>%n", TITLE);
-        out.printf("<img src=\"/Project/src/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
         out.printf("<body>%n");
         out.printf("<h2>Built an index from URL: %s</h2>%n", url);
         out.printf("<ul>%n");

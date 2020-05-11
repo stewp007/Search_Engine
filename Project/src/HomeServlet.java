@@ -42,9 +42,10 @@ public class HomeServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.printf("<html>%n");
-        out.printf("<head><title>%s</title></head>%n", TITLE);
         out.printf(
-                "<img src=\"/Project/src/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell logo small\">%n");
+                "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">");
+        out.printf("<head><title>%s</title></head>%n", TITLE);
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell logo small\">%n");
         out.printf("<body>%n");
         out.printf("<br><br><h2>Home of Mediocre Performance and Bad Jokes</h1>%n");
         out.printf("<form action=\"/search\" method=\"GET\">%n");
