@@ -3,6 +3,11 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -18,8 +23,9 @@ public class Driver {
      * inverted index.
      *
      * @param args flag/value pairs used to start this program
+     * @throws Exception thrown by server
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // store initial start time
         Instant start = Instant.now();
 
@@ -50,7 +56,7 @@ public class Driver {
         String seed = null;
         int numThreads = 0;
 
-        if (parser.hasFlag("-threads") || parser.hasFlag("-url")) {
+        if (parser.hasFlag("-threads") || parser.hasFlag("-url") || parser.hasFlag("-port")) {
             try {
                 numThreads = Integer.parseInt(parser.getString("-threads", "5"));
                 if (numThreads <= 0) {
@@ -79,6 +85,37 @@ public class Driver {
                 crawler = new WebCrawler(threadSafe, queue, limit);
                 crawler.crawlWeb(seed);
 
+            }
+            if (parser.hasFlag("-port")) {
+                int port;
+                try {
+                    port = Integer.parseInt(parser.getString("-port", "8080"));
+                    if (port <= 0) {
+                        port = 8080;
+                    }
+                } catch (NumberFormatException e) {
+                    port = 8080;
+                }
+                Server server = new Server();
+
+                ServerConnector connector = new ServerConnector(server);
+                connector.setHost("localhost");
+                connector.setPort(port);
+
+                ServletHandler handler = new ServletHandler();
+                handler.addServletWithMapping(new ServletHolder(new HomeServlet()), "/build");
+                try {
+                    handler.addServletWithMapping(new ServletHolder(new SearchServlet(threadSafe, queue, 50)),
+                            "/search");
+                } catch (IOException e) {
+                    System.out.println("Error with Server.");
+                }
+
+                server.addConnector(connector);
+                server.setHandler(handler);
+
+                server.start();
+                server.join();
             }
         } else {
             index = new InvertedIndex();
