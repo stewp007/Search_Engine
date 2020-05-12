@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -69,7 +70,30 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
     @Override
     public void outputResults(Path output) throws IOException {
         synchronized (allResults) {
-            SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
+            this.index.getIndex(output);
+            // SimpleJsonWriter.writeSearchResultsToFile(allResults, output);
+        }
+    }
+
+    /**
+     * Returns the results from the given query
+     * 
+     * @param query the query to get results form
+     * @return an unmodifiable list of the results
+     */
+    @Override
+    public List<InvertedIndex.SearchResult> getResults(String query) {
+        TreeSet<String> stemmed = TextFileStemmer.uniqueStems(query);
+        if (stemmed.isEmpty()) {
+            return Collections.emptyList();
+        }
+        query = String.join(" ", stemmed);
+        synchronized (allResults) {
+            if (allResults.containsKey(query)) {
+                return Collections.unmodifiableList(this.allResults.get(query));
+            }
+            return Collections.emptyList();
+
         }
 
     }
@@ -112,7 +136,7 @@ public class ThreadedQueryHandler implements QueryHandlerInterface {
             List<InvertedIndex.SearchResult> results = index.search(cleaned, exact);
 
             synchronized (allResults) {
-                allResults.put(joined, results);
+                allResults.putIfAbsent(joined, results);
             }
 
         }

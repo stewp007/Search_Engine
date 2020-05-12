@@ -110,7 +110,7 @@ public class Driver {
                 resourceHandler.setResourceBase("photo");
                 resourceHandler.setDirectoriesListed(true);
 
-                // only serve static resources in the "/images" context directory
+                // only serve static resources in the "/photo" context directory
                 // this indicates where web files are accessible via the web server
                 ContextHandler resourceContext = new ContextHandler("/photo");
                 resourceContext.setHandler(resourceHandler);
@@ -118,8 +118,10 @@ public class Driver {
                 // all other requests should be handled by the gallery servlet
                 ServletContextHandler servletContext = new ServletContextHandler();
                 servletContext.setContextPath("/");
-                servletContext.addServlet(new ServletHolder(new HomeServlet()), "/build");
-                servletContext.addServlet(new ServletHolder(new SearchServlet(threadSafe, queue, 50)), "/search");
+                servletContext.addServlet(new ServletHolder(new HomeServlet()), "/home");
+                servletContext.addServlet(new ServletHolder(new BuildServlet(threadSafe, queue, 50)), "/build");
+                servletContext.addServlet(new ServletHolder(new SearchServlet((ThreadedQueryHandler) queryHandler)),
+                        "/search");
 
                 /*
                  * ServletHandler handler = new ServletHandler();
@@ -170,11 +172,13 @@ public class Driver {
         if (parser.hasFlag("-query")) {
             Path query = parser.getPath("-query");
             if (query != null) {
+
                 try {
                     queryHandler.handleQueries(query, parser.hasFlag("-exact"));
                 } catch (IOException e) {
                     System.out.println("Unable to Search those Queries.");
                 }
+
             }
         }
 

@@ -270,6 +270,7 @@ public class InvertedIndex {
      */
     public Map<String, Integer> getCounter() {
         return Collections.unmodifiableMap(counter);
+
     }
 
     /**

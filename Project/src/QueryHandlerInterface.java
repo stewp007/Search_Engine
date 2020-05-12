@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Interface used for query handling
@@ -33,6 +34,14 @@ public interface QueryHandlerInterface {
      * @param exact flag for exact or partial search
      */
     public void handleQueries(String query, boolean exact);
+
+    /**
+     * Returns the results from the given query
+     * 
+     * @param query the query to get results form
+     * @return an unmodifiable list of the results
+     */
+    public List<InvertedIndex.SearchResult> getResults(String query);
 
     /**
      * Outputs the search results to the given output file

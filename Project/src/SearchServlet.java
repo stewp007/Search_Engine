@@ -1,11 +1,9 @@
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,53 +35,22 @@ public class SearchServlet extends HttpServlet {
     /** The logger to use for this servlet. */
     private static Logger log = Log.getRootLogger();
 
-    /** The thread-safe data structure to use for storing messages. */
-    private final ThreadedInvertedIndex index;
-
-    private final WebCrawler webCrawler;
-
-    /** Template for HTML. **/
-    private final String htmlTemplate;
+    /** The thread-safe Query Handler to do the searching. */
+    private final ThreadedQueryHandler handler;
 
     /**
      * Initializes this message board. Each message board has its own collection of
      * messages.
      * 
-     * @param index the indexHandler to build the InvertedIndex
-     * @param queue the work queue used with the ThreadedIndexHandler
-     * @param limit the liit of urls
+     * @param handler query handler to handle searching
      * 
      * @throws IOException if unable to read template
      */
-    public SearchServlet(ThreadedInvertedIndex index, WorkQueue queue, int limit) throws IOException {
+    public SearchServlet(ThreadedQueryHandler handler) throws IOException {
         super();
-        this.index = index;
-        webCrawler = new WebCrawler(index, queue, limit);
-        htmlTemplate = Files.readString(Path.of("src", "index.html"), StandardCharsets.UTF_8);
-    }
 
-    /*
-     * @Override protected void doGet(HttpServletRequest request,
-     * HttpServletResponse response) throws ServletException, IOException {
-     * response.setContentType("text/html");
-     * 
-     * log.info("MessageServlet ID " + this.hashCode() + " handling GET request.");
-     * 
-     * // used to substitute values in our templates Map<String, String> values =
-     * new HashMap<>(); values.put("title", TITLE); values.put("thread",
-     * Thread.currentThread().getName());
-     * 
-     * // setup form values.put("method", "POST"); values.put("action",
-     * request.getServletPath());
-     * 
-     * // generate html from template StringSubstitutor replacer = new
-     * StringSubstitutor(values); String html = replacer.replace(htmlTemplate);
-     * 
-     * // output generated html PrintWriter out = response.getWriter();
-     * out.println(html); out.flush();
-     * 
-     * response.setStatus(HttpServletResponse.SC_OK); }
-     */
+        this.handler = handler;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -91,34 +58,52 @@ public class SearchServlet extends HttpServlet {
         response.setContentType("text/html");
         log.info("SearchServlet ID " + this.hashCode() + " handling POST request.");
 
-        String url = request.getParameter("url");
-        System.out.println(url);
-        url = url == null ? "https://www.cs.usfca.edu/~cs212/birds/" : url;
-
+        String queries = request.getParameter("queries");
         // avoid xss attacks using apache commons text
         // comment out if you don't have this library installed
-        url = StringEscapeUtils.escapeHtml4(url);
-
-        webCrawler.crawlWeb(url);
-
+        queries = StringEscapeUtils.escapeHtml4(queries);
+        handler.handleQueries(queries, false);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         PrintWriter out = response.getWriter();
         out.printf("<html>%n");
-        out.printf(
-                "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">");
-        out.printf("<head><title>%s</title></head>%n", TITLE);
-        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
+        out.printf("<head>");
+        out.printf("<title>%s</title>", TITLE);
+        out.printf("<link href=\"/photo/searchEngine.css\" rel=\"stylesheet\" type=\"text/css\">");
+        out.printf("</head>%n");
+        out.printf("<header>%n");
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">");
+        out.printf("<h2>  Home of Mediocre Performance</h2>%n          <h3>  and Bad Jokes</h3>%n");
+        out.printf("</header>%n");
         out.printf("<body>%n");
-        out.printf("<h2>Built an index from URL: %s</h2>%n", url);
-        out.printf("<ul>%n");
-        for (String location : index.getCounter().keySet()) {
-            out.printf("<li>%s</li>", location);
-        }
+        out.printf("<form action=\"/home\" method=\"GET\">%n");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"New Search\"/>");
+        out.printf("</form>");
+        out.printf("<h2>Searched For: %s</h2>%n", queries);
+        out.printf("<h3>Found: </h3%n");
         out.printf("<ul>%n");
 
-        // Demonstrate that this servlet is called by different threads
-        out.printf("<p>This request was handled by thread %s.</p>%n", Thread.currentThread().getName());
+        if (handler.getResults(queries).isEmpty()) {
+            out.printf("<p> No Results found</p>");
+        } else {
+
+            for (InvertedIndex.SearchResult query : handler.getResults(queries)) {
+                System.out.println(query);
+                out.printf("<li><a href=%s>%s</a></li>", query.getWhere(), query.getWhere());
+            }
+        }
+
+        out.printf("<ul>%n");
 
         out.printf("</body>%n");
+        out.printf("<footer>");
+        // Demonstrate that this servlet is called by different threads
+        out.printf("<p>This request was handled by thread %s on %s</p>%n", Thread.currentThread().getName(), getDate());
+        out.printf("</footer>");
+
         out.printf("</html>%n");
 
         response.setStatus(HttpServletResponse.SC_OK);

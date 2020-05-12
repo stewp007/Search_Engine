@@ -1,5 +1,8 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,25 +45,40 @@ public class HomeServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.printf("<html>%n");
-        out.printf(
-                "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css\" integrity=\"sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh\" crossorigin=\"anonymous\">");
-        out.printf("<head><title>%s</title></head>%n", TITLE);
-        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell logo small\">%n");
+        out.printf("<head>");
+        out.printf("<title>%s</title>", TITLE);
+        out.printf("<link href=\"/photo/searchEngine.css\" rel=\"stylesheet\" type=\"text/css\">");
+        out.printf("</head>%n");
+        out.printf("<header>%n");
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
+        out.printf("<h2>  Home of Mediocre Performance</h2>%n<h3>  and Bad Jokes</h3>%n");
+        out.printf("</header>%n");
         out.printf("<body>%n");
-        out.printf("<br><br><h2>Home of Mediocre Performance and Bad Jokes</h1>%n");
         out.printf("<form action=\"/search\" method=\"GET\">%n");
-        out.printf("<label for=\"build\">First Build an Index for Searching</label>");
-        out.printf("<br><input type=\"text\" name=\"url\" id=\"url\" required/>");
-        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Build\"/>");
+        out.printf("<label for=\"search\">What are you looking for?</label>");
+        out.printf("<br><input type=\"text\" name=\"queries\" id=\"queries\" required/>");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Search\"/>");
         out.printf("</form>%n");
 
-        // Demonstrate that this servlet is called by different threads
-        out.printf("<p>This request was handled by thread %s.</p>%n", Thread.currentThread().getName());
-
         out.printf("</body>%n");
+        out.printf("<footer>");
+        // Demonstrate that this servlet is called by different threads
+        out.printf("<p>This request was handled by thread %s on %s</p>%n", Thread.currentThread().getName(), getDate());
+        out.printf("</footer>");
         out.printf("</html>%n");
 
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    /**
+     * Returns the date and time in a long format. For example: "12:00 am on
+     * Saturday, January 01 2000".
+     *
+     * @return current date and time
+     */
+    private static String getDate() {
+        String format = "hh:mm a 'on' EEEE, MMMM dd yyyy";
+        DateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(new Date());
+    }
 }

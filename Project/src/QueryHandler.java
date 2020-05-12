@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -46,6 +47,18 @@ public class QueryHandler implements QueryHandlerInterface {
         }
 
         allResults.put(joined, this.index.search(cleaned, exact));
+
+    }
+
+    /**
+     * Returns the results from the given query
+     * 
+     * @param query the query to get results form
+     * @return an unmodifiable list of the results
+     */
+    @Override
+    public List<InvertedIndex.SearchResult> getResults(String query) {
+        return Collections.unmodifiableList(this.allResults.get(query));
 
     }
 
