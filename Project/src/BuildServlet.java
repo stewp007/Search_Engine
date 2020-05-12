@@ -1,8 +1,5 @@
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +29,7 @@ public class BuildServlet extends HttpServlet {
     private static final long serialVersionUID = 202020;
 
     /** The title to use for this webpage. */
-    private static final String TITLE = "Stewart Powell";
+    private static final String TITLE = "New Crawl";
 
     /** The logger to use for this servlet. */
     private static Logger log = Log.getRootLogger();
@@ -44,9 +41,6 @@ public class BuildServlet extends HttpServlet {
      * The webcrawler ued to build the index
      */
     private final WebCrawler webCrawler;
-
-    /** Template for HTML. **/
-    private final String htmlTemplate;
 
     /**
      * Initializes this message board. Each message board has its own collection of
@@ -62,7 +56,6 @@ public class BuildServlet extends HttpServlet {
         super();
         this.index = index;
         webCrawler = new WebCrawler(index, queue, limit);
-        htmlTemplate = Files.readString(Path.of("src", "index.html"), StandardCharsets.UTF_8);
     }
 
     @Override
@@ -92,17 +85,16 @@ public class BuildServlet extends HttpServlet {
         out.printf("</header>%n");
 
         out.printf("<body>%n");
-        out.printf("<h1>Built an index from URL: %s</h1>%n", url);
-        out.printf("<form action=\"/search\" method=\"GET\">%n");
-        out.printf("<label for=\"build\">What would you like to search?</label>");
-        out.printf("<br><input type=\"text\" name=\"queries\" id=\"queries\" required/>");
-        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Search\"/>");
-        out.printf("</form>%n");
+        out.printf("<h1>Added to index from URL: %s</h1>%n", url);
+        out.printf("<form action=\"/home\" method=\"GET\">%n");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"New Search\"/>");
+        out.printf("</form>");
+
         out.printf("<ul>%n");
         for (String location : index.getCounter().keySet()) {
             out.printf("<li>%s</li>", location);
         }
-        out.printf("<ul>%n");
+        out.printf("</ul>%n");
 
         out.printf("</body>%n");
         out.printf("<footer>");

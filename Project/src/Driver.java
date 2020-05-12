@@ -122,6 +122,9 @@ public class Driver {
                 servletContext.addServlet(new ServletHolder(new BuildServlet(threadSafe, queue, 50)), "/build");
                 servletContext.addServlet(new ServletHolder(new SearchServlet((ThreadedQueryHandler) queryHandler)),
                         "/search");
+                servletContext.addServlet(new ServletHolder(new IndexServlet(threadSafe)), "/index");
+                servletContext.addServlet(new ServletHolder(new CounterServlet(threadSafe)), "/counter");
+                servletContext.addServlet(new ServletHolder(new ShutdownServlet(server)), "/shutdown");
 
                 /*
                  * ServletHandler handler = new ServletHandler();

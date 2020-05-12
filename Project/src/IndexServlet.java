@@ -3,7 +3,6 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,82 +23,66 @@ import org.eclipse.jetty.util.log.Logger;
  * The servlet class responsible for setting up a simple message board.
  *
  */
-public class SearchServlet extends HttpServlet {
+public class IndexServlet extends HttpServlet {
 
     /** Class version for serialization, in [YEAR][TERM] format (unused). */
     private static final long serialVersionUID = 202020;
 
     /** The title to use for this webpage. */
-    private static final String TITLE = "Results";
+    private static final String TITLE = "Index";
 
     /** The logger to use for this servlet. */
     private static Logger log = Log.getRootLogger();
 
-    /** The thread-safe Query Handler to do the searching. */
-    private final ThreadedQueryHandler handler;
+    /** The thread-safe data structure to use for storing messages. */
+    private final ThreadedInvertedIndex index;
 
     /**
      * Initializes this message board. Each message board has its own collection of
      * messages.
      * 
-     * @param handler query handler to handle searching
+     * @param index the indexHandler to build the InvertedIndex
      * 
      * @throws IOException if unable to read template
      */
-    public SearchServlet(ThreadedQueryHandler handler) throws IOException {
+    public IndexServlet(ThreadedInvertedIndex index) throws IOException {
         super();
-
-        this.handler = handler;
+        this.index = index;
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html");
-        log.info("SearchServlet ID " + this.hashCode() + " handling POST request.");
 
-        String queries = request.getParameter("queries");
-        String exact = request.getParameter("exact");
-        System.out.println(exact);
-        boolean partial = exact != null ? true : false;
-        // avoid xss attacks using apache commons text
-        // comment out if you don't have this library installed
-        queries = StringEscapeUtils.escapeHtml4(queries);
-        System.out.println(partial);
-        handler.handleQueries(queries, partial);
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         PrintWriter out = response.getWriter();
         out.printf("<html>%n");
+
         out.printf("<head>");
         out.printf("<title>%s</title>", TITLE);
         out.printf("<link href=\"/photo/searchEngine.css\" rel=\"stylesheet\" type=\"text/css\">");
         out.printf("</head>%n");
+
         out.printf("<header>%n");
-        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">");
-        out.printf("<h2>  Home of Mediocre Performance</h2>%n          <h3>  and Bad Jokes</h3>%n");
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
+        out.printf("<h2>  Home of Mediocre Performance</h2>%n<h3>  and Bad Jokes</h3>%n");
         out.printf("</header>%n");
+
         out.printf("<body>%n");
         out.printf("<form action=\"/home\" method=\"GET\">%n");
         out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"New Search\"/>");
         out.printf("</form>");
-        out.printf("<h2>Searched For: %s</h2>%n", queries);
-        out.printf("<h3>Found: </h3%n");
+        out.printf("<h2>Index: </h2>%n");
         out.printf("<ul>%n");
-
-        if (handler.getResults(queries).isEmpty()) {
-            out.printf("<p> No Results found</p>");
-        } else {
-
-            for (InvertedIndex.SearchResult query : handler.getResults(queries)) {
-                System.out.println(query);
-                out.printf("<li><a href=%s>%s</a></li>", query.getWhere(), query.getWhere());
+        for (String query : index.getWords()) {
+            out.printf("<li>%s%n", query);
+            out.printf("<ul>%n");
+            for (String location : index.getLocations(query)) {
+                out.printf("<li><a href=%s>%s</a></li>", location, location);
             }
+            out.printf("</ul>%n");
+            out.printf("</li>%n");
         }
-
         out.printf("</ul>%n");
 
         out.printf("</body>%n");
@@ -107,11 +90,59 @@ public class SearchServlet extends HttpServlet {
         // Demonstrate that this servlet is called by different threads
         out.printf("<p>This request was handled by thread %s on %s</p>%n", Thread.currentThread().getName(), getDate());
         out.printf("</footer>");
-
         out.printf("</html>%n");
 
         response.setStatus(HttpServletResponse.SC_OK);
-        // response.sendRedirect(request.getServletPath());
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        response.setContentType("text/html");
+        log.info("SearchServlet ID " + this.hashCode() + " handling POST request.");
+
+        String url = request.getParameter("url");
+        url = url == null ? "https://www.cs.usfca.edu/~cs212/birds/" : url;
+
+        // avoid xss attacks using apache commons text
+        // comment out if you don't have this library installed
+        url = StringEscapeUtils.escapeHtml4(url);
+        PrintWriter out = response.getWriter();
+        out.printf("<html>%n");
+
+        out.printf("<head>");
+        out.printf("<title>%s</title>", TITLE);
+        out.printf("<link href=\"/photo/searchEngine.css\" rel=\"stylesheet\" type=\"text/css\">");
+        out.printf("</head>%n");
+
+        out.printf("<header>%n");
+        out.printf("<img src=\"/photo/Powell-Logo.png\" width=\"112\" height=\"100\" alt=\"Powell Logo\">%n");
+        out.printf("<h2>  Home of Mediocre Performance</h2>%n<h3>  and Bad Jokes</h3>%n");
+        out.printf("</header>%n");
+
+        out.printf("<body>%n");
+        out.printf("<h2>Index: </h2>%n", url);
+        out.printf("<form action=\"/home\" method=\"GET\">%n");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"New Search\"/>");
+        out.printf("</form>");
+        out.printf("<ul>%n");
+        for (String query : index.getWords()) {
+            out.printf("<li>%s%n", query);
+            for (String location : index.getLocations(query)) {
+                out.printf("<a href=%s>%s</a></li>", location);
+            }
+        }
+        out.printf("</ul>%n");
+
+        out.printf("</body>%n");
+        out.printf("<footer>");
+        // Demonstrate that this servlet is called by different threads
+        out.printf("<p>This request was handled by thread %s on %s</p>%n", Thread.currentThread().getName(), getDate());
+        out.printf("</footer>");
+        out.printf("</html>%n");
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**

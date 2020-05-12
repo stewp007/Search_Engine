@@ -23,7 +23,7 @@ public class HomeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /** The title to use for this webpage. */
-    private static final String TITLE = "Stewart Powell";
+    private static final String TITLE = "Home";
 
     /**
      * Constructor for HomeServlet
@@ -54,10 +54,32 @@ public class HomeServlet extends HttpServlet {
         out.printf("<h2>  Home of Mediocre Performance</h2>%n<h3>  and Bad Jokes</h3>%n");
         out.printf("</header>%n");
         out.printf("<body>%n");
-        out.printf("<form action=\"/search\" method=\"GET\">%n");
+        out.printf("<div>");
+        out.printf("<form action=\"/index\" method=\"GET\">");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"View Index\"/>");
+        out.printf("</form>");
+        out.printf("</div>");
+        out.printf("<div>");
+        out.printf("<form action=\"/counter\" method=\"GET\">");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"View Locations\"/>");
+        out.printf("</form>%n");
+        out.printf("</div>%n");
+        out.printf("<div>");
+        out.printf("<form action=\"/shutdown\" method=\"GET\">");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Shutdown Server\"/>");
+        out.printf("</form>%n");
+        out.printf("</div>%n");
+        out.printf("<br><br><form action=\"/search\" method=\"GET\">%n");
         out.printf("<label for=\"search\">What are you looking for?</label>");
         out.printf("<br><input type=\"text\" name=\"queries\" id=\"queries\" required/>");
-        out.printf("<input type=\"submit\" name=\"submit\" id=\"submit\" value=\"Search\"/>");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"queries\" value=\"Search\"/>");
+        out.printf("<input type=\"checkbox\" name=\"exact\" id=\"exact\" value=\"Exact\"/>");
+        out.printf("<label for=\"Exact\">Exact</label>");
+        out.printf("</form>%n");
+        out.printf("<form action=\"/build\" method=\"GET\">%n");
+        out.printf("<label for=\"build\">Add a new Crawl</label>");
+        out.printf("<br><input type=\"text\" name=\"url\" id=\"url\"/>");
+        out.printf("<input type=\"submit\" name=\"submit\" id=\"url\" value=\"Build\"/>");
         out.printf("</form>%n");
 
         out.printf("</body>%n");
