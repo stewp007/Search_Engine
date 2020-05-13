@@ -66,7 +66,7 @@ public class HomeServlet extends HttpServlet {
         out.printf("</form>%n");
         out.printf("</div>%n");
         out.printf("<div>");
-        out.printf("<form action=\"/shutdown\" method=\"POST\">");
+        out.printf("<form action=\"/shutdown\" method=\"GET\">");
         out.printf("<input type=\"submit\" name=\"secret\" id=\"submit\" value=\"Shutdown Server\"/>");
         out.printf("</form>%n");
         out.printf("</div>%n");

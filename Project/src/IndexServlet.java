@@ -79,6 +79,11 @@ public class IndexServlet extends HttpServlet {
             out.printf("<ul>%n");
             for (String location : index.getLocations(query)) {
                 out.printf("<li><a href=%s>%s</a></li>", location, location);
+                out.printf("<ul>%n");
+                for (Integer num : index.getPositions(query, location)) {
+                    out.printf("<li>%d</li>", num);
+                }
+                out.printf("</ul>%n");
             }
             out.printf("</ul>%n");
             out.printf("</li>%n");
