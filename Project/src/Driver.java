@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.file.Path;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -102,8 +100,6 @@ public class Driver {
                     port = 8080;
                 }
                 Server server = new Server();
-                // Generate random shared secret key
-                String secretKey = new BigInteger(130, new SecureRandom()).toString(32);
 
                 ServerConnector connector = new ServerConnector(server);
                 connector.setHost("localhost");
